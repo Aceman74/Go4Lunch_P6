@@ -1,3 +1,38 @@
 <resources>
     <string name="app_name">Go4Lunch</string>
+    <string name="error_unknown_error">An unknown error occured…</string>
+    <string name="login">Login</string>
+    <string name="connection_succeed">Connection successful !</string>
+    <string name="error_authentication_canceled">Error, connexion cancelled</string>
+    <string name="error_no_internet">Error, no internet connexion</string>
+    <string name="main_activity_description">Find a nice restaurant and invite your co-worker for lunch !</string>
+    <string name="facebook_application_id">1114894378703250</string>
+    <string name="fb_login_protocol_scheme">fb1114894378703250</string>
+    <string name="text_input_username">Username</string>
+    <string name="text_view_email">Email</string>
+    <string name="check_private">Private Account</string>
+    <string name="button_update_account">Update Account</string>
+    <string name="button_sign_out_account">Sign Out</string>
+    <string name="button_delete_account">Delete Account</string>
+    <string name="toolbar_title_login_activity">Your Profile</string>
+    <string name="info_no_email_found">Email not found</string>
+    <string name="info_no_username_found">Username not found</string>
+    <string name="button_login_text_logged">Continue</string>
+    <string name="button_login_text_not_logged">Sign In</string>
+    <string name="popup_message_confirmation_delete_account">You really want to delete your account ?</string>
+    <string name="popup_message_choice_yes">Yes, delete it</string>
+    <string name="popup_message_choice_no">No, keep it</string>
+    <string name="private_descprition">A private account hide your account for other users, so they can\'t bother you until you uncheck Private Account.</string>
+    <string name="toolbar_title_core_activity">Core Activity</string>
+    <!-- BOTTOM NAVIGATION VIEW -->
+    <string name="bottom_navigation_menu_maps">Maps view</string>
+    <string name="bottom_navigation_menu_list">List View</string>
+    <string name="bottom_navigation_menu_workmates">Workmates</string>
+    <string name="your_lunch">YOUR LUNCH</string>
+    <string name="settings">SETTINGS</string>
+    <string name="logout">LOGOUT</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
 </resources>

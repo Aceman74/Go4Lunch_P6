@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#FF5723</color>
-    <color name="colorPrimaryDark">#C41C00</color>
-    <color name="colorAccent">#FF5723</color>
-    <color name="colorNavigationDrawer">#FF8A50</color>
+    <color name="colorPrimary">#CE5F1D</color>
+    <color name="colorPrimaryDark">#2E2A2A</color>
+    <color name="colorAccent">#EB410C</color>
     <color name="ColorWhite">#FFFFFF</color>
     <color name="ColorBlack">#000000</color>
+    <color name="colorError">#C40000</color>
 </resources>

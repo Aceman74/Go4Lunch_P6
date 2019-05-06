@@ -44,6 +44,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-firestore:4.3.2'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.2'
     implementation 'com.firebaseui:firebase-ui-storage:4.3.2'
+    // FACEBOOK LOGIN SUPPORT
+    implementation 'com.facebook.android:facebook-android-sdk:4.42.0'
     //ButterKnife/Timber//
     implementation 'com.jakewharton:butterknife:8.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.0'
@@ -51,6 +53,9 @@ dependencies {
     //GLIDE//
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    implementation 'com.android.support:design:28.0.0'
+
+    implementation 'jp.wasabeef:blurry:3.0.0'   //  Blurr effect
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'   //  CrashLytics

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="">
+        <menu>
+
+            <group android:checkableBehavior="none">
+                <item
+                    android:id="@+id/drawer_your_lunch"
+                    android:title="@string/your_lunch" />
+                <item
+                android:id="@+id/drawer_settings"
+                android:title="@string/settings" />
+                <item
+                android:id="@+id/drawer_logout"
+                android:title="@string/logout" />
+            </group>
+
+        </menu>
+    </item>
+
+</menu>
