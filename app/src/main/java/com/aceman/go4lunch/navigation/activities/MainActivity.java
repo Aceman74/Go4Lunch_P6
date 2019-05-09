@@ -21,11 +21,12 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import okhttp3.Cache;
 
 public class MainActivity extends BaseActivity {
     //FOR DATA
-    // Identifier for Sign-In Activity
     private static final int RC_SIGN_IN = 111;    //FOR DESIGN
+    public static Cache mCache;
     // 1 - Get Coordinator Layout
     @BindView(R.id.main_activity_coordinator_layout)
     CoordinatorLayout coordinatorLayout;
@@ -33,9 +34,11 @@ public class MainActivity extends BaseActivity {
     Button buttonLogin;
     @BindView(R.id.main_background)
     ImageView mBackground;
+
     @Override
     protected void onCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        configureCache();
         alreadyLogged();
     }
 
@@ -48,12 +51,14 @@ public class MainActivity extends BaseActivity {
     public int getFragmentLayout() {
         return R.layout.activity_main;
     }
+
     @Override
     protected void onResume() {
         super.onResume();
         // 5 - Update UI when activity is resuming
         this.updateUIWhenResuming();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -67,7 +72,7 @@ public class MainActivity extends BaseActivity {
     @OnClick(R.id.main_activity_button_login)
     public void onClickLoginButton() {
         //  Start appropriate activity
-        if (this.isCurrentUserLogged()){
+        if (this.isCurrentUserLogged()) {
             this.startCoreActivity();
         } else {
             this.startSignInActivity();
@@ -98,7 +103,7 @@ public class MainActivity extends BaseActivity {
 
 
     // 3 - Launching Profile Activity
-    private void startCoreActivity(){
+    private void startCoreActivity() {
         Intent intent = new Intent(this, CoreActivity.class);
         startActivity(intent);
     }
@@ -110,8 +115,9 @@ public class MainActivity extends BaseActivity {
     private void showSnackBar(CoordinatorLayout coordinatorLayout, String message) {
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
+
     // 2 - Update UI when activity is resuming
-    private void updateUIWhenResuming(){
+    private void updateUIWhenResuming() {
         this.buttonLogin.setText(this.isCurrentUserLogged() ? getString(R.string.button_login_text_logged) : getString(R.string.button_login_text_not_logged));
     }
     // --------------------
@@ -140,19 +146,28 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    @Nullable
-    protected FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
+    private void configureCache() {
+        int cacheSize = 5 * 1024 * 1024; // 5 MB
+        mCache = new Cache(getCacheDir(), cacheSize);   //  For API requests
+    }
 
-    protected Boolean isCurrentUserLogged(){ return (this.getCurrentUser() != null); }
+    @Nullable
+    protected FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
+
+    protected Boolean isCurrentUserLogged() {
+        return (this.getCurrentUser() != null);
+    }
 
     // --------------------
     // REST REQUEST
     // --------------------
 
     // 1 - Http request that create user in firestore
-    private void createUserInFirestore(){
+    private void createUserInFirestore() {
 
-        if (this.getCurrentUser() != null){
+        if (this.getCurrentUser() != null) {
 
             String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
             String username = this.getCurrentUser().getDisplayName();

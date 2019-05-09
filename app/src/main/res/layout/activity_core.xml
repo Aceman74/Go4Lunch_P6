@@ -18,13 +18,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
     <!-- Importation de notre Toolbar -->
     <include
         layout="@layout/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-        <FrameLayout
+        <RelativeLayout
             android:id="@+id/core_viewpager_and_bottom_nav_frame"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -32,7 +33,9 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/core_viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_above="@+id/core_bottom_navigation"/>
+
 
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/core_bottom_navigation"
@@ -44,8 +47,9 @@
             app:itemTextColor="@drawable/bottom_navigation_colors"
             app:menu="@menu/bottom_navigation_menu"
             app:itemBackground="@color/ColorWhite"
+            android:layout_alignParentBottom="true"
             />
-        </FrameLayout>
+        </RelativeLayout>
     </LinearLayout>
 
     <!-- 2 | NavigationView -->

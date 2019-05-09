@@ -18,7 +18,8 @@ public class ListViewFragment extends Fragment {
     public ListViewFragment() {
         // Required empty public constructor
     }
-    public static ListViewFragment newInstance(){
+
+    public static ListViewFragment newInstance() {
         return new ListViewFragment();
     }
 

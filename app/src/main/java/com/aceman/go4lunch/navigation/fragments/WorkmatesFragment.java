@@ -19,7 +19,7 @@ public class WorkmatesFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static WorkmatesFragment newInstance(){
+    public static WorkmatesFragment newInstance() {
         return new WorkmatesFragment();
     }
 

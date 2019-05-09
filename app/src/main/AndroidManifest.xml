@@ -2,7 +2,21 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.aceman.go4lunch">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <!--
+         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
+         Google Maps Android API v2, but you must specify either coarse or fine
+         location permissions for the 'MyLocation' functionality.
+    -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".utils.OnCreate"
@@ -12,32 +26,46 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".navigation.activities.MainActivity"
+        <!--
+             The API key for Google Maps-based APIs is defined as a string resource.
+             (See the file "res/values/google_maps_api.xml").
+             Note that the API key is linked to the encryption key used to sign the APK.
+             You need a different API key for each encryption key, including the release key that is used to
+             sign the APK for publishing.
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
+        -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".navigation.activities.MainActivity"
             android:theme="@style/AppTheme.NoTitle">
-            <!-- DISABLE TOOLBAR IN MAIN ACTIVITY-->
+
+            <!-- DISABLE TOOLBAR IN MAIN ACTIVITY -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <meta-data
-                android:name="com.google.android.geo.API_KEY"
-                android:value="AIzaSyCyZRkdBfcTam6hkjWzst3N_Ms9EA5R1h8"/>
-        </activity>
-        <!-- PROFILE ACTIVITY -->
-        <activity android:name=".auth.ProfileActivity"
+        </activity> <!-- PROFILE ACTIVITY -->
+        <activity
+            android:name=".auth.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"
-            android:parentActivityName=".navigation.activities.MainActivity"/>
-        <!-- CORE ACTIVITY -->
-        <activity android:name=".navigation.activities.CoreActivity"
+            android:parentActivityName=".navigation.activities.MainActivity" /> <!-- CORE ACTIVITY -->
+        <activity
+            android:name=".navigation.activities.CoreActivity"
             android:label="@string/toolbar_title_core_activity"
-            android:theme="@style/AppTheme.Core"
-            android:parentActivityName=".navigation.activities.MainActivity">
+            android:parentActivityName=".navigation.activities.MainActivity"
+            android:theme="@style/AppTheme.Core">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
-            <meta-data android:name="android.app.searchable"
-                android:resource="@xml/searchable"/>
-    </activity>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/searchable" />
+        </activity>
     </application>
 
 </manifest>

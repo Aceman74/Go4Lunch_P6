@@ -3,10 +3,8 @@ package com.aceman.go4lunch.base;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
 import com.aceman.go4lunch.R;
@@ -14,7 +12,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -32,13 +29,14 @@ public abstract class BaseActivity extends AppCompatActivity {
         ButterKnife.bind(this); //Configure Butterknife
 
     }
+
     public abstract int getFragmentLayout();
 
     // --------------------
     // UI
     // --------------------
 
-    protected void configureToolbar(){
+    protected void configureToolbar() {
         ActionBar ab = getSupportActionBar();
         ab.setDisplayHomeAsUpEnabled(true);
     }
@@ -46,7 +44,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     // ERROR HANDLER
     // --------------------
 
-    protected OnFailureListener onFailureListener(){
+    protected OnFailureListener onFailureListener() {
         return new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -59,9 +57,13 @@ public abstract class BaseActivity extends AppCompatActivity {
     // --------------------
 
     @Nullable
-    protected FirebaseUser getCurrentUser(){ return FirebaseAuth.getInstance().getCurrentUser(); }
+    protected FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
 
-    protected Boolean isCurrentUserLogged(){ return (this.getCurrentUser() != null); }
+    protected Boolean isCurrentUserLogged() {
+        return (this.getCurrentUser() != null);
+    }
 }
 
 

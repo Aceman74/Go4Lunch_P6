@@ -54,7 +54,9 @@ public class ProfileActivity extends BaseActivity {
     }
 
     @Override
-    public int getFragmentLayout() { return R.layout.activity_profile; }
+    public int getFragmentLayout() {
+        return R.layout.activity_profile;
+    }
 
     // --------------------
     // ACTIONS
@@ -63,15 +65,21 @@ public class ProfileActivity extends BaseActivity {
     // 5 - Update onClick Listeners
 
     @OnClick(R.id.profile_activity_button_update)
-    public void onClickUpdateButton() { this.updateUsernameInFirebase(); }
+    public void onClickUpdateButton() {
+        this.updateUsernameInFirebase();
+    }
 
     @OnClick(R.id.profile_activity_check_box_is_private)
-    public void onClickCheckBoxIsPrivate() { this.updateUserIsPrivate(); }
+    public void onClickCheckBoxIsPrivate() {
+        this.updateUserIsPrivate();
+    }
 
     // 4 - Adding requests to button listeners
 
     @OnClick(R.id.profile_activity_button_sign_out)
-    public void onClickSignOutButton() { this.signOutUserFromFirebase(); }
+    public void onClickSignOutButton() {
+        this.signOutUserFromFirebase();
+    }
 
     @OnClick(R.id.profile_activity_button_delete)
     public void onClickDeleteButton() {
@@ -92,13 +100,13 @@ public class ProfileActivity extends BaseActivity {
     // --------------------
     // 1 - Create http requests (SignOut & Delete)
 
-    private void signOutUserFromFirebase(){
+    private void signOutUserFromFirebase() {
         AuthUI.getInstance()
                 .signOut(this)
                 .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
     }
 
-    private void deleteUserFromFirebase(){
+    private void deleteUserFromFirebase() {
         if (this.getCurrentUser() != null) {
             //4 - We also delete user from firestore storage
             UserHelper.deleteUser(this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener());
@@ -113,28 +121,29 @@ public class ProfileActivity extends BaseActivity {
     // --------------------
 
     // 3 - Update User Username
-    private void updateUsernameInFirebase(){
+    private void updateUsernameInFirebase() {
 
         this.progressBar.setVisibility(View.VISIBLE);
         String username = this.textInputEditTextUsername.getText().toString();
 
-        if (this.getCurrentUser() != null){
-            if (!username.isEmpty() &&  !username.equals(getString(R.string.info_no_username_found))){
+        if (this.getCurrentUser() != null) {
+            if (!username.isEmpty() && !username.equals(getString(R.string.info_no_username_found))) {
                 UserHelper.updateUsername(username, this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME));
             }
         }
     }
 
     // 2 - Update User Private (is or not)
-    private void updateUserIsPrivate(){
+    private void updateUserIsPrivate() {
         if (this.getCurrentUser() != null) {
             UserHelper.updateIsPrivate(this.getCurrentUser().getUid(), this.checkBoxIsPrivate.isChecked()).addOnFailureListener(this.onFailureListener());
         }
     }
-    // 6 - Arranging method that updating UI with Firestore data
-    private void updateUIWhenCreating(){
 
-        if (this.getCurrentUser() != null){
+    // 6 - Arranging method that updating UI with Firestore data
+    private void updateUIWhenCreating() {
+
+        if (this.getCurrentUser() != null) {
 
             if (this.getCurrentUser().getPhotoUrl() != null) {
                 Glide.with(this)
@@ -160,11 +169,11 @@ public class ProfileActivity extends BaseActivity {
         }
     }
 
-    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin){
+    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin) {
         return new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
-                switch (origin){
+                switch (origin) {
                     // 8 - Hiding Progress bar after request completed
                     case UPDATE_USERNAME:
                         progressBar.setVisibility(View.INVISIBLE);

@@ -38,8 +38,9 @@ import timber.log.Timber;
  * Created by Lionel JOFFRAY - on 03/05/2019.
  */
 public class CoreActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
-@BindView(R.id.core_nav_view)
-NavigationView mNavigationView;
+    private static final int SIGN_OUT_TASK = 10;
+    @BindView(R.id.core_nav_view)
+    NavigationView mNavigationView;
     @BindView(R.id.core_bottom_navigation)
     BottomNavigationView mBottomNavigationView;
     @BindView(R.id.activity_core_drawer_layout)
@@ -51,7 +52,6 @@ NavigationView mNavigationView;
     ViewPager pager;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    private static final int SIGN_OUT_TASK = 10;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -71,6 +71,7 @@ NavigationView mNavigationView;
     private void configureViewPager() {
         pager.setAdapter(new PageAdapter(getSupportFragmentManager(), getApplicationContext()));
     }
+
     private void navigationDrawerListener() {
         NavigationView navigationView = findViewById(R.id.core_nav_view);
         View headerView = navigationView.getHeaderView(0);
@@ -85,9 +86,9 @@ NavigationView mNavigationView;
         return R.layout.activity_core;
     }
 
-    private void updateUIWhenCreating(){
+    private void updateUIWhenCreating() {
 
-        if (this.getCurrentUser() != null){
+        if (this.getCurrentUser() != null) {
 
             if (this.getCurrentUser().getPhotoUrl() != null) {
                 Glide.with(this)
@@ -123,30 +124,33 @@ NavigationView mNavigationView;
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
     }
 
-    void pagerListener(){
-pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-    @Override
-    public void onPageScrolled(int i, float v, int i1) {
+    void pagerListener() {
+        pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i1) {
 
-    }
+            }
 
-    @Override
-    public void onPageSelected(int i) {
-switch (i){
-    case 0: mBottomNavigationView.setSelectedItemId(R.id.bottom_maps);
-        break;
-    case 1: mBottomNavigationView.setSelectedItemId(R.id.bottom_list_view);
-        break;
-    case 2:mBottomNavigationView.setSelectedItemId(R.id.bottom_workmates);
-        break;
-}
-    }
+            @Override
+            public void onPageSelected(int i) {
+                switch (i) {
+                    case 0:
+                        mBottomNavigationView.setSelectedItemId(R.id.bottom_maps);
+                        break;
+                    case 1:
+                        mBottomNavigationView.setSelectedItemId(R.id.bottom_list_view);
+                        break;
+                    case 2:
+                        mBottomNavigationView.setSelectedItemId(R.id.bottom_workmates);
+                        break;
+                }
+            }
 
-    @Override
-    public void onPageScrollStateChanged(int i) {
+            @Override
+            public void onPageScrollStateChanged(int i) {
 
-    }
-});
+            }
+        });
     }
 
     @Override
@@ -167,7 +171,7 @@ switch (i){
                         .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
                 break;
             case R.id.bottom_maps:
-                 pager.setCurrentItem(0);
+                pager.setCurrentItem(0);
                 Timber.i("Click Maps");
                 break;
             case R.id.bottom_list_view:
@@ -196,7 +200,8 @@ switch (i){
 
         return true;
     }
-    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin){
+
+    private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin) {
         return new OnSuccessListener<Void>() {
             @Override
             public void onSuccess(Void aVoid) {
