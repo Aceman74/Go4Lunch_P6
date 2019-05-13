@@ -4,21 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".navigation.fragments.PlacesDetailFragment"
+    tools:context=".navigation.activities.PlacesDetailActivity"
     android:orientation="vertical">
 
-<RelativeLayout
-    android:id="@+id/detail_fragment_image_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_weight="0.8">
+    <!-- Importation de notre Toolbar -->
+    <include
+        layout="@layout/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <ImageView
-        android:id="@+id/detail_fragment_image_view"
+    <RelativeLayout
+        android:id="@+id/detail_fragment_image_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        />
-</RelativeLayout>
+        android:layout_weight="1">
+
+        <ImageView
+            android:id="@+id/detail_fragment_image_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/detail_fragment_banner_layout"
@@ -41,7 +47,8 @@
             android:layout_height="wrap_content"
             android:text="RESTAURANT"
             android:textColor="@color/ColorWhite"
-            android:padding="5dp"/>
+            android:padding="5dp"
+            android:gravity="start"/>
         <TextView
             android:id="@+id/detail_fragment_banner_address"
             android:layout_width="wrap_content"
@@ -49,7 +56,8 @@
             android:text="ADDRESS"
             android:layout_below="@id/detail_fragment_banner_name"
             android:textColor="@color/ColorWhite"
-            android:padding="5dp"/>
+            android:padding="5dp"
+            android:gravity="start"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -88,11 +96,11 @@
         android:background="@color/colorAccent"
         android:layout_weight="1">
 
-<android.support.v7.widget.RecyclerView
-    android:id="@+id/places_details_recycler_view"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/places_details_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-</android.support.v7.widget.RecyclerView>
+        </android.support.v7.widget.RecyclerView>
     </RelativeLayout>
 </LinearLayout>

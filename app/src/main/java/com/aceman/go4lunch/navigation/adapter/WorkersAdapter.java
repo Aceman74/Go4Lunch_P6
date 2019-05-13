@@ -26,19 +26,17 @@ import timber.log.Timber;
  *
  * <b>Shared Adapter</b> for his API Call response
  */
-public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyViewHolder> {
+public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHolder> {
 
     private final List<Result> mResults;
     private final RequestManager glide;
     private final Context mContext;
-    private AdapterCallback mAdapterCallback;
 
 
-    public ListViewAdapter(List<Result> listResult, RequestManager glide, Context context, AdapterCallback callback) {
+    public WorkersAdapter(List<Result> listResult, RequestManager glide, Context context) {
         this.mResults = listResult;
         this.glide = glide;
         this.mContext = context;
-        this.mAdapterCallback = callback;
     }
 
     @Override
@@ -83,7 +81,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
             @Override
             public void onClick(View v) {
                 Timber.tag(item.getName()).d("is Clicked");
-                mAdapterCallback.onMethodCallback(item);
 
             }
         });

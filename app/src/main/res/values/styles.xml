@@ -32,8 +32,7 @@
         <item name="android:textColorHint">@android:color/white</item>
     </style>
     <!-- STYLE FOR CORE ACTIVITY -->
-    <style name="AppTheme.Core" parent="Theme.AppCompat.Light.NoActionBar">
-    </style>
+    <style name="AppTheme.Core" parent="Theme.AppCompat.Light.NoActionBar"></style>
 
     <!-- TOOLBAR THEME -->
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
@@ -50,4 +49,13 @@
         <item name="android:colorBackground">@android:color/white</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

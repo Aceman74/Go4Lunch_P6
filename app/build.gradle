@@ -14,10 +14,10 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField( "String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\"")
+            buildConfigField("String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\"")
         }
         release {
-            buildConfigField( "String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\"")
+            buildConfigField("String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\"")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
