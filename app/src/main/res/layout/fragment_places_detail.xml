@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_places_details_layout"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".navigation.fragments.PlacesDetailFragment"
+    android:orientation="vertical">
+
+<RelativeLayout
+    android:id="@+id/detail_fragment_image_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_weight="0.8">
+
+    <ImageView
+        android:id="@+id/detail_fragment_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+</RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/detail_fragment_banner_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        android:layout_weight="1.2"
+        android:layout_gravity="center"
+        android:padding="5dp"
+        >
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/detai_fragment_banner_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            />
+        <TextView
+            android:id="@+id/detail_fragment_banner_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="RESTAURANT"
+            android:textColor="@color/ColorWhite"
+            android:padding="5dp"/>
+        <TextView
+            android:id="@+id/detail_fragment_banner_address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="ADDRESS"
+            android:layout_below="@id/detail_fragment_banner_name"
+            android:textColor="@color/ColorWhite"
+            android:padding="5dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/detail_fragment_btn_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.2"
+        android:layout_gravity="center"
+        android:gravity="center"
+        >
+        <Button
+            android:id="@+id/detail_fragment_btn_call"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Call"
+            android:layout_margin="5dp"/>
+        <Button
+            android:id="@+id/detail_fragment_btn_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Like"
+            android:layout_toRightOf="@id/detail_fragment_btn_call"
+            android:layout_margin="5dp"/>
+        <Button
+            android:id="@+id/detail_fragment_btn_website"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Website"
+            android:layout_toRightOf="@id/detail_fragment_btn_like"
+            android:layout_margin="5dp"/>
+    </RelativeLayout>
+    <RelativeLayout
+        android:id="@+id/detail_fragment_recycler_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorAccent"
+        android:layout_weight="1">
+
+<android.support.v7.widget.RecyclerView
+    android:id="@+id/places_details_recycler_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+</android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+</LinearLayout>

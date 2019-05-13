@@ -23,13 +23,18 @@ import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.auth.ProfileActivity;
 import com.aceman.go4lunch.base.BaseActivity;
+import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.navigation.adapter.PageAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.List;
 
 import butterknife.BindView;
 import timber.log.Timber;
@@ -52,10 +57,13 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     ViewPager pager;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
+    public static List<Result> mResults;
+    public static FusedLocationProviderClient sFusedLocationProviderClient;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        sFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         navigationDrawerListener();
         configureToolBar();
         configureNavigationView();

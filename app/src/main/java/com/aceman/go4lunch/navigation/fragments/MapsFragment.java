@@ -1,8 +1,11 @@
 package com.aceman.go4lunch.navigation.fragments;
 
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -10,9 +13,12 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aceman.go4lunch.BuildConfig;
@@ -21,29 +27,41 @@ import com.aceman.go4lunch.api.PlacesApi;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
 
+import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
+import static com.aceman.go4lunch.navigation.activities.CoreActivity.sFusedLocationProviderClient;
+import static com.aceman.go4lunch.navigation.fragments.ListViewFragment.mListViewAdapter;
 
-public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, OnMapReadyCallback {
+
+public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleMap.OnCameraIdleListener {
 
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 100;
     int AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -53,14 +71,21 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     Marker mMarker;
     Disposable disposable;
     String mLocation;
+    Location mCurrentLocation;
+    Location mPreviousLocation;
     String mType;
     Double mLatitude;
     Double mLongitude;
     int mRadius = 1500;
-    List<Result> mResults;
     List<PlacesDetails> mPlacesDetails;
     String placeID;
     LatLng mLatLng;
+    LatLng mLastLatLng;
+    String mMarkerTitle;
+    int getinfo = 0;
+    GoogleApiClient mGoogleApiClient;
+    Boolean initLocation = true;
+    float distance = 0;
     private String API_KEY = BuildConfig.google_maps_key;
 
 
@@ -77,8 +102,56 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.location_fragment, container, false);
         initializeMapsAndPlaces();
+        // currentLocationRequest();
         mResults = new ArrayList<>();
         return view;
+    }
+
+    private void getLastLocation() {
+        if (mGoogleApiClient == null) {
+            mGoogleApiClient = new GoogleApiClient.Builder(Objects.requireNonNull(getActivity()))
+                    .addApi(LocationServices.API)
+                    .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                        @Override
+                        public void onConnected(@Nullable Bundle bundle) {
+
+                            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                                Timber.e("Location permission not granted");
+                                return;
+                            }
+
+                            Task task = sFusedLocationProviderClient.getLastLocation();
+
+                            task.addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    // Got last known location. In some rare situations this can be null.
+                                    if (location != null) {
+                                        mLastLatLng = new LatLng(mLatitude = location.getLatitude(), mLongitude = location.getLongitude());
+                                        mLocation = mLatitude + " " + mLongitude;
+                                        mType = "restaurant";
+                                        mCurrentLocation = location;
+                                        mPreviousLocation = new Location("");
+                                        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mLastLatLng, 14));
+                                    }
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onConnectionSuspended(int i) {
+                            Timber.e("onConnectionSuspended() ");
+                        }
+                    })
+                    .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                        @Override
+                        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+                            Timber.e("Get location failure : %s", connectionResult.getErrorMessage());
+                        }
+                    })
+                    .build();
+        }
+        mGoogleApiClient.connect();
     }
 
     public void initializeMapsAndPlaces() {
@@ -111,22 +184,136 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         getLocationPermission();
         mMaps.getUiSettings().setMapToolbarEnabled(false);
         mMaps.getUiSettings().setMyLocationButtonEnabled(true);
-
         mMaps.setOnMyLocationClickListener(this);
-        LatLng paris = new LatLng(48.8534100, 2.3488000);
-        mMaps.addMarker(new MarkerOptions().position(paris).title("Paris")).showInfoWindow();
-        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(paris, 10));
-        mMaps.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        mMaps.setOnInfoWindowClickListener(this);
+        mMaps.setOnCameraIdleListener(this);
+        onMarkerClickListener();
+        customInfoWindows();
+        getLastLocation();
+        // getCurrentMapInfo();
+        /**
+         mMaps.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+        @Override public void onMapClick(LatLng latLng) {
+        mLatitude = latLng.latitude;
+        mLongitude = latLng.longitude;
+        mLocation = mLatitude + " " + mLongitude;
+        mType = "restaurant";
+        executeHttpRequestWithRetrofit();
+        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 14));
+        }
+        });
+         */
+    }
+
+    @Override
+    public void onCameraIdle() {
+        updateLocation();
+        if (mCurrentLocation != null && mPreviousLocation != null) {
+            initLocationOnLaunch();
+            Timber.tag("GET CURRENT LOCATION").i(mCurrentLocation.toString());
+            Timber.tag("GET PREVIOUS LOCATION").i(mPreviousLocation.toString());
+            distance = mCurrentLocation.distanceTo(mPreviousLocation);
+            Timber.tag("GET DISTANCE ").i(String.valueOf(distance));
+            /**
+            LatLng latlngtest = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+            mMaps.addMarker(new MarkerOptions().position(latlngtest)
+                    .title("Centre"));
+             */
+            if (distance > 1500 ) {
+                getCurrentMapInfo();
+            }
+        }
+    }
+
+    private void initLocationOnLaunch() {
+        if (initLocation) {
+            markerSetPreviousPos();
+            getCurrentMapInfo();
+            initLocation = false;
+        }
+    }
+
+    private void updateLocation() {
+        if(mCurrentLocation!= null){
+        mCurrentLocation.setLongitude(mMaps.getCameraPosition().target.longitude);
+        mCurrentLocation.setLatitude(mMaps.getCameraPosition().target.latitude);
+        }
+    }
+
+    private void markerSetPreviousPos() {
+        if (mMarker == null) {
+            mMarker = mMaps.addMarker(new MarkerOptions().title("PreviousLocation").visible(false).position(mLastLatLng));
+        }else{
+            mMarker.setPosition(mLatLng);
+        }
+        mPreviousLocation.setLongitude(mMarker.getPosition().longitude);
+        mPreviousLocation.setLatitude(mMarker.getPosition().latitude);
+    }
+
+    private void getCurrentMapInfo() {
+        getinfo++;
+        mMaps.clear();
+        mLatLng = mMaps.getCameraPosition().target;
+        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 14));
+        mLatitude = mLatLng.latitude;
+        mLongitude = mLatLng.longitude;
+        mLocation = mLatitude + " " + mLongitude;
+        mType = "restaurant";
+        executeHttpRequestWithRetrofit();
+        markerSetPreviousPos();
+    }
+
+
+    private void onMarkerClickListener() {
+        mMaps.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
-            public void onMapClick(LatLng latLng) {
-                mLatitude = latLng.latitude;
-                mLongitude = latLng.longitude;
-                mLocation = mLatitude + " " + mLongitude;
-                mType = "restaurant";
-                executeHttpRequestWithRetrofit();
-                  mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng,14));
+            public boolean onMarkerClick(Marker marker) {
+                getinfo = 0;
+                mMarkerTitle = marker.getTitle();
+                Timber.tag("TITLE").i(mMarkerTitle);
+
+
+                return false;
             }
         });
+    }
+
+    private void customInfoWindows() {
+        mMaps.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+
+            @Override
+            public View getInfoWindow(Marker arg0) {
+                return null;
+            }
+
+            @Override
+            public View getInfoContents(Marker marker) {
+
+                LinearLayout info = new LinearLayout(getContext());
+                info.setOrientation(LinearLayout.VERTICAL);
+
+                TextView title = new TextView(getContext());
+                title.setTextColor(Color.BLACK);
+                title.setGravity(Gravity.CENTER);
+                title.setTypeface(null, Typeface.BOLD);
+                title.setText(marker.getTitle());
+
+                TextView snippet = new TextView(getContext());
+                snippet.setTextColor(Color.GRAY);
+                snippet.setText(marker.getSnippet());
+
+                info.addView(title);
+                info.addView(snippet);
+
+                return info;
+            }
+        });
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(getContext(), "Info window clicked " + marker.getTitle(),
+                Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -166,6 +353,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
             public void onNext(Nearby details) {
                 Timber.tag("PLACES_Next").i("On Next");
                 Timber.tag("PLACES_OBSERVABLE").i("from: " + mLocation + " type: " + mType);
+                mMaps.clear();
                 updateData(details);
             }
 
@@ -182,17 +370,31 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         });
     }
 
-    private void detailsHttpRequestWithRetrofit() {
-        for (int i = 0; i < mResults.size(); i++) {
-            placeID = mResults.get(i).getPlaceId();
+    private void updateData(Nearby details) {
+        mResults.clear();
+        mResults.addAll(details.getResults());
+        noResultFound();
+    }
 
-            this.disposable = PlacesApi.getInstance().getRestaurantsDetails(placeID).subscribeWith(new DisposableObserver<PlacesDetails>() {
+    private void noResultFound() {
+        if(mResults.size() == 0){
+           Marker noResult = mMaps.addMarker( new MarkerOptions().title("No results found!").snippet("No restaurants here within 1500m").position(mLatLng));
+           noResult.showInfoWindow();
+        }
+    }
+
+    private void detailsHttpRequestWithRetrofit() {
+        for (final Result result : mResults) {
+
+
+            this.disposable = PlacesApi.getInstance().getRestaurantsDetails(result.getPlaceId()).subscribeWith(new DisposableObserver<PlacesDetails>() {
                 @Override
                 public void onNext(PlacesDetails details) {
                     Timber.tag("PLACES_Next").i("On Next");
                     Timber.tag("PLACES_OBSERVABLE").i("from: " + mLocation + " type: " + mType);
-                    updateMap(details,placeID);
-                    Timber.tag("Details").i(placeID);
+                    result.getFormattedAddress();
+
+                    updateMap(details);
                 }
 
                 @Override
@@ -202,6 +404,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
                 @Override
                 public void onComplete() {
+                    mListViewAdapter.notifyDataSetChanged();
                     Timber.tag("PLACES_Complete").i("On Complete !!");
                 }
             });
@@ -209,20 +412,14 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
     }
 
-    private void updateData(Nearby details) {
-        mResults.clear();
-        mResults.addAll(details.getResults());
-    }
+    private void updateMap(final PlacesDetails details) {
+        mLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
+        mMaps.addMarker(new MarkerOptions()
+                .position(mLatLng)
+                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                .title(details.getResult().getName())
+                .snippet(details.getResult().getFormattedAddress() + "\n" + details.getResult().getFormattedAddress()));
 
-    private void updateMap(final PlacesDetails details, String placeID) {
-        mLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(),details.getResult().getGeometry().getLocation().getLng());
-        mMaps.addMarker(new MarkerOptions().position(mLatLng).title(details.getResult().getName()));
-        mMaps.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                return false;
-            }
-        });
     }
 
     private void disposeWhenDestroy() {
@@ -253,4 +450,5 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         super.onLowMemory();
         mMapsFragment.onLowMemory();
     }
+
 }

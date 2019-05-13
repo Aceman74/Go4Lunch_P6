@@ -32,6 +32,24 @@ public class Result {
     private Long mUserRatingsTotal;
     @SerializedName("vicinity")
     private String mVicinity;
+    @SerializedName("address_components")
+    private List<AddressComponent> mAddressComponents;
+    @SerializedName("adr_address")
+    private String mAdrAddress;
+    @SerializedName("formatted_address")
+    private String mFormattedAddress;
+    @SerializedName("formatted_phone_number")
+    private String mFormattedPhoneNumber;
+    @SerializedName("international_phone_number")
+    private String mInternationalPhoneNumber;
+    @SerializedName("reviews")
+    private List<Review> mReviews;
+    @SerializedName("url")
+    private String mUrl;
+    @SerializedName("utc_offset")
+    private Long mUtcOffset;
+    @SerializedName("website")
+    private String mWebsite;
 
     public Geometry getGeometry() {
         return mGeometry;
@@ -135,6 +153,75 @@ public class Result {
 
     public void setVicinity(String vicinity) {
         mVicinity = vicinity;
+    }
+    public List<AddressComponent> getAddressComponents() {
+        return mAddressComponents;
+    }
+
+    public void setAddressComponents(List<AddressComponent> addressComponents) {
+        mAddressComponents = addressComponents;
+    }
+
+    public String getAdrAddress() {
+        return mAdrAddress;
+    }
+
+    public void setAdrAddress(String adrAddress) {
+        mAdrAddress = adrAddress;
+    }
+
+    public String getFormattedAddress() {
+        return mFormattedAddress;
+    }
+
+    public void setFormattedAddress(String formattedAddress) {
+        mFormattedAddress = formattedAddress;
+    }
+
+    public String getFormattedPhoneNumber() {
+        return mFormattedPhoneNumber;
+    }
+
+    public void setFormattedPhoneNumber(String formattedPhoneNumber) {
+        mFormattedPhoneNumber = formattedPhoneNumber;
+    }
+
+    public String getInternationalPhoneNumber() {
+        return mInternationalPhoneNumber;
+    }
+
+    public void setInternationalPhoneNumber(String internationalPhoneNumber) {
+        mInternationalPhoneNumber = internationalPhoneNumber;
+    }
+    public List<Review> getReviews() {
+        return mReviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        mReviews = reviews;
+    }
+    public String getUrl() {
+        return mUrl;
+    }
+
+    public void setUrl(String url) {
+        mUrl = url;
+    }
+
+    public Long getUtcOffset() {
+        return mUtcOffset;
+    }
+
+    public void setUtcOffset(Long utcOffset) {
+        mUtcOffset = utcOffset;
+    }
+
+    public String getWebsite() {
+        return mWebsite;
+    }
+
+    public void setWebsite(String website) {
+        mWebsite = website;
     }
 
 }

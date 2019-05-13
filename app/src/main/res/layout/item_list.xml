@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/item_id"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    android:orientation="horizontal">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/item_restaurant_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restaurant Name"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/item_restaurant_adress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restaurant Adress"
+            android:layout_below="@id/item_restaurant_name"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/item_restaurant_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Restaurant Open"
+            android:layout_below="@+id/item_restaurant_adress"
+            android:layout_margin="5dp"/>
+
+        <TextView
+            android:id="@+id/item_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="100m"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="5dp"/>
+
+        <ImageView
+            android:id="@+id/item_workers"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_below="@id/item_distance"
+            android:layout_alignParentEnd="true"
+            android:background="@color/com_facebook_blue"
+            android:layout_margin="5dp"/>
+
+        <ImageView
+            android:id="@+id/item_rating"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_below="@+id/item_workers"
+            android:layout_alignParentEnd="true"
+            android:background="@color/colorAccent"
+            android:layout_margin="5dp"/>
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="3"
+        android:gravity="end">
+
+
+
+        <ImageView
+            android:id="@+id/item_imageview"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="5dp"/>
+
+    </RelativeLayout>
+
+</LinearLayout>
