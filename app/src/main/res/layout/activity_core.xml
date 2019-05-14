@@ -61,7 +61,7 @@
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/navigation_drawer_header"
         app:menu="@menu/navigation_drawer"
-        android:background="@color/colorPrimary">
+        android:background="@color/NavDrawer">
 
         <ImageView
             android:layout_width="150dp"

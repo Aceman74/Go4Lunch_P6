@@ -50,27 +50,5 @@ public class PageAdapter extends FragmentPagerAdapter {
                 return null;
         }
     }
-
-    /**
-     * Setting Tabs title
-     *
-     * @param position actual view
-     * @return title corresponding
-     */
-    @Override
-    public CharSequence getPageTitle(int position) {
-        switch (position) {
-
-            case 0: //Page number 1
-                return mContext.getString(R.string.app_name);
-            case 1: //Page number 2
-                return mContext.getString(R.string.app_name);
-            case 2: //Page number 3
-                return mContext.getString(R.string.app_name);
-            default:
-                return null;
-        }
-    }
-
 }
 

@@ -9,48 +9,33 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.utils.AdapterCallback;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.util.List;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
-
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
 
 /**
  * Created by Lionel JOFFRAY - on 14/03/2019.
  *
  * <b>Shared Adapter</b> for his API Call response
  */
-public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyViewHolder> {
+public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAdapter.MyViewHolder> {
 
-    @BindString(R.string.mUrl_begin)
-    String mUrlBegin;
-    @BindString(R.string.mUrlNext)
-    String mUrlNext;
+    private final List<Result> mResults;
     private final RequestManager glide;
     private final Context mContext;
-    private AdapterCallback mAdapterCallback;
-    private Disposable mDisposable;
-    String mPhotoReference;
-    String mUrl;
-    String API_KEY = BuildConfig.google_maps_key;
 
 
-    public ListViewAdapter(List<Result> listResult, RequestManager glide, Context context, AdapterCallback callback) {
-        mResults = listResult;
+    public WorkersJoiningAdapter(List<Result> listResult, RequestManager glide, Context context) {
+        this.mResults = listResult;
         this.glide = glide;
         this.mContext = context;
-        this.mAdapterCallback = callback;
     }
 
     @Override
@@ -59,13 +44,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         LayoutInflater inflater = LayoutInflater.from(context);
         View sharedView = inflater.inflate(R.layout.item_list, parent, false);
         MyViewHolder myViewHolder = new MyViewHolder(sharedView);
-        ButterKnife.bind(this, parent);
         return myViewHolder;
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        updateWithFreshInfo(mResults.get(position), this.glide, holder, position);
+        updateWithFreshInfo(this.mResults.get(position), this.glide, holder, position);
     }
 
     /**
@@ -79,29 +63,23 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
 
         holder.mName.setText(item.getName());
         holder.mAdress.setText(item.getFormattedAddress());
-        holder.mOpen.setText(item.getFormattedPhoneNumber());
-        if (item.getPhotos() != null) {
-            mPhotoReference = item.getPhotos().get(0).getPhotoReference();
-            mUrl = mUrlBegin + API_KEY + mUrlNext + mPhotoReference;
-        }else{
-            mUrl = item.getIcon();
+        holder.mOpen.setText(item.getReference());
+
+        try {
+            holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
+            glide.asDrawable()
+                    .load(item.getIcon()) //  Base URL added in Data
+                    .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
+                    .into(holder.mImageView);
+        } catch (Exception e) {
+            Timber.tag("Image_Shared").e("Loading error");
         }
-            try {
-                holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
-                glide.asDrawable()
-                        .load(mUrl) //  Base URL added in Data
-                        .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
-                        .into(holder.mImageView);
-            } catch (Exception e) {
-                Timber.tag("Image_Loading").e("Loading error");
-            }
 
 
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Timber.tag(item.getName()).d("is Clicked");
-                mAdapterCallback.onMethodCallback(item);
 
             }
         });
@@ -110,7 +88,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
 
     @Override
     public int getItemCount() {
-        return mResults.size();
+        return this.mResults.size();
     }
 
 

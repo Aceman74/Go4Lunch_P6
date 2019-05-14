@@ -42,6 +42,9 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).update("isPrivate", isMentor);
     }
 
+    public static Task<Void> updateRestaurant(String uid, String restaurant) {
+        return UserHelper.getUsersCollection().document(uid).update("restaurant", restaurant);
+    }
     // --- DELETE ---
 
     public static Task<Void> deleteUser(String uid) {

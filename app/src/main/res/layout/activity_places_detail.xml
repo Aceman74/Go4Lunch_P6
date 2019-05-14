@@ -7,11 +7,6 @@
     tools:context=".navigation.activities.PlacesDetailActivity"
     android:orientation="vertical">
 
-    <!-- Importation de notre Toolbar -->
-    <include
-        layout="@layout/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:id="@+id/detail_fragment_image_layout"
@@ -24,76 +19,211 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             />
+        <android.support.design.widget.FloatingActionButton
+        android:id="@+id/detail_fragment_btn"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_margin="20dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignEnd="@+id/detail_fragment_image_view"
+        android:background="@color/ColorWhite"
+        android:src="@drawable/done_icon"
+        android:tint="@color/ColorWhite"
+        />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/detail_fragment_banner_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:layout_weight="1.2"
+        android:layout_weight="1.35"
         android:layout_gravity="center"
         android:padding="5dp"
         >
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/detai_fragment_banner_btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
-            />
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:id="@+id/detail_fragment_restaurant_and_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="1">
         <TextView
             android:id="@+id/detail_fragment_banner_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="RESTAURANT"
+            android:textSize="@dimen/default_title_size"
             android:textColor="@color/ColorWhite"
             android:padding="5dp"
             android:gravity="start"/>
+        <ImageView
+            android:id="@+id/detail_fragment_rating_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/detail_fragment_banner_name"
+            android:src="@drawable/star_full"
+            android:layout_gravity="center"
+            />
+        <ImageView
+            android:id="@+id/detail_fragment_rating_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/detail_fragment_banner_name"
+            android:src="@drawable/star_full"
+            android:layout_gravity="center"
+            />
+        <ImageView
+            android:id="@+id/detail_fragment_rating_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/detail_fragment_banner_name"
+            android:src="@drawable/star_full"
+            android:layout_gravity="center"
+            />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/detail_fragment_linear_layout_adress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1">
+
         <TextView
             android:id="@+id/detail_fragment_banner_address"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="ADDRESS"
-            android:layout_below="@id/detail_fragment_banner_name"
+            android:textSize="@dimen/default_text_size"
             android:textColor="@color/ColorWhite"
             android:padding="5dp"
             android:gravity="start"/>
+    </LinearLayout>
+</LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/detail_fragment_btn_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1.2"
-        android:layout_gravity="center"
+        android:layout_weight="1.35"
         android:gravity="center"
-        >
-        <Button
+        android:background="@color/ColorWhite">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+<LinearLayout
+    android:id="@+id/call_layout"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_weight="1"
+    android:layout_gravity="center"
+    android:gravity="center">
+
+        <ImageButton
             android:id="@+id/detail_fragment_btn_call"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="Call"
-            android:layout_margin="5dp"/>
-        <Button
+            android:layout_margin="10dp"
+            android:src="@drawable/call_icon"
+            android:tint="@color/colorAccent"
+            android:background="@android:color/transparent"
+            android:scaleY="1.2"
+            android:scaleX="1.2"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="CALL"
+        android:textColor="@color/colorAccent"
+        />
+
+</LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/like_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/call_layout"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1">
+
+        <ImageButton
             android:id="@+id/detail_fragment_btn_like"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="Like"
             android:layout_toRightOf="@id/detail_fragment_btn_call"
-            android:layout_margin="5dp"/>
-        <Button
+            android:layout_margin="10dp"
+            android:src="@drawable/star_full"
+            android:tint="@color/colorAccent"
+            android:background="@android:color/transparent"
+            android:scaleY="1.2"
+            android:scaleX="1.2"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="LIKE"
+                android:textColor="@color/colorAccent"
+                />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/website_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toRightOf="@+id/like_layout"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_weight="1">
+
+        <ImageButton
             android:id="@+id/detail_fragment_btn_website"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:text="Website"
             android:layout_toRightOf="@id/detail_fragment_btn_like"
-            android:layout_margin="5dp"/>
+            android:layout_margin="10dp"
+            android:src="@drawable/world_icon"
+            android:tint="@color/colorAccent"
+            android:background="@android:color/transparent"
+            android:scaleY="1.2"
+            android:scaleX="1.2"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="WEBSITE"
+                android:textColor="@color/colorAccent"
+                />
+
+        </LinearLayout>
+</LinearLayout>
+
     </RelativeLayout>
+
     <RelativeLayout
         android:id="@+id/detail_fragment_recycler_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorAccent"
+        android:background="@color/ColorWhite"
         android:layout_weight="1">
 
         <android.support.v7.widget.RecyclerView

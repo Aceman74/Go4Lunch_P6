@@ -154,6 +154,7 @@ public class Result {
     public void setVicinity(String vicinity) {
         mVicinity = vicinity;
     }
+
     public List<AddressComponent> getAddressComponents() {
         return mAddressComponents;
     }
@@ -193,6 +194,7 @@ public class Result {
     public void setInternationalPhoneNumber(String internationalPhoneNumber) {
         mInternationalPhoneNumber = internationalPhoneNumber;
     }
+
     public List<Review> getReviews() {
         return mReviews;
     }
@@ -200,6 +202,7 @@ public class Result {
     public void setReviews(List<Review> reviews) {
         mReviews = reviews;
     }
+
     public String getUrl() {
         return mUrl;
     }

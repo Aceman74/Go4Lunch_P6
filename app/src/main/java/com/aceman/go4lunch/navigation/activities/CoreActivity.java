@@ -1,5 +1,6 @@
 package com.aceman.go4lunch.navigation.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -25,7 +26,9 @@ import com.aceman.go4lunch.auth.ProfileActivity;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.navigation.adapter.ListViewAdapter;
 import com.aceman.go4lunch.navigation.adapter.PageAdapter;
+import com.aceman.go4lunch.navigation.adapter.WorkersAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
@@ -44,6 +47,10 @@ import timber.log.Timber;
  */
 public class CoreActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final int SIGN_OUT_TASK = 10;
+    public static List<Result> mResults;
+    public static ListViewAdapter mListViewAdapter;
+    public static WorkersAdapter mWorkersAdapter;
+    public static FusedLocationProviderClient sFusedLocationProviderClient;
     @BindView(R.id.core_nav_view)
     NavigationView mNavigationView;
     @BindView(R.id.core_bottom_navigation)
@@ -57,8 +64,8 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     ViewPager pager;
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
-    public static List<Result> mResults;
-    public static FusedLocationProviderClient sFusedLocationProviderClient;
+    ImageView mProfileImage;
+    Context mContext;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,6 +77,20 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         configureViewPager();
         pagerListener();
         configureHamburgerBtn();
+        onClickProfile();
+    }
+
+    private void onClickProfile() {
+        mProfileImage = mNavigationView.getHeaderView(0).findViewById(R.id.profile_image_nav_header);
+        mProfileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
+                getApplicationContext().startActivity(profile);
+
+            }
+        });
     }
 
     private void configureToolBar() {
@@ -168,6 +189,8 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
 
         switch (id) {
             case R.id.drawer_your_lunch:
+                Intent lunch = new Intent(this, PlacesDetailActivity.class);
+                this.startActivity(lunch);
                 break;
             case R.id.drawer_settings:
                 Intent notification = new Intent(this, ProfileActivity.class);

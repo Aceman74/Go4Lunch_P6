@@ -10,6 +10,7 @@ public class User {
     private String uid;
     private String username;
     private Boolean isPrivate;
+    private String mRestaurant;
     @Nullable
     private String urlPicture;
 
@@ -55,5 +56,12 @@ public class User {
 
     public void setIsPrivate(Boolean mentor) {
         isPrivate = mentor;
+
+    }    public String getRestaurant() {
+        return mRestaurant;
+    }
+
+    public void setRestaurant(String restaurant) {
+        mRestaurant = restaurant;
     }
 }

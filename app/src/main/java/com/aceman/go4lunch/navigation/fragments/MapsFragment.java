@@ -56,9 +56,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
 
+import static com.aceman.go4lunch.navigation.activities.CoreActivity.mListViewAdapter;
 import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
 import static com.aceman.go4lunch.navigation.activities.CoreActivity.sFusedLocationProviderClient;
-import static com.aceman.go4lunch.navigation.fragments.ListViewFragment.mListViewAdapter;
 
 
 public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleMap.OnCameraIdleListener {
@@ -215,11 +215,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
             distance = mCurrentLocation.distanceTo(mPreviousLocation);
             Timber.tag("GET DISTANCE ").i(String.valueOf(distance));
             /**
-            LatLng latlngtest = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-            mMaps.addMarker(new MarkerOptions().position(latlngtest)
-                    .title("Centre"));
+             LatLng latlngtest = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+             mMaps.addMarker(new MarkerOptions().position(latlngtest)
+             .title("Centre"));
              */
-            if (distance > 1500 ) {
+            if (distance > 1500) {
                 getCurrentMapInfo();
             }
         }
@@ -234,16 +234,16 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     }
 
     private void updateLocation() {
-        if(mCurrentLocation!= null){
-        mCurrentLocation.setLongitude(mMaps.getCameraPosition().target.longitude);
-        mCurrentLocation.setLatitude(mMaps.getCameraPosition().target.latitude);
+        if (mCurrentLocation != null) {
+            mCurrentLocation.setLongitude(mMaps.getCameraPosition().target.longitude);
+            mCurrentLocation.setLatitude(mMaps.getCameraPosition().target.latitude);
         }
     }
 
     private void markerSetPreviousPos() {
         if (mMarker == null) {
             mMarker = mMaps.addMarker(new MarkerOptions().title("PreviousLocation").visible(false).position(mLastLatLng));
-        }else{
+        } else {
             mMarker.setPosition(mLatLng);
         }
         mPreviousLocation.setLongitude(mMarker.getPosition().longitude);
@@ -377,9 +377,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     }
 
     private void noResultFound() {
-        if(mResults.size() == 0){
-           Marker noResult = mMaps.addMarker( new MarkerOptions().title("No results found!").snippet("No restaurants here within 1500m").position(mLatLng));
-           noResult.showInfoWindow();
+        if (mResults.size() == 0) {
+            Marker noResult = mMaps.addMarker(new MarkerOptions().title("No results found!").snippet("No restaurants here within 1500m").position(mLatLng));
+            noResult.showInfoWindow();
         }
     }
 
@@ -392,7 +392,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                 public void onNext(PlacesDetails details) {
                     Timber.tag("PLACES_Next").i("On Next");
                     Timber.tag("PLACES_OBSERVABLE").i("from: " + mLocation + " type: " + mType);
-                    result.getFormattedAddress();
+                    int i = mResults.indexOf(result);
 
                     updateMap(details);
                 }
@@ -404,12 +404,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
                 @Override
                 public void onComplete() {
-                    mListViewAdapter.notifyDataSetChanged();
                     Timber.tag("PLACES_Complete").i("On Complete !!");
                 }
             });
         }
-
+        mListViewAdapter.notifyDataSetChanged();
     }
 
     private void updateMap(final PlacesDetails details) {

@@ -6,8 +6,9 @@
     android:id="@+id/toolbar"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
+    android:background="@color/colorAccent"
     android:minHeight="?attr/actionBarSize"
     android:textAlignment="center"
     android:theme="@style/ToolbarTheme"
-    app:popupTheme="@style/ThemeOverlay.MyPopUp" />
+    app:popupTheme="@style/ThemeOverlay.MyPopUp"
+    />

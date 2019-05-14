@@ -11,6 +11,6 @@
         android:id="@+id/restaurant_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/com_facebook_blue"/>
+        android:background="@color/ColorWhite"/>
 
 </LinearLayout>

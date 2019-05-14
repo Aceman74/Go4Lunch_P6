@@ -11,7 +11,6 @@ import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.utils.AdapterCallback;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -66,15 +65,15 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
         holder.mAdress.setText(item.getFormattedAddress());
         holder.mOpen.setText(item.getReference());
 
-            try {
-                holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
-                glide.asDrawable()
-                        .load(item.getIcon()) //  Base URL added in Data
-                        .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
-                        .into(holder.mImageView);
-            } catch (Exception e) {
-                Timber.tag("Image_Shared").e("Loading error");
-            }
+        try {
+            holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
+            glide.asDrawable()
+                    .load(item.getIcon()) //  Base URL added in Data
+                    .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
+                    .into(holder.mImageView);
+        } catch (Exception e) {
+            Timber.tag("Image_Shared").e("Loading error");
+        }
 
 
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +90,6 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
     public int getItemCount() {
         return this.mResults.size();
     }
-
 
 
     /**

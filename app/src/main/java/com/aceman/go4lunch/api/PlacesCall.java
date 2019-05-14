@@ -28,7 +28,7 @@ public interface PlacesCall {
     Observable<PlacesDetails> getRestaurantsDetails(@Query("placeid") String id);
     // location=(latlong); type=(restaurant);
 
-    @GET("/photo?maxwidth=200&maxheight=200&key=" + API_KEY)
+    @GET("photo?maxwidth=200&maxheight=200&key=" + API_KEY)
     Observable<PlacePhoto> getRestaurantPhoto(@Query("photoreference") String reference);
 
 }
