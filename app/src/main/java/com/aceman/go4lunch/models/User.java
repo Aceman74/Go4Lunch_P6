@@ -11,6 +11,7 @@ public class User {
     private String username;
     private Boolean isPrivate;
     private String mRestaurant;
+    private String mLike;
     @Nullable
     private String urlPicture;
 
@@ -37,7 +38,6 @@ public class User {
         return username;
     }
 
-    // --- SETTERS ---
     public void setUsername(String username) {
         this.username = username;
     }
@@ -57,11 +57,21 @@ public class User {
     public void setIsPrivate(Boolean mentor) {
         isPrivate = mentor;
 
-    }    public String getRestaurant() {
+    }
+
+    public String getRestaurant() {
         return mRestaurant;
     }
 
     public void setRestaurant(String restaurant) {
         mRestaurant = restaurant;
+    }
+
+    public String getLike() {
+        return mLike;
+    }
+
+    public void setLike(String like) {
+        mLike = like;
     }
 }

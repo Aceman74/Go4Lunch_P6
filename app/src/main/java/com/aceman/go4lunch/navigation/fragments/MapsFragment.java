@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -27,6 +28,7 @@ import com.aceman.go4lunch.api.PlacesApi;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -52,6 +54,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
@@ -73,9 +77,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     String mLocation;
     Location mCurrentLocation;
     Location mPreviousLocation;
+    Location mDistanceToLocation;
     String mType;
     Double mLatitude;
     Double mLongitude;
+    float mDistanceTo;
     int mRadius = 1500;
     List<PlacesDetails> mPlacesDetails;
     String placeID;
@@ -85,7 +91,10 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     int getinfo = 0;
     GoogleApiClient mGoogleApiClient;
     Boolean initLocation = true;
+    ProgressBarCallback mProgressBarCallback;
     float distance = 0;
+    @BindView(R.id.maps_btn)
+    FloatingActionButton mRefreshBtn;
     private String API_KEY = BuildConfig.google_maps_key;
 
 
@@ -101,10 +110,22 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.location_fragment, container, false);
+        ButterKnife.bind(this,view);
         initializeMapsAndPlaces();
         // currentLocationRequest();
         mResults = new ArrayList<>();
+        mProgressBarCallback = (ProgressBarCallback) getActivity();
+        refreshMapBtn();
         return view;
+    }
+
+    private void refreshMapBtn() {
+        mRefreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getCurrentMapInfo();
+            }
+        });
     }
 
     private void getLastLocation() {
@@ -132,6 +153,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                                         mType = "restaurant";
                                         mCurrentLocation = location;
                                         mPreviousLocation = new Location("");
+                                        mDistanceToLocation = new Location("");
                                         mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mLastLatLng, 14));
                                     }
                                 }
@@ -259,10 +281,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mLongitude = mLatLng.longitude;
         mLocation = mLatitude + " " + mLongitude;
         mType = "restaurant";
+        mProgressBarCallback.onProgressCallback();
         executeHttpRequestWithRetrofit();
+        mProgressBarCallback.onFinishCallback();
         markerSetPreviousPos();
     }
-
 
     private void onMarkerClickListener() {
         mMaps.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
@@ -384,6 +407,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     }
 
     private void detailsHttpRequestWithRetrofit() {
+
         for (final Result result : mResults) {
 
 
@@ -392,8 +416,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                 public void onNext(PlacesDetails details) {
                     Timber.tag("PLACES_Next").i("On Next");
                     Timber.tag("PLACES_OBSERVABLE").i("from: " + mLocation + " type: " + mType);
-                    int i = mResults.indexOf(result);
-
+                    updateResultList(result, details);
                     updateMap(details);
                 }
 
@@ -411,14 +434,24 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mListViewAdapter.notifyDataSetChanged();
     }
 
+    private void updateResultList(Result result, PlacesDetails details) {
+        mDistanceToLocation.setLatitude(result.getGeometry().getLocation().getLat());
+        mDistanceToLocation.setLongitude(result.getGeometry().getLocation().getLng());
+        mDistanceTo = mCurrentLocation.distanceTo(mDistanceToLocation);
+        result.setDistanceTO(mDistanceTo);
+        result.setFormattedAddress(details.getResult().getFormattedAddress());
+        result.setFormattedPhoneNumber(details.getResult().getFormattedPhoneNumber());
+        result.setWebsite(details.getResult().getWebsite());
+        result.setRating(details.getResult().getRating());
+    }
+
     private void updateMap(final PlacesDetails details) {
         mLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
         mMaps.addMarker(new MarkerOptions()
                 .position(mLatLng)
                 .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
                 .title(details.getResult().getName())
-                .snippet(details.getResult().getFormattedAddress() + "\n" + details.getResult().getFormattedAddress()));
-
+                .snippet(details.getResult().getFormattedAddress() + "\n" + details.getResult().getFormattedPhoneNumber()));
     }
 
     private void disposeWhenDestroy() {

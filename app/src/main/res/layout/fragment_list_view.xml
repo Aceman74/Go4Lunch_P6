@@ -7,6 +7,14 @@
     tools:context=".navigation.fragments.ListViewFragment"
     android:orientation="vertical">
 
+    <ProgressBar
+        android:id="@+id/list_view_progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:padding="120dp"
+        android:visibility="gone"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/restaurant_recycler_view"
         android:layout_width="match_parent"

@@ -9,6 +9,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
@@ -29,14 +30,24 @@ import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.navigation.adapter.ListViewAdapter;
 import com.aceman.go4lunch.navigation.adapter.PageAdapter;
 import com.aceman.go4lunch.navigation.adapter.WorkersAdapter;
+import com.aceman.go4lunch.navigation.fragments.ListViewFragment;
+import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -45,12 +56,14 @@ import timber.log.Timber;
 /**
  * Created by Lionel JOFFRAY - on 03/05/2019.
  */
-public class CoreActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
+public class CoreActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, ProgressBarCallback {
     private static final int SIGN_OUT_TASK = 10;
     public static List<Result> mResults;
+    public static List<User> mUserList = new ArrayList<>();
     public static ListViewAdapter mListViewAdapter;
     public static WorkersAdapter mWorkersAdapter;
     public static FusedLocationProviderClient sFusedLocationProviderClient;
+    public static Boolean mLoadOver = false;
     @BindView(R.id.core_nav_view)
     NavigationView mNavigationView;
     @BindView(R.id.core_bottom_navigation)
@@ -65,7 +78,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     ImageView mProfileImage;
-    Context mContext;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -232,6 +245,22 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         return true;
     }
 
+    @Override
+    protected OnFailureListener onFailureListener() {
+        return super.onFailureListener();
+    }
+
+    @Nullable
+    @Override
+    protected FirebaseUser getCurrentUser() {
+        return super.getCurrentUser();
+    }
+
+    @Override
+    protected Boolean isCurrentUserLogged() {
+        return super.isCurrentUserLogged();
+    }
+
     private OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin) {
         return new OnSuccessListener<Void>() {
             @Override
@@ -241,5 +270,18 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
                 }
             }
         };
+    }
+
+    @Override
+    public void onProgressCallback() {
+        ListViewFragment frag = (ListViewFragment)
+                getSupportFragmentManager().findFragmentById(R.id.list_linear_layout);
+
+    }
+
+    @Override
+    public void onFinishCallback() {
+        ListViewFragment frag = (ListViewFragment)
+                getSupportFragmentManager().findFragmentById(R.id.list_linear_layout);
     }
 }

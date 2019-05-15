@@ -104,21 +104,30 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/star_full"
-                        android:tint="@color/quantum_yellow600" />
+                        android:tint="@color/quantum_yellow600"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:visibility="gone"/>
 
                     <ImageView
                         android:id="@+id/item_rating_star_2"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/star_full"
-                        android:tint="@color/quantum_yellow600" />
+                        android:tint="@color/quantum_yellow600"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:visibility="gone"/>
 
                     <ImageView
                         android:id="@+id/item_rating_star_3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/star_full"
-                        android:tint="@color/quantum_yellow600" />
+                        android:tint="@color/quantum_yellow600"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
             </LinearLayout>

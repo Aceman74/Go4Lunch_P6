@@ -45,6 +45,9 @@ public class UserHelper {
     public static Task<Void> updateRestaurant(String uid, String restaurant) {
         return UserHelper.getUsersCollection().document(uid).update("restaurant", restaurant);
     }
+    public static Task<Void> updateLikeRestaurant(String uid, String like) {
+        return UserHelper.getUsersCollection().document(uid).update("like", like);
+    }
     // --- DELETE ---
 
     public static Task<Void> deleteUser(String uid) {

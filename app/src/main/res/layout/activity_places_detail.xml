@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/fragment_places_details_layout"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -27,8 +28,9 @@
         android:layout_alignParentBottom="true"
         android:layout_alignEnd="@+id/detail_fragment_image_view"
         android:background="@color/ColorWhite"
-        android:src="@drawable/done_icon"
+        android:src="@drawable/add_icon"
         android:tint="@color/ColorWhite"
+            app:fabCustomSize="52dp"
         />
     </RelativeLayout>
 
@@ -50,6 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:layout_weight="1">
         <TextView
             android:id="@+id/detail_fragment_banner_name"
@@ -64,25 +67,28 @@
             android:id="@+id/detail_fragment_rating_1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/detail_fragment_banner_name"
+            android:tint="@color/quantum_yellow600"
             android:src="@drawable/star_full"
             android:layout_gravity="center"
+            android:visibility="gone"
             />
         <ImageView
             android:id="@+id/detail_fragment_rating_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/detail_fragment_banner_name"
+            android:tint="@color/quantum_yellow600"
             android:src="@drawable/star_full"
             android:layout_gravity="center"
+            android:visibility="gone"
             />
         <ImageView
             android:id="@+id/detail_fragment_rating_3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@+id/detail_fragment_banner_name"
+            android:tint="@color/quantum_yellow600"
             android:src="@drawable/star_full"
             android:layout_gravity="center"
+            android:visibility="gone"
             />
     </LinearLayout>
     <LinearLayout
@@ -123,7 +129,8 @@
     android:orientation="vertical"
     android:layout_weight="1"
     android:layout_gravity="center"
-    android:gravity="center">
+    android:gravity="center"
+    >
 
         <ImageButton
             android:id="@+id/detail_fragment_btn_call"
@@ -136,9 +143,11 @@
             android:tint="@color/colorAccent"
             android:background="@android:color/transparent"
             android:scaleY="1.2"
-            android:scaleX="1.2"/>
+            android:scaleX="1.2"
+            android:padding="10dp"/>
 
     <TextView
+        android:id="@+id/detail_fragment_call_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -170,7 +179,8 @@
             android:tint="@color/colorAccent"
             android:background="@android:color/transparent"
             android:scaleY="1.2"
-            android:scaleX="1.2"/>
+            android:scaleX="1.2"
+            android:padding="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -204,7 +214,8 @@
             android:tint="@color/colorAccent"
             android:background="@android:color/transparent"
             android:scaleY="1.2"
-            android:scaleX="1.2"/>
+            android:scaleX="1.2"
+            android:padding="10dp"/>
 
             <TextView
                 android:layout_width="wrap_content"

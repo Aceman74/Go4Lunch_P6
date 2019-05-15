@@ -50,6 +50,18 @@ public class Result {
     private Long mUtcOffset;
     @SerializedName("website")
     private String mWebsite;
+    @SerializedName("opening_hours")
+    private OpeningHours mOpeningHours;
+    @SerializedName("distance_to")
+    private float mDistanceTo;
+
+    public float getDistanceTo() {
+        return mDistanceTo;
+    }
+
+    public void setDistanceTO(float distanceTo) {
+        mDistanceTo = distanceTo;
+    }
 
     public Geometry getGeometry() {
         return mGeometry;
@@ -59,6 +71,13 @@ public class Result {
         mGeometry = geometry;
     }
 
+    public OpeningHours getOpeningHours() {
+        return mOpeningHours;
+    }
+
+    public void setOpeningHours(OpeningHours openingHours) {
+        mOpeningHours = openingHours;
+    }
     public String getIcon() {
         return mIcon;
     }
