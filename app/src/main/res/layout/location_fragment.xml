@@ -17,7 +17,6 @@
 
 
     </fragment>
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/maps_btn"
         android:layout_width="40dp"
@@ -26,9 +25,10 @@
         android:layout_margin="10dp"
         android:background="@color/ColorWhite"
         android:src="@android:drawable/stat_notify_sync"
-        android:tint="@color/ColorWhite"
+        android:tint="@color/quantum_grey800"
+        app:backgroundTint="@color/quantum_grey100"
         app:fabCustomSize="40dp"
-        android:alpha="0.5"
+        android:alpha="0.75"
 
         />
 </RelativeLayout>

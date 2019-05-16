@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -22,6 +23,8 @@ import com.aceman.go4lunch.utils.AdapterCallback;
 import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.bumptech.glide.Glide;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -35,7 +38,7 @@ import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
  */
 public class ListViewFragment extends Fragment implements AdapterCallback, ProgressBarCallback {
     @BindView(R.id.restaurant_recycler_view)
-    RecyclerView mRecyclerView;
+    public static RecyclerView mRecyclerView;
     @BindView(R.id.list_view_progressbar)
     ProgressBar mProgressBar;
     String mName;
@@ -44,6 +47,12 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
     private int mStar;
     private String mWebsite;
     private String mPhone;
+    @BindView(R.id.sort_by_name)
+    ImageButton mByName;
+    @BindView(R.id.sort_by_distance)
+    ImageButton mByDistance;
+    private boolean mByDistanceBoolean = true;
+    private boolean mByNameBoolean = true;
 
 
     public ListViewFragment() {
@@ -60,10 +69,70 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
         View view = inflater.inflate(R.layout.fragment_list_view, container, false);
         ButterKnife.bind(this, view);
         configureRecyclerView();
-
+        configureBtn();
         return view;
     }
 
+    private void configureBtn() {
+        mByName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mByNameBoolean)
+                sortByName();
+                else{
+                    Collections.reverse(mResults);
+                    mListViewAdapter.notifyDataSetChanged();
+                    mByNameBoolean = true;
+                }
+            }
+        });
+
+        mByDistance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mByDistanceBoolean)
+                sortByDistance();
+                else {
+                    Collections.reverse(mResults);
+                    mListViewAdapter.notifyDataSetChanged();
+                    mByDistanceBoolean = true;
+                }
+            }
+        });
+
+    }
+
+    private void sortByName() {
+        Collections.sort(mResults, new Comparator<Result>() {
+            @Override
+            public int compare(Result o1, Result o2) {
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
+        mListViewAdapter.notifyDataSetChanged();
+        mByNameBoolean = false;
+    }
+
+    private void sortByDistance() {
+        Collections.sort(mResults, new Comparator<Result>() {
+            @Override
+            public int compare(Result o1, Result o2) {
+                int first = Math.round(o1.getDistanceTo());
+                first = ((first + 4) / 5) * 5;
+                int second = Math.round(o2.getDistanceTo());
+                second = ((second + 4) / 5) * 5;
+                if (first > second) {
+                    return 1;
+                } else if (first < second) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            }
+        });
+        mListViewAdapter.notifyDataSetChanged();
+        mByDistanceBoolean = false;
+    }
 
     public void configureRecyclerView() {
         if (mResults != null) {
@@ -80,7 +149,7 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
     }
 
     @Override
-    public void onMethodCallback(Result item, int star) {
+    public void onMethodCallback(Result item, int star, String url) {
 
         Toast.makeText(getContext(), "HELLO CALLBACK WORLD :" + item.getName(), Toast.LENGTH_LONG).show();
         mName = item.getName();
@@ -94,6 +163,7 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
         details.putExtra("star", mStar);
         details.putExtra("phone", mPhone);
         details.putExtra("website",mWebsite);
+        details.putExtra("url", url);
         startActivity(details);
 
     }

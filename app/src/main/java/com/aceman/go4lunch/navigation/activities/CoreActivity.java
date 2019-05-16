@@ -2,6 +2,7 @@ package com.aceman.go4lunch.navigation.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -13,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,9 +24,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
+import com.aceman.go4lunch.api.PlacesApi;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.auth.ProfileActivity;
 import com.aceman.go4lunch.base.BaseActivity;
+import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.navigation.adapter.ListViewAdapter;
@@ -35,10 +39,20 @@ import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.api.model.TypeFilter;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,22 +62,32 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
+
+import static com.aceman.go4lunch.navigation.fragments.MapsFragment.mMaps;
 
 /**
  * Created by Lionel JOFFRAY - on 03/05/2019.
  */
 public class CoreActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, ProgressBarCallback {
     private static final int SIGN_OUT_TASK = 10;
+    int AUTOCOMPLETE_REQUEST_CODE = 8;
     public static List<Result> mResults;
     public static List<User> mUserList = new ArrayList<>();
     public static ListViewAdapter mListViewAdapter;
     public static WorkersAdapter mWorkersAdapter;
     public static FusedLocationProviderClient sFusedLocationProviderClient;
-    public static Boolean mLoadOver = false;
+    public static LatLng mSearchLatLng;
+    public static String mSearchName;
+    String mLastSearch = "";
+    String mSearchID;
     @BindView(R.id.core_nav_view)
     NavigationView mNavigationView;
     @BindView(R.id.core_bottom_navigation)
@@ -78,6 +102,9 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     ImageView mProfileImage;
+    Disposable mSearchDisposable;
+
+
 
 
     @Override
@@ -178,12 +205,15 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
                 switch (i) {
                     case 0:
                         mBottomNavigationView.setSelectedItemId(R.id.bottom_maps);
+                        mToolbar.setTitle("I'm Hungry !");
                         break;
                     case 1:
                         mBottomNavigationView.setSelectedItemId(R.id.bottom_list_view);
+                        mToolbar.setTitle("I'm Hungry !");
                         break;
                     case 2:
                         mBottomNavigationView.setSelectedItemId(R.id.bottom_workmates);
+                        mToolbar.setTitle("Avaiable Workmates");
                         break;
                 }
             }
@@ -238,11 +268,81 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         inflater.inflate(R.menu.search_menu, menu);
 
         MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) searchItem.getActionView();
 
-        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                autocompleteIntent();
+                return false;
+            }
+        });
 
         return true;
+    }
+
+    public void autocompleteIntent() {
+
+        // Set the fields to specify which types of place data to
+// return after the user has made a selection.
+        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+
+// Start the autocomplete intent.
+        Intent intent = new Autocomplete.IntentBuilder(
+                AutocompleteActivityMode.OVERLAY, fields)
+                .setInitialQuery(mLastSearch)
+                .setTypeFilter(TypeFilter.ESTABLISHMENT)
+                .setCountry("fr")
+                .build(getApplicationContext());
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                mSearchID = place.getId();
+                getSearchRestaurant();
+                mLastSearch = place.getName();
+                Timber.i("Place: " + place.getName() + ", " + place.getId());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Timber.i(status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
+    }
+
+    void getSearchRestaurant(){
+
+
+                this.mSearchDisposable = PlacesApi.getInstance().getRestaurantsDetails(mSearchID).subscribeWith(new DisposableObserver<PlacesDetails>() {
+                    @Override
+                    public void onNext(PlacesDetails details) {
+                        Timber.tag("PLACES_Next").i("On Next");
+                        addDetail(details);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.tag("PLACES_Error").e("On Error%s", Log.getStackTraceString(e));
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        Timber.tag("PLACES_Complete").i("On Complete !!");
+
+                        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mSearchLatLng, 14));
+                    }
+                });
+    }
+
+    private void addDetail(PlacesDetails details) {
+        mSearchLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
+        mSearchName = details.getResult().getName();
     }
 
     @Override

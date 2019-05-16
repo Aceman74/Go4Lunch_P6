@@ -23,7 +23,7 @@
     <string name="popup_message_choice_yes">Yes, delete it</string>
     <string name="popup_message_choice_no">No, keep it</string>
     <string name="private_descprition">A private account hide your account for other users, so they can\'t bother you until you uncheck Private Account.</string>
-    <string name="toolbar_title_core_activity">Core Activity</string>
+    <string name="toolbar_title_core_activity">I\'m Hungry !</string>
     <!-- BOTTOM NAVIGATION VIEW -->
     <string name="bottom_navigation_menu_maps">Maps view</string>
     <string name="bottom_navigation_menu_list">List View</string>

@@ -25,6 +25,8 @@ import com.aceman.go4lunch.base.BaseActivity;
 import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.navigation.adapter.WorkersJoiningAdapter;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +35,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.util.Objects;
 
 import butterknife.BindView;
+import timber.log.Timber;
 
 import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
 
@@ -43,6 +46,8 @@ public class PlacesDetailActivity extends BaseActivity {
     RecyclerView mRecyclerView;
     WorkersJoiningAdapter mWorkersJoiningAdapter;
     Context mContext;
+    @BindView(R.id.detail_fragment_image_view)
+    ImageView mImageView;
     @BindView(R.id.detail_fragment_banner_name)
     TextView setName;
     @BindView(R.id.detail_fragment_banner_address)
@@ -65,6 +70,7 @@ public class PlacesDetailActivity extends BaseActivity {
     LinearLayout websiteLayout;
     String mName;
     String mAddress;
+    String mUrl;
     int mStar;
     @BindView(R.id.detail_fragment_btn)
     FloatingActionButton mFloatingActionButton;
@@ -82,6 +88,7 @@ public class PlacesDetailActivity extends BaseActivity {
         mStar = details.getIntExtra("star", 0);
         mPhone = details.getStringExtra("phone");
         mWebsite = details.getStringExtra("website");
+        mUrl = details.getStringExtra("url");
         nullCheck();
         configureInfos();
     }
@@ -111,6 +118,14 @@ public class PlacesDetailActivity extends BaseActivity {
                 }
             }
         });
+        try {
+            Glide.with(this).asDrawable()
+                    .load(mUrl) //  Base URL added in Data
+                    .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
+                    .into(mImageView);
+        } catch (Exception e) {
+            Timber.tag("Image_Loading").e("Loading error");
+        }
         selectBtnListener();
         likeBtnListener();
         callBtnListener();
@@ -154,6 +169,7 @@ public class PlacesDetailActivity extends BaseActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         User currentUser = documentSnapshot.toObject(User.class);
+
                         if (currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mName)) {
                             UserHelper.updateRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
                             mFloatingActionButton.setImageResource(R.drawable.add_icon);
@@ -213,6 +229,7 @@ public class PlacesDetailActivity extends BaseActivity {
     @Override
     protected FirebaseUser getCurrentUser() {
         return super.getCurrentUser();
+
     }
 
     @Override

@@ -22,7 +22,6 @@ import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
 import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
@@ -32,7 +31,7 @@ import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
  *
  * <b>Shared Adapter</b> for his API Call response
  */
-public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyViewHolder> {
+public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MyViewHolder> {
 
     @BindString(R.string.mUrl_begin)
     String mUrlBegin;
@@ -41,6 +40,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     private final RequestManager glide;
     private final Context mContext;
     private AdapterCallback mAdapterCallback;
+    String mPhotoReference;
+    String mUrl;
     Double mRating;
     int mDistanceRounded;
     @BindColor(R.color.colorError)
@@ -50,7 +51,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     String API_KEY = BuildConfig.google_maps_key;
 
 
-    public ListViewAdapter(List<Result> listResult, RequestManager glide, Context context, AdapterCallback callback) {
+    public MarkersAdapter(List<Result> listResult, RequestManager glide, Context context, AdapterCallback callback) {
         mResults = listResult;
         this.glide = glide;
         this.mContext = context;
@@ -69,6 +70,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+
         updateWithFreshInfo(mResults.get(position), this.glide, holder, position);
     }
 
@@ -101,15 +103,15 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         }
 
         if (item.getPhotos() != null) {
-            holder.mPhotoReference = item.getPhotos().get(0).getPhotoReference();
-            holder.mUrl = mUrlBegin + API_KEY + mUrlNext + holder.mPhotoReference;
+            mPhotoReference = item.getPhotos().get(0).getPhotoReference();
+            mUrl = mUrlBegin + API_KEY + mUrlNext + mPhotoReference;
         } else {
-            holder.mUrl = item.getIcon();
+            mUrl = item.getIcon();
         }
         try {
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
             glide.asDrawable()
-                    .load(holder.mUrl) //  Base URL added in Data
+                    .load(mUrl) //  Base URL added in Data
                     .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
                     .into(holder.mImageView);
         } catch (Exception e) {
@@ -121,7 +123,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
             @Override
             public void onClick(View v) {
                 Timber.tag(item.getName()).d("is Clicked");
-                mAdapterCallback.onMethodCallback(item, holder.mStar,holder.mUrl);
+                mAdapterCallback.onMethodCallback(item, holder.mStar, mUrl);
 
             }
         });
@@ -159,8 +161,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
      */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public int mStar;
-        public String mUrl;
-        public String mPhotoReference;
         @BindView(R.id.item_restaurant_name)
         TextView mName;
         @BindView(R.id.item_restaurant_adress)

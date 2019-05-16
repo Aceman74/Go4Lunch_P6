@@ -2,7 +2,6 @@ package com.aceman.go4lunch.navigation.fragments;
 
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -18,6 +17,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +28,7 @@ import com.aceman.go4lunch.api.PlacesApi;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.navigation.activities.CoreActivity;
 import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -43,14 +44,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.net.PlacesClient;
-import com.google.android.libraries.places.widget.Autocomplete;
-import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.database.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,11 +67,11 @@ import static com.aceman.go4lunch.navigation.activities.CoreActivity.sFusedLocat
 public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleMap.OnCameraIdleListener {
 
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 100;
-    int AUTOCOMPLETE_REQUEST_CODE = 1;
-    GoogleMap mMaps;
+    public static GoogleMap mMaps;
     SupportMapFragment mMapsFragment;
     PlacesClient mPlacesClient;
     Marker mMarker;
+    Marker mSearchMarker;
     Disposable disposable;
     String mLocation;
     Location mCurrentLocation;
@@ -110,7 +109,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.location_fragment, container, false);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         initializeMapsAndPlaces();
         // currentLocationRequest();
         mResults = new ArrayList<>();
@@ -187,18 +186,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         }
     }
 
-    public void autocompleteIntent() {
-
-        // Set the fields to specify which types of place data to
-// return after the user has made a selection.
-        List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-
-// Start the autocomplete intent.
-        Intent intent = new Autocomplete.IntentBuilder(
-                AutocompleteActivityMode.OVERLAY, fields)
-                .build(getContext());
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
-    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -337,6 +324,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(getContext(), "Info window clicked " + marker.getTitle(),
                 Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
@@ -399,6 +387,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         noResultFound();
     }
 
+
     private void noResultFound() {
         if (mResults.size() == 0) {
             Marker noResult = mMaps.addMarker(new MarkerOptions().title("No results found!").snippet("No restaurants here within 1500m").position(mLatLng));
@@ -431,7 +420,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                 }
             });
         }
-        mListViewAdapter.notifyDataSetChanged();
     }
 
     private void updateResultList(Result result, PlacesDetails details) {
@@ -447,11 +435,23 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
     private void updateMap(final PlacesDetails details) {
         mLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
-        mMaps.addMarker(new MarkerOptions()
-                .position(mLatLng)
-                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
-                .title(details.getResult().getName())
-                .snippet(details.getResult().getFormattedAddress() + "\n" + details.getResult().getFormattedPhoneNumber()));
+
+        if (details.getResult().getName().equals(CoreActivity.mSearchName)) {
+
+            mSearchMarker = mMaps.addMarker(new MarkerOptions()
+                    .position(mLatLng)
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+                    .title(details.getResult().getName())
+                    .snippet(details.getResult().getFormattedAddress() + "\n" + details.getResult().getFormattedPhoneNumber()));
+            mSearchMarker.showInfoWindow();
+        } else {
+            mMaps.addMarker(new MarkerOptions()
+                    .position(mLatLng)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_o))
+                    .title(details.getResult().getName())
+                    .snippet(details.getResult().getFormattedAddress() + "\n" + details.getResult().getFormattedPhoneNumber()));
+        }
+        mListViewAdapter.notifyDataSetChanged();
     }
 
     private void disposeWhenDestroy() {
