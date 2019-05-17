@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/fragment_places_details_layout"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_places_details_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".navigation.activities.PlacesDetailActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".navigation.activities.PlacesDetailActivity">
 
 
     <RelativeLayout
@@ -18,96 +18,98 @@
         <ImageView
             android:id="@+id/detail_fragment_image_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            />
+            android:layout_height="match_parent" />
+
         <android.support.design.widget.FloatingActionButton
-        android:id="@+id/detail_fragment_btn"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_margin="20dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignEnd="@+id/detail_fragment_image_view"
-        android:background="@color/ColorWhite"
-        android:src="@drawable/add_icon"
-        android:tint="@color/ColorWhite"
-            app:fabCustomSize="52dp"
-        />
+            android:id="@+id/detail_fragment_btn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignEnd="@+id/detail_fragment_image_view"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="20dp"
+            android:background="@color/ColorWhite"
+            android:src="@drawable/add_icon"
+            android:tint="@color/ColorWhite"
+            app:fabCustomSize="52dp" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/detail_fragment_banner_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:layout_weight="1.35"
         android:layout_gravity="center"
-        android:padding="5dp"
-        >
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-    <LinearLayout
-        android:id="@+id/detail_fragment_restaurant_and_rating"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_weight="1">
-        <TextView
-            android:id="@+id/detail_fragment_banner_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="RESTAURANT"
-            android:textSize="@dimen/default_title_size"
-            android:textColor="@color/ColorWhite"
-            android:padding="5dp"
-            android:gravity="start"/>
-        <ImageView
-            android:id="@+id/detail_fragment_rating_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/quantum_yellow600"
-            android:src="@drawable/star_full"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            />
-        <ImageView
-            android:id="@+id/detail_fragment_rating_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/quantum_yellow600"
-            android:src="@drawable/star_full"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            />
-        <ImageView
-            android:id="@+id/detail_fragment_rating_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:tint="@color/quantum_yellow600"
-            android:src="@drawable/star_full"
-            android:layout_gravity="center"
-            android:visibility="gone"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:id="@+id/detail_fragment_linear_layout_adress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1">
+        android:layout_weight="1.35"
+        android:background="@color/colorAccent"
+        android:padding="5dp">
 
-        <TextView
-            android:id="@+id/detail_fragment_banner_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="ADDRESS"
-            android:textSize="@dimen/default_text_size"
-            android:textColor="@color/ColorWhite"
-            android:padding="5dp"
-            android:gravity="start"/>
-    </LinearLayout>
-</LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:id="@+id/detail_fragment_restaurant_and_rating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/detail_fragment_banner_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:padding="5dp"
+                    android:text="RESTAURANT"
+                    android:textColor="@color/ColorWhite"
+                    android:textSize="@dimen/default_title_size" />
+
+                <ImageView
+                    android:id="@+id/detail_fragment_rating_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/star_full"
+                    android:tint="@color/quantum_yellow600"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/detail_fragment_rating_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/star_full"
+                    android:tint="@color/quantum_yellow600"
+                    android:visibility="gone" />
+
+                <ImageView
+                    android:id="@+id/detail_fragment_rating_3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:src="@drawable/star_full"
+                    android:tint="@color/quantum_yellow600"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/detail_fragment_linear_layout_adress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/detail_fragment_banner_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:padding="5dp"
+                    android:text="ADDRESS"
+                    android:textColor="@color/ColorWhite"
+                    android:textSize="@dimen/default_text_size" />
+            </LinearLayout>
+        </LinearLayout>
     </RelativeLayout>
 
     <RelativeLayout
@@ -115,118 +117,115 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_weight="1.35"
-        android:gravity="center"
-        android:background="@color/ColorWhite">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal">
-
-<LinearLayout
-    android:id="@+id/call_layout"
-    android:layout_width="wrap_content"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_weight="1"
-    android:layout_gravity="center"
-    android:gravity="center"
-    >
-
-        <ImageButton
-            android:id="@+id/detail_fragment_btn_call"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Call"
-            android:layout_margin="10dp"
-            android:src="@drawable/call_icon"
-            android:tint="@color/colorAccent"
-            android:background="@android:color/transparent"
-            android:scaleY="1.2"
-            android:scaleX="1.2"
-            android:padding="10dp"/>
-
-    <TextView
-        android:id="@+id/detail_fragment_call_textview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="CALL"
-        android:textColor="@color/colorAccent"
-        />
-
-</LinearLayout>
+        android:background="@color/ColorWhite"
+        android:gravity="center">
 
         <LinearLayout
-            android:id="@+id/like_layout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/call_layout"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/detail_fragment_btn_like"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Like"
-            android:layout_toRightOf="@id/detail_fragment_btn_call"
-            android:layout_margin="10dp"
-            android:src="@drawable/star_full"
-            android:tint="@color/colorAccent"
-            android:background="@android:color/transparent"
-            android:scaleY="1.2"
-            android:scaleX="1.2"
-            android:padding="10dp"/>
-
-            <TextView
+            <LinearLayout
+                android:id="@+id/call_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:text="LIKE"
-                android:textColor="@color/colorAccent"
-                />
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
-        </LinearLayout>
+                <ImageButton
+                    android:id="@+id/detail_fragment_btn_call"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@android:color/transparent"
+                    android:padding="10dp"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:src="@drawable/call_icon"
+                    android:text="Call"
+                    android:tint="@color/colorAccent" />
 
-        <LinearLayout
-            android:id="@+id/website_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_toRightOf="@+id/like_layout"
-            android:orientation="vertical"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_weight="1">
+                <TextView
+                    android:id="@+id/detail_fragment_call_textview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="CALL"
+                    android:textColor="@color/colorAccent" />
 
-        <ImageButton
-            android:id="@+id/detail_fragment_btn_website"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="Website"
-            android:layout_toRightOf="@id/detail_fragment_btn_like"
-            android:layout_margin="10dp"
-            android:src="@drawable/world_icon"
-            android:tint="@color/colorAccent"
-            android:background="@android:color/transparent"
-            android:scaleY="1.2"
-            android:scaleX="1.2"
-            android:padding="10dp"/>
+            </LinearLayout>
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/like_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:text="WEBSITE"
-                android:textColor="@color/colorAccent"
-                />
+                android:layout_toRightOf="@+id/call_layout"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
 
+                <ImageButton
+                    android:id="@+id/detail_fragment_btn_like"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_toRightOf="@id/detail_fragment_btn_call"
+                    android:background="@android:color/transparent"
+                    android:padding="10dp"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:src="@drawable/star_full"
+                    android:text="Like"
+                    android:tint="@color/colorAccent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="LIKE"
+                    android:textColor="@color/colorAccent" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/website_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_toRightOf="@+id/like_layout"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/detail_fragment_btn_website"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:layout_toRightOf="@id/detail_fragment_btn_like"
+                    android:background="@android:color/transparent"
+                    android:padding="10dp"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:src="@drawable/world_icon"
+                    android:text="Website"
+                    android:tint="@color/colorAccent" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="WEBSITE"
+                    android:textColor="@color/colorAccent" />
+
+            </LinearLayout>
         </LinearLayout>
-</LinearLayout>
 
     </RelativeLayout>
 
@@ -234,8 +233,8 @@
         android:id="@+id/detail_fragment_recycler_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/ColorWhite"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:background="@color/ColorWhite">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/places_details_recycler_view"

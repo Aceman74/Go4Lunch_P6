@@ -10,5 +10,4 @@
     android:minHeight="?attr/actionBarSize"
     android:textAlignment="center"
     android:theme="@style/ToolbarTheme"
-    app:popupTheme="@style/ThemeOverlay.MyPopUp"
-    />
+    app:popupTheme="@style/ThemeOverlay.MyPopUp" />

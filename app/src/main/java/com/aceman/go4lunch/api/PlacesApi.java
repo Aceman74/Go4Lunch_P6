@@ -91,7 +91,7 @@ public class PlacesApi {
     public Observable<Nearby> getLocationInfo(String location, String type, int radius) {
         PlacesCall callInfo = mRetrofit.create(PlacesCall.class);
         return callInfo.getLocationInfo(location, type, radius)
-                .delay(500,TimeUnit.MILLISECONDS)
+                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())   //  Run call on another thread
                 .observeOn(AndroidSchedulers.mainThread())  //  Observe on the Main thread
                 .timeout(10, TimeUnit.SECONDS);
@@ -100,15 +100,16 @@ public class PlacesApi {
     public Observable<PlacesDetails> getRestaurantsDetails(String id) {
         PlacesCall callInfo = mRetrofit.create(PlacesCall.class);
         return callInfo.getRestaurantsDetails(id)
-                .delay(500,TimeUnit.MILLISECONDS)
+                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())   //  Run call on another thread
                 .observeOn(AndroidSchedulers.mainThread())  //  Observe on the Main thread
                 .timeout(10, TimeUnit.SECONDS);
     }
+
     public Observable<PlacePhoto> getRestaurantPhoto(String reference) {
         PlacesCall callInfo = mRetrofit.create(PlacesCall.class);
         return callInfo.getRestaurantPhoto(reference)
-                .delay(500,TimeUnit.MILLISECONDS)
+                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())   //  Run call on another thread
                 .observeOn(AndroidSchedulers.mainThread())  //  Observe on the Main thread
                 .timeout(10, TimeUnit.SECONDS);

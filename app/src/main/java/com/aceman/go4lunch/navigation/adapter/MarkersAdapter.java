@@ -24,7 +24,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
 
 /**
  * Created by Lionel JOFFRAY - on 14/03/2019.
@@ -33,13 +32,13 @@ import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
  */
 public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MyViewHolder> {
 
+    private final RequestManager glide;
+    private final Context mContext;
+    public List<Result> mResults;
     @BindString(R.string.mUrl_begin)
     String mUrlBegin;
     @BindString(R.string.mUrlNext)
     String mUrlNext;
-    private final RequestManager glide;
-    private final Context mContext;
-    private AdapterCallback mAdapterCallback;
     String mPhotoReference;
     String mUrl;
     Double mRating;
@@ -49,6 +48,7 @@ public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MyViewHo
     @BindColor(R.color.quantum_lightgreen500)
     int mGreen;
     String API_KEY = BuildConfig.google_maps_key;
+    private AdapterCallback mAdapterCallback;
 
 
     public MarkersAdapter(List<Result> listResult, RequestManager glide, Context context, AdapterCallback callback) {
@@ -123,7 +123,7 @@ public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 Timber.tag(item.getName()).d("is Clicked");
-                mAdapterCallback.onMethodCallback(item, holder.mStar, mUrl);
+                mAdapterCallback.onMethodCallback(item, mUrl);
 
             }
         });

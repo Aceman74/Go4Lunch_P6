@@ -1,8 +1,6 @@
 package com.aceman.go4lunch.navigation.activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
@@ -10,8 +8,6 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -29,11 +24,8 @@ import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.auth.ProfileActivity;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.aceman.go4lunch.data.details.PlacesDetails;
-import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.models.User;
-import com.aceman.go4lunch.navigation.adapter.ListViewAdapter;
 import com.aceman.go4lunch.navigation.adapter.PageAdapter;
-import com.aceman.go4lunch.navigation.adapter.WorkersAdapter;
 import com.aceman.go4lunch.navigation.fragments.ListViewFragment;
 import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.bumptech.glide.Glide;
@@ -43,9 +35,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.libraries.places.api.model.Place;
@@ -54,16 +44,9 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -78,14 +61,10 @@ import static com.aceman.go4lunch.navigation.fragments.MapsFragment.mMaps;
  */
 public class CoreActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, ProgressBarCallback {
     private static final int SIGN_OUT_TASK = 10;
-    int AUTOCOMPLETE_REQUEST_CODE = 8;
-    public static List<Result> mResults;
-    public static List<User> mUserList = new ArrayList<>();
-    public static ListViewAdapter mListViewAdapter;
-    public static WorkersAdapter mWorkersAdapter;
     public static FusedLocationProviderClient sFusedLocationProviderClient;
     public static LatLng mSearchLatLng;
     public static String mSearchName;
+    int AUTOCOMPLETE_REQUEST_CODE = 8;
     String mLastSearch = "";
     String mSearchID;
     @BindView(R.id.core_nav_view)
@@ -105,8 +84,6 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     Disposable mSearchDisposable;
 
 
-
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -119,6 +96,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         configureHamburgerBtn();
         onClickProfile();
     }
+
 
     private void onClickProfile() {
         mProfileImage = mNavigationView.getHeaderView(0).findViewById(R.id.profile_image_nav_header);
@@ -316,28 +294,28 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
-    void getSearchRestaurant(){
+    void getSearchRestaurant() {
 
 
-                this.mSearchDisposable = PlacesApi.getInstance().getRestaurantsDetails(mSearchID).subscribeWith(new DisposableObserver<PlacesDetails>() {
-                    @Override
-                    public void onNext(PlacesDetails details) {
-                        Timber.tag("PLACES_Next").i("On Next");
-                        addDetail(details);
-                    }
+        this.mSearchDisposable = PlacesApi.getInstance().getRestaurantsDetails(mSearchID).subscribeWith(new DisposableObserver<PlacesDetails>() {
+            @Override
+            public void onNext(PlacesDetails details) {
+                Timber.tag("PLACES_Next").i("On Next");
+                addDetail(details);
+            }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.tag("PLACES_Error").e("On Error%s", Log.getStackTraceString(e));
-                    }
+            @Override
+            public void onError(Throwable e) {
+                Timber.tag("PLACES_Error").e("On Error%s", Log.getStackTraceString(e));
+            }
 
-                    @Override
-                    public void onComplete() {
-                        Timber.tag("PLACES_Complete").i("On Complete !!");
+            @Override
+            public void onComplete() {
+                Timber.tag("PLACES_Complete").i("On Complete !!");
 
-                        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mSearchLatLng, 14));
-                    }
-                });
+                mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mSearchLatLng, 14));
+            }
+        });
     }
 
     private void addDetail(PlacesDetails details) {
@@ -384,4 +362,6 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         ListViewFragment frag = (ListViewFragment)
                 getSupportFragmentManager().findFragmentById(R.id.list_linear_layout);
     }
+
+
 }

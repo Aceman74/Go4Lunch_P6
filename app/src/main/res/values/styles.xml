@@ -32,7 +32,12 @@
         <item name="android:textColorHint">@android:color/white</item>
     </style>
     <!-- STYLE FOR CORE ACTIVITY -->
-    <style name="AppTheme.Core" parent="Theme.AppCompat.Light.NoActionBar"></style>
+    <style name="AppTheme.Core" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
 
     <!-- TOOLBAR THEME -->
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">

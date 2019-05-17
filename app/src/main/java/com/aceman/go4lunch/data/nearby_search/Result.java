@@ -1,5 +1,6 @@
 package com.aceman.go4lunch.data.nearby_search;
 
+import com.google.android.gms.maps.model.Marker;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -54,6 +55,36 @@ public class Result {
     private OpeningHours mOpeningHours;
     @SerializedName("distance_to")
     private float mDistanceTo;
+    @SerializedName("distance_int")
+    private int mDistanceToInt;
+    @SerializedName("marker")
+    private Marker mMarker;
+    @SerializedName("ratingStars")
+    private int mRatingStars;
+
+    public int getDistanceToInt() {
+        return mDistanceToInt;
+    }
+
+    public void setDistanceToInt(int distanceToInt) {
+        mDistanceToInt = distanceToInt;
+    }
+
+    public int getRatingStars() {
+        return mRatingStars;
+    }
+
+    public void setRatingStars(int stars) {
+        mRatingStars = stars;
+    }
+
+    public Marker getMarker() {
+        return mMarker;
+    }
+
+    public void setMarker(Marker marker) {
+        mMarker = marker;
+    }
 
     public float getDistanceTo() {
         return mDistanceTo;
@@ -78,6 +109,7 @@ public class Result {
     public void setOpeningHours(OpeningHours openingHours) {
         mOpeningHours = openingHours;
     }
+
     public String getIcon() {
         return mIcon;
     }

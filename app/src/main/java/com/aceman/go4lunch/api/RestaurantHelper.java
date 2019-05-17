@@ -9,13 +9,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 /**
  * Created by Lionel JOFFRAY - on 02/05/2019.
  */
-public class UserHelper {
+public class RestaurantHelper {
 
-    private static final String COLLECTION_NAME = "users";
+    private static final String COLLECTION_NAME = "restaurant";
 
     // --- COLLECTION REFERENCE ---
 
-    public static CollectionReference getUsersCollection() {
+    public static CollectionReference getRestaurantCollection() {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
 
@@ -23,36 +23,36 @@ public class UserHelper {
 
     public static Task<Void> createUser(String uid, String username, String urlPicture) {
         User userToCreate = new User(uid, username, urlPicture);
-        return UserHelper.getUsersCollection().document(uid).set(userToCreate);
+        return RestaurantHelper.getRestaurantCollection().document(uid).set(userToCreate);
     }
 
     // --- GET ---
 
     public static Task<DocumentSnapshot> getUser(String uid) {
-        return UserHelper.getUsersCollection().document(uid).get();
+        return RestaurantHelper.getRestaurantCollection().document(uid).get();
     }
 
     // --- UPDATE ---
 
     public static Task<Void> updateUsername(String username, String uid) {
-        return UserHelper.getUsersCollection().document(uid).update("username", username);
+        return RestaurantHelper.getRestaurantCollection().document(uid).update("username", username);
     }
 
     public static Task<Void> updateIsPrivate(String uid, Boolean isMentor) {
-        return UserHelper.getUsersCollection().document(uid).update("isPrivate", isMentor);
+        return RestaurantHelper.getRestaurantCollection().document(uid).update("isPrivate", isMentor);
     }
 
     public static Task<Void> updateRestaurant(String uid, String restaurant) {
-        return UserHelper.getUsersCollection().document(uid).update("restaurant", restaurant);
+        return RestaurantHelper.getRestaurantCollection().document(uid).update("restaurant", restaurant);
     }
 
     public static Task<Void> updateLikeRestaurant(String uid, String like) {
-        return UserHelper.getUsersCollection().document(uid).update("like", like);
+        return RestaurantHelper.getRestaurantCollection().document(uid).update("like", like);
     }
     // --- DELETE ---
 
     public static Task<Void> deleteUser(String uid) {
-        return UserHelper.getUsersCollection().document(uid).delete();
+        return RestaurantHelper.getRestaurantCollection().document(uid).delete();
     }
 
 }

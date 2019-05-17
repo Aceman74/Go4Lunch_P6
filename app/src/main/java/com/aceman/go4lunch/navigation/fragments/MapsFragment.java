@@ -17,7 +17,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,6 +27,8 @@ import com.aceman.go4lunch.api.PlacesApi;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.events.RefreshEvent;
+import com.aceman.go4lunch.events.ResultListEvent;
 import com.aceman.go4lunch.navigation.activities.CoreActivity;
 import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.google.android.gms.common.ConnectionResult;
@@ -47,9 +48,9 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.database.annotations.Nullable;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -59,8 +60,6 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
 
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mListViewAdapter;
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
 import static com.aceman.go4lunch.navigation.activities.CoreActivity.sFusedLocationProviderClient;
 
 
@@ -68,9 +67,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 100;
     public static GoogleMap mMaps;
+    public List<Result> mResults;
     SupportMapFragment mMapsFragment;
     PlacesClient mPlacesClient;
     Marker mMarker;
+    Marker mPosMarker;
     Marker mSearchMarker;
     Disposable disposable;
     String mLocation;
@@ -82,11 +83,12 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     Double mLongitude;
     float mDistanceTo;
     int mRadius = 1500;
-    List<PlacesDetails> mPlacesDetails;
     String placeID;
     LatLng mLatLng;
     LatLng mLastLatLng;
     String mMarkerTitle;
+    Double mRating;
+    int mDistanceRounded;
     int getinfo = 0;
     GoogleApiClient mGoogleApiClient;
     Boolean initLocation = true;
@@ -268,9 +270,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mLongitude = mLatLng.longitude;
         mLocation = mLatitude + " " + mLongitude;
         mType = "restaurant";
-        mProgressBarCallback.onProgressCallback();
         executeHttpRequestWithRetrofit();
-        mProgressBarCallback.onFinishCallback();
         markerSetPreviousPos();
     }
 
@@ -310,6 +310,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
                 TextView snippet = new TextView(getContext());
                 snippet.setTextColor(Color.GRAY);
+                snippet.setGravity(Gravity.CENTER);
                 snippet.setText(marker.getSnippet());
 
                 info.addView(title);
@@ -324,7 +325,12 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(getContext(), "Info window clicked " + marker.getTitle(),
                 Toast.LENGTH_SHORT).show();
+        String markerName = marker.getTitle();
+        for (int i = 0; i < mResults.size(); i++) {
+            if (mResults.get(i).getMarker() == marker) {
 
+            }
+        }
     }
 
     @Override
@@ -384,6 +390,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     private void updateData(Nearby details) {
         mResults.clear();
         mResults.addAll(details.getResults());
+        EventBus.getDefault().post(new ResultListEvent(mResults));
         noResultFound();
     }
 
@@ -405,8 +412,8 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                 public void onNext(PlacesDetails details) {
                     Timber.tag("PLACES_Next").i("On Next");
                     Timber.tag("PLACES_OBSERVABLE").i("from: " + mLocation + " type: " + mType);
-                    updateResultList(result, details);
                     updateMap(details);
+                    updateResultList(result, details);
                 }
 
                 @Override
@@ -420,6 +427,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                 }
             });
         }
+
+        EventBus.getDefault().post(new ResultListEvent(mResults));
+        EventBus.getDefault().post(new RefreshEvent());
     }
 
     private void updateResultList(Result result, PlacesDetails details) {
@@ -431,6 +441,27 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         result.setFormattedPhoneNumber(details.getResult().getFormattedPhoneNumber());
         result.setWebsite(details.getResult().getWebsite());
         result.setRating(details.getResult().getRating());
+        result.setMarker(mMarker);
+        setDistanceAndRating(result);
+        Timber.tag("Maps Rating").i("%s %s", result.getName(), result.getRatingStars());
+    }
+
+    private void setDistanceAndRating(Result result) {
+        mDistanceRounded = Math.round(result.getDistanceTo());
+        mDistanceRounded = ((mDistanceRounded + 4) / 5) * 5;    //  Round distance to 5m
+        result.setDistanceToInt(mDistanceRounded);
+        mRating = result.getRating();
+        if (mRating != null) {
+            if (mRating >= 1 && mRating <= 2.4) {
+                result.setRatingStars(1);
+            }
+            if (mRating >= 2.5 && mRating <= 3.9) {
+                result.setRatingStars(2);
+            }
+            if (mRating >= 4 && mRating <= 5) {
+                result.setRatingStars(3);
+            }
+        }
     }
 
     private void updateMap(final PlacesDetails details) {
@@ -445,13 +476,12 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                     .snippet(details.getResult().getFormattedAddress() + "\n" + details.getResult().getFormattedPhoneNumber()));
             mSearchMarker.showInfoWindow();
         } else {
-            mMaps.addMarker(new MarkerOptions()
+            mPosMarker = mMaps.addMarker(new MarkerOptions()
                     .position(mLatLng)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_o))
                     .title(details.getResult().getName())
                     .snippet(details.getResult().getFormattedAddress() + "\n" + details.getResult().getFormattedPhoneNumber()));
         }
-        mListViewAdapter.notifyDataSetChanged();
     }
 
     private void disposeWhenDestroy() {

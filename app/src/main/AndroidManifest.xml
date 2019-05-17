@@ -27,8 +27,8 @@
         <activity
             android:name=".navigation.activities.PlacesDetailActivity"
             android:label="@string/title_activity_places_detail"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:parentActivityName=".navigation.activities.CoreActivity"></activity>
+            android:parentActivityName=".navigation.activities.CoreActivity"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -55,7 +55,8 @@
         <activity
             android:name=".auth.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"
-            android:parentActivityName=".navigation.activities.MainActivity" /> <!-- CORE ACTIVITY -->
+            android:parentActivityName=".navigation.activities.MainActivity" />
+        <!-- CORE ACTIVITY -->
         <activity
             android:name=".navigation.activities.CoreActivity"
             android:label="@string/toolbar_title_core_activity"

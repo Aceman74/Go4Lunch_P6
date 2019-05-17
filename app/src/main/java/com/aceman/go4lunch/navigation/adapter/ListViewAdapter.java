@@ -22,10 +22,8 @@ import butterknife.BindColor;
 import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
 
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
 
 /**
  * Created by Lionel JOFFRAY - on 14/03/2019.
@@ -34,20 +32,19 @@ import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
  */
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyViewHolder> {
 
+    private final RequestManager glide;
+    private final Context mContext;
+    public List<Result> mResults;
     @BindString(R.string.mUrl_begin)
     String mUrlBegin;
     @BindString(R.string.mUrlNext)
     String mUrlNext;
-    private final RequestManager glide;
-    private final Context mContext;
-    private AdapterCallback mAdapterCallback;
-    Double mRating;
-    int mDistanceRounded;
     @BindColor(R.color.colorError)
     int mRed;
     @BindColor(R.color.quantum_lightgreen500)
     int mGreen;
     String API_KEY = BuildConfig.google_maps_key;
+    private AdapterCallback mAdapterCallback;
 
 
     public ListViewAdapter(List<Result> listResult, RequestManager glide, Context context, AdapterCallback callback) {
@@ -83,9 +80,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
 
         holder.mName.setText(item.getName());
         holder.mAdress.setText(item.getFormattedAddress());
-        mDistanceRounded = Math.round(item.getDistanceTo());
-        mDistanceRounded = ((mDistanceRounded + 4) / 5) * 5;    //  Round distance to 5m
-        holder.mDistance.setText(mDistanceRounded + "m");
+        holder.mDistance.setText(item.getDistanceToInt() + "m");
         if (item.getOpeningHours() != null && item.getOpeningHours().getOpenNow()) {
 
             holder.mOpen.setText("Open now");
@@ -95,10 +90,9 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
             holder.mOpen.setTextColor(mRed);
         }
 
-        if (item.getRating() != null) {
-            mRating = item.getRating();
-            ratingMethod(mRating, holder);
-        }
+        int mRating = item.getRatingStars();
+        ratingMethod(mRating, holder);
+        Timber.tag("Adapter Rating").i("%s %s %s", item.getName(), item.getRatingStars(), mRating);
 
         if (item.getPhotos() != null) {
             holder.mPhotoReference = item.getPhotos().get(0).getPhotoReference();
@@ -121,31 +115,34 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
             @Override
             public void onClick(View v) {
                 Timber.tag(item.getName()).d("is Clicked");
-                mAdapterCallback.onMethodCallback(item, holder.mStar,holder.mUrl);
+                mAdapterCallback.onMethodCallback(item, holder.mUrl);
 
             }
         });
 
     }
 
-    private int ratingMethod(Double rating, MyViewHolder holder) {
-
-        if (rating >= 1 && rating <= 2.4) {
+    private void ratingMethod(int rating, MyViewHolder holder) {
+        if (rating == 1) {
             holder.mStar1.setVisibility(View.VISIBLE);
-            holder.mStar = 1;
+            holder.mStar2.setVisibility(View.GONE);
+            holder.mStar3.setVisibility(View.GONE);
         }
-        if (rating >= 2.5 && rating <= 3.9) {
+        if (rating == 2) {
             holder.mStar1.setVisibility(View.VISIBLE);
             holder.mStar2.setVisibility(View.VISIBLE);
-            holder.mStar = 2;
+            holder.mStar3.setVisibility(View.GONE);
         }
-        if (rating >= 4 && rating <= 5) {
+        if (rating == 3) {
             holder.mStar1.setVisibility(View.VISIBLE);
             holder.mStar2.setVisibility(View.VISIBLE);
             holder.mStar3.setVisibility(View.VISIBLE);
-            holder.mStar = 3;
         }
-        return holder.mStar;
+        if (rating == 0) {
+            holder.mStar1.setVisibility(View.GONE);
+            holder.mStar2.setVisibility(View.GONE);
+            holder.mStar3.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -158,9 +155,9 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
      * View Hoodler using ButterKnife
      */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        public int mStar;
         public String mUrl;
         public String mPhotoReference;
+        int mRating;
         @BindView(R.id.item_restaurant_name)
         TextView mName;
         @BindView(R.id.item_restaurant_adress)

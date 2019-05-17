@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.aceman.go4lunch.R;
+import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.navigation.adapter.WorkersAdapter;
 import com.bumptech.glide.Glide;
@@ -21,20 +22,22 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import timber.log.Timber;
 
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mUserList;
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mWorkersAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class WorkmatesFragment extends Fragment {
+    public WorkersAdapter mWorkersAdapter;
+    public List<Result> mResults = new ArrayList<>();
+    public List<User> mUserList = new ArrayList<>();
     @BindView(R.id.workmate_fragment_recycler_view)
     RecyclerView mRecyclerView;
     FirebaseDatabase mFirebaseInstance;
@@ -52,7 +55,7 @@ public class WorkmatesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_workmates, container, false);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         configureRecyclerView();
         firebaseDatabase();
         return view;
@@ -72,7 +75,7 @@ public class WorkmatesFragment extends Fragment {
                 for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                     User user = dataSnapshot1.getValue(User.class);
                     mUserList.add(user);
-                    Timber.tag("TEST").e( mUserList.get(0).getUsername());
+                    Timber.tag("TEST").e(mUserList.get(0).getUsername());
                 }
 
                 // recycler and adapter
@@ -87,6 +90,7 @@ public class WorkmatesFragment extends Fragment {
             }
         });
     }
+
     public void configureRecyclerView() {
         if (mResults != null) {
             mWorkersAdapter = new WorkersAdapter(mResults, Glide.with(this), getContext());

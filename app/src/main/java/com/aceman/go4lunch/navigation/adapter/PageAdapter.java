@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.navigation.fragments.ListViewFragment;
 import com.aceman.go4lunch.navigation.fragments.MapsFragment;
 import com.aceman.go4lunch.navigation.fragments.WorkmatesFragment;

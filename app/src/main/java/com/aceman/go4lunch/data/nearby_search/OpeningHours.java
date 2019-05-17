@@ -1,4 +1,3 @@
-
 package com.aceman.go4lunch.data.nearby_search;
 
 import com.google.gson.annotations.SerializedName;

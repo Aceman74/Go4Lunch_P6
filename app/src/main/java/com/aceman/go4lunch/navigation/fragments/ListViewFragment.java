@@ -17,42 +17,48 @@ import android.widget.Toolbar;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.events.ResultListEvent;
 import com.aceman.go4lunch.navigation.activities.PlacesDetailActivity;
 import com.aceman.go4lunch.navigation.adapter.ListViewAdapter;
 import com.aceman.go4lunch.utils.AdapterCallback;
 import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.bumptech.glide.Glide;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mListViewAdapter;
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
-
 /**
  * A simple {@link Fragment} subclass.
  */
 public class ListViewFragment extends Fragment implements AdapterCallback, ProgressBarCallback {
+    public List<Result> mResults = new ArrayList<>();
     @BindView(R.id.restaurant_recycler_view)
-    public static RecyclerView mRecyclerView;
+    RecyclerView mRecyclerView;
     @BindView(R.id.list_view_progressbar)
     ProgressBar mProgressBar;
     String mName;
     String mAddress;
+    String withID;
     Toolbar mToolbar;
-    private int mStar;
-    private String mWebsite;
-    private String mPhone;
     @BindView(R.id.sort_by_name)
     ImageButton mByName;
     @BindView(R.id.sort_by_distance)
     ImageButton mByDistance;
+    private int mStar;
+    private String mWebsite;
+    private String mPhone;
     private boolean mByDistanceBoolean = true;
     private boolean mByNameBoolean = true;
+    private ListViewAdapter mListViewAdapter;
 
 
     public ListViewFragment() {
@@ -73,13 +79,40 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onResultListEvent(ResultListEvent result) {
+        mResults = result.mResults;
+        configureRecyclerView();
+
+    }
+
+    @Subscribe
+    public void onRefreshEvent() {
+
+        mListViewAdapter.notifyDataSetChanged();
+        // Toast.makeText(getContext(), "REFRESH CALL", Toast.LENGTH_LONG).show();
+
+    }
+
     private void configureBtn() {
         mByName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mByNameBoolean)
-                sortByName();
-                else{
+                if (mByNameBoolean)
+                    sortByName();
+                else {
                     Collections.reverse(mResults);
                     mListViewAdapter.notifyDataSetChanged();
                     mByNameBoolean = true;
@@ -90,8 +123,8 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
         mByDistance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(mByDistanceBoolean)
-                sortByDistance();
+                if (mByDistanceBoolean)
+                    sortByDistance();
                 else {
                     Collections.reverse(mResults);
                     mListViewAdapter.notifyDataSetChanged();
@@ -149,20 +182,22 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
     }
 
     @Override
-    public void onMethodCallback(Result item, int star, String url) {
+    public void onMethodCallback(Result item, String url) {
 
         Toast.makeText(getContext(), "HELLO CALLBACK WORLD :" + item.getName(), Toast.LENGTH_LONG).show();
         mName = item.getName();
         mAddress = item.getFormattedAddress();
-        mStar = star;
         mWebsite = item.getWebsite();
         mPhone = item.getFormattedPhoneNumber();
+        withID = item.getId();
+        mStar = item.getRatingStars();
         Intent details = new Intent(getActivity(), PlacesDetailActivity.class);
         details.putExtra("name", mName);
         details.putExtra("address", mAddress);
         details.putExtra("star", mStar);
         details.putExtra("phone", mPhone);
-        details.putExtra("website",mWebsite);
+        details.putExtra("website", mWebsite);
+        details.putExtra("id", withID);
         details.putExtra("url", url);
         startActivity(details);
 
@@ -170,17 +205,17 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
 
     @Override
     public void onProgressCallback() {
-        if(mRecyclerView != null && mProgressBar != null){
-        mRecyclerView.setVisibility(View.GONE);
-        mProgressBar.setVisibility(View.VISIBLE);
+        if (mRecyclerView != null && mProgressBar != null) {
+            mRecyclerView.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onFinishCallback() {
-        if(mRecyclerView != null && mProgressBar != null){
-        mRecyclerView.setVisibility(View.VISIBLE);
-        mProgressBar.setVisibility(View.GONE);
+        if (mRecyclerView != null && mProgressBar != null) {
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
         }
     }
 

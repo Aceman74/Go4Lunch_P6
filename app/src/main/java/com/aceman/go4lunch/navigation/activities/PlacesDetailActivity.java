@@ -20,28 +20,31 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
+import com.aceman.go4lunch.api.RestaurantHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.base.BaseActivity;
+import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.navigation.adapter.WorkersJoiningAdapter;
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import butterknife.BindView;
 import timber.log.Timber;
 
-import static com.aceman.go4lunch.navigation.activities.CoreActivity.mResults;
 
 public class PlacesDetailActivity extends BaseActivity {
 
     private static final int REQUEST_PHONE_CALL = 10;
+    public List<Result> mResults = new ArrayList<>();
     @BindView(R.id.places_details_recycler_view)
     RecyclerView mRecyclerView;
     WorkersJoiningAdapter mWorkersJoiningAdapter;
@@ -71,6 +74,7 @@ public class PlacesDetailActivity extends BaseActivity {
     String mName;
     String mAddress;
     String mUrl;
+    String mID;
     int mStar;
     @BindView(R.id.detail_fragment_btn)
     FloatingActionButton mFloatingActionButton;
@@ -89,6 +93,7 @@ public class PlacesDetailActivity extends BaseActivity {
         mPhone = details.getStringExtra("phone");
         mWebsite = details.getStringExtra("website");
         mUrl = details.getStringExtra("url");
+        mID = details.getStringExtra("id");
         nullCheck();
         configureInfos();
     }
@@ -113,7 +118,7 @@ public class PlacesDetailActivity extends BaseActivity {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User currentUser = documentSnapshot.toObject(User.class);
-                if(currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mName)) {
+                if (currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mName)) {
                     mFloatingActionButton.setImageResource(R.drawable.done_icon);
                 }
             }
@@ -138,10 +143,8 @@ public class PlacesDetailActivity extends BaseActivity {
             public void onClick(View v) {
 
                 if (ContextCompat.checkSelfPermission(PlacesDetailActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(PlacesDetailActivity.this, new String[]{Manifest.permission.CALL_PHONE},REQUEST_PHONE_CALL);
-                }
-                else
-                {
+                    ActivityCompat.requestPermissions(PlacesDetailActivity.this, new String[]{Manifest.permission.CALL_PHONE}, REQUEST_PHONE_CALL);
+                } else {
                     Intent callRestaurant = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + mPhone));
                     startActivity(callRestaurant);
                 }
@@ -168,14 +171,15 @@ public class PlacesDetailActivity extends BaseActivity {
                 UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
+
                         User currentUser = documentSnapshot.toObject(User.class);
 
-                        if (currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mName)) {
-                            UserHelper.updateRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
+                        if (currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mID)) {
+
+                            RestaurantHelper.updateRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
                             mFloatingActionButton.setImageResource(R.drawable.add_icon);
-                        }else
-                         {
-                            UserHelper.updateRestaurant(getCurrentUser().getUid(), mName).addOnFailureListener(onFailureListener());
+                        } else {
+                            RestaurantHelper.updateRestaurant(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
                             mFloatingActionButton.setImageResource(R.drawable.done_icon);
                         }
                     }
@@ -192,10 +196,10 @@ public class PlacesDetailActivity extends BaseActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         User currentUser = documentSnapshot.toObject(User.class);
-                        if (currentUser.getLike() != null && currentUser.getLike().equals(mName)) {
+                        if (currentUser.getLike() != null && currentUser.getLike().equals(mID)) {
                             UserHelper.updateLikeRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
                         } else {
-                            UserHelper.updateLikeRestaurant(getCurrentUser().getUid(), mName).addOnFailureListener(onFailureListener());
+                            UserHelper.updateLikeRestaurant(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
                         }
                     }
                 });

@@ -11,11 +11,11 @@
                     android:id="@+id/drawer_your_lunch"
                     android:title="@string/your_lunch" />
                 <item
-                android:id="@+id/drawer_settings"
-                android:title="@string/settings" />
+                    android:id="@+id/drawer_settings"
+                    android:title="@string/settings" />
                 <item
-                android:id="@+id/drawer_logout"
-                android:title="@string/logout" />
+                    android:id="@+id/drawer_logout"
+                    android:title="@string/logout" />
             </group>
 
         </menu>
