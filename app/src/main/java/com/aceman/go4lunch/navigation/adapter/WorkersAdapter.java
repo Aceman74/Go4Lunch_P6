@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.models.UserPublic;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -27,13 +29,13 @@ import timber.log.Timber;
  */
 public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHolder> {
 
-    private final List<Result> mResults;
+    private List<UserPublic> mUserList;
     private final RequestManager glide;
     private final Context mContext;
 
 
-    public WorkersAdapter(List<Result> listResult, RequestManager glide, Context context) {
-        this.mResults = listResult;
+    public WorkersAdapter(List<UserPublic> userList, RequestManager glide, Context context) {
+        this.mUserList = userList;
         this.glide = glide;
         this.mContext = context;
     }
@@ -42,34 +44,36 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
-        View sharedView = inflater.inflate(R.layout.item_list, parent, false);
+        View sharedView = inflater.inflate(R.layout.workers_list, parent, false);
         MyViewHolder myViewHolder = new MyViewHolder(sharedView);
         return myViewHolder;
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        updateWithFreshInfo(this.mResults.get(position), this.glide, holder, position);
+        updateWithFreshInfo(this.mUserList.get(position), this.glide, holder, position);
     }
 
     /**
      * Update RecyclerView with list info, handle click on item position with webview intent
      *
-     * @param item   Article in the list
+     * @param user   Article in the list
      * @param glide  use for get image of article
      * @param holder view holder
      */
-    private void updateWithFreshInfo(final Result item, RequestManager glide, final MyViewHolder holder, int position) {
+    private void updateWithFreshInfo(final UserPublic user, RequestManager glide, final MyViewHolder holder, int position) {
 
-        holder.mName.setText(item.getName());
-        holder.mAdress.setText(item.getFormattedAddress());
-        holder.mOpen.setText(item.getReference());
-
+        if(user.getRestaurantName() != null)
+        holder.mTextView.setText(user.getUsername()+" is eating at " +user.getRestaurantName());
+else{
+    holder.mTextView.setAlpha(0.6f);
+                holder.mTextView.setText(user.getUsername()+" has not made his choice yet .");
+        }
         try {
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
             glide.asDrawable()
-                    .load(item.getIcon()) //  Base URL added in Data
-                    .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
+                    .load(user.getUrlPicture()) //  Base URL added in Data
+                    .apply(RequestOptions.circleCropTransform()) //  Adapt to placeholder size
                     .into(holder.mImageView);
         } catch (Exception e) {
             Timber.tag("Image_Shared").e("Loading error");
@@ -79,7 +83,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Timber.tag(item.getName()).d("is Clicked");
+                Timber.tag(user.getUsername()).d("is Clicked");
 
             }
         });
@@ -88,7 +92,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
 
     @Override
     public int getItemCount() {
-        return this.mResults.size();
+        return this.mUserList.size();
     }
 
 
@@ -96,15 +100,11 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
      * View Hoodler using ButterKnife
      */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.item_restaurant_name)
-        TextView mName;
-        @BindView(R.id.item_restaurant_adress)
-        TextView mAdress;
-        @BindView(R.id.item_restaurant_open)
-        TextView mOpen;
-        @BindView(R.id.item_imageview)
+        @BindView(R.id.workers_list_textview)
+        TextView mTextView;
+        @BindView(R.id.workmates_profile_picture)
         ImageView mImageView;
-        @BindView(R.id.item_id)
+        @BindView(R.id.item_id_workmates)
         LinearLayout mItemListener;
 
         MyViewHolder(View view) {

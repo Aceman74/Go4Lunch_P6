@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 /**
  * Created by Lionel JOFFRAY - on 02/05/2019.
@@ -49,6 +50,7 @@ public abstract class BaseActivity extends AppCompatActivity {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(getApplicationContext(), getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
+                Timber.tag("Firebase ERROR").e(e);
             }
         };
     }

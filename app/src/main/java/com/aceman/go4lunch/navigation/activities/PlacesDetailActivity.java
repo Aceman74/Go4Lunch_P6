@@ -23,8 +23,10 @@ import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.api.RestaurantHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.base.BaseActivity;
-import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.events.RefreshEvent;
+import com.aceman.go4lunch.events.UserListEvent;
 import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.models.UserPublic;
 import com.aceman.go4lunch.navigation.adapter.WorkersJoiningAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -32,6 +34,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +49,6 @@ import timber.log.Timber;
 public class PlacesDetailActivity extends BaseActivity {
 
     private static final int REQUEST_PHONE_CALL = 10;
-    public List<Result> mResults = new ArrayList<>();
     @BindView(R.id.places_details_recycler_view)
     RecyclerView mRecyclerView;
     WorkersJoiningAdapter mWorkersJoiningAdapter;
@@ -72,6 +76,7 @@ public class PlacesDetailActivity extends BaseActivity {
     @BindView(R.id.website_layout)
     LinearLayout websiteLayout;
     String mName;
+    public static String mRestaurantName;
     String mAddress;
     String mUrl;
     String mID;
@@ -80,6 +85,7 @@ public class PlacesDetailActivity extends BaseActivity {
     FloatingActionButton mFloatingActionButton;
     private String mPhone;
     private String mWebsite;
+    public List<UserPublic> mUserList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +93,7 @@ public class PlacesDetailActivity extends BaseActivity {
         configureRecyclerView();
 
         Intent details = getIntent();
+        mRestaurantName = details.getStringExtra("restaurantName");
         mName = details.getStringExtra("name");
         mAddress = details.getStringExtra("address");
         mStar = details.getIntExtra("star", 0);
@@ -96,6 +103,25 @@ public class PlacesDetailActivity extends BaseActivity {
         mID = details.getStringExtra("id");
         nullCheck();
         configureInfos();
+
+    }
+    @Subscribe(sticky = true)
+    public void onUserListEvent(UserListEvent userlist) {
+        mUserList = userlist.mUserList;
+        configureRecyclerView();
+        mWorkersJoiningAdapter.notifyDataSetChanged();
+
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     private void nullCheck() {
@@ -176,10 +202,14 @@ public class PlacesDetailActivity extends BaseActivity {
 
                         if (currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mID)) {
 
-                            RestaurantHelper.updateRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
+                            RestaurantHelper.restaurantPublic(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
+                            RestaurantHelper.restaurantName(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
+                            UserHelper.updateRestaurantID(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
                             mFloatingActionButton.setImageResource(R.drawable.add_icon);
                         } else {
-                            RestaurantHelper.updateRestaurant(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
+                            RestaurantHelper.restaurantPublic(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
+                            RestaurantHelper.restaurantName(getCurrentUser().getUid(), mRestaurantName).addOnFailureListener(onFailureListener());
+                            UserHelper.updateRestaurantID(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
                             mFloatingActionButton.setImageResource(R.drawable.done_icon);
                         }
                     }
@@ -198,8 +228,10 @@ public class PlacesDetailActivity extends BaseActivity {
                         User currentUser = documentSnapshot.toObject(User.class);
                         if (currentUser.getLike() != null && currentUser.getLike().equals(mID)) {
                             UserHelper.updateLikeRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
+                            RestaurantHelper.updateLikeRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
                         } else {
                             UserHelper.updateLikeRestaurant(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
+                            RestaurantHelper.updateLikeRestaurant(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
                         }
                     }
                 });
@@ -247,8 +279,8 @@ public class PlacesDetailActivity extends BaseActivity {
     }
 
     public void configureRecyclerView() {
-        if (mResults != null) {
-            mWorkersJoiningAdapter = new WorkersJoiningAdapter(mResults, Glide.with(this), mContext);
+        if (mUserList != null) {
+            mWorkersJoiningAdapter = new WorkersJoiningAdapter(mUserList, Glide.with(this), mContext);
             mRecyclerView.setAdapter(mWorkersJoiningAdapter);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
             mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(this.getApplicationContext()), DividerItemDecoration.VERTICAL));

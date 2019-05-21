@@ -17,6 +17,7 @@ import android.widget.Toolbar;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.events.RefreshEvent;
 import com.aceman.go4lunch.events.ResultListEvent;
 import com.aceman.go4lunch.navigation.activities.PlacesDetailActivity;
 import com.aceman.go4lunch.navigation.adapter.ListViewAdapter;
@@ -39,26 +40,27 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListViewFragment extends Fragment implements AdapterCallback, ProgressBarCallback {
+public class ListViewFragment extends Fragment implements AdapterCallback {
     public List<Result> mResults = new ArrayList<>();
     @BindView(R.id.restaurant_recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.list_view_progressbar)
     ProgressBar mProgressBar;
-    String mName;
-    String mAddress;
-    String withID;
+   static String mName;
+   static String mAddress;
+   static String withID;
     Toolbar mToolbar;
     @BindView(R.id.sort_by_name)
     ImageButton mByName;
     @BindView(R.id.sort_by_distance)
     ImageButton mByDistance;
     private int mStar;
-    private String mWebsite;
-    private String mPhone;
+    private static String mWebsite;
+    private static String mPhone;
     private boolean mByDistanceBoolean = true;
     private boolean mByNameBoolean = true;
     private ListViewAdapter mListViewAdapter;
+    private static String mRestaurantName;
 
 
     public ListViewFragment() {
@@ -83,6 +85,7 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
+
     }
 
     @Override
@@ -95,15 +98,22 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
     public void onResultListEvent(ResultListEvent result) {
         mResults = result.mResults;
         configureRecyclerView();
-
     }
 
     @Subscribe
-    public void onRefreshEvent() {
-
+    public void onRefreshEvent(RefreshEvent refreshEvent) {
+        loadingView();
         mListViewAdapter.notifyDataSetChanged();
-        // Toast.makeText(getContext(), "REFRESH CALL", Toast.LENGTH_LONG).show();
+    }
 
+    private void loadingView() {
+        if(mResults.isEmpty()){
+            mRecyclerView.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
+        }else{
+            mRecyclerView.setVisibility(View.VISIBLE);
+            mProgressBar.setVisibility(View.GONE);
+        }
     }
 
     private void configureBtn() {
@@ -179,19 +189,21 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
     @Override
     public void onResume() {
         super.onResume();
+        loadingView();
     }
 
     @Override
     public void onMethodCallback(Result item, String url) {
 
-        Toast.makeText(getContext(), "HELLO CALLBACK WORLD :" + item.getName(), Toast.LENGTH_LONG).show();
         mName = item.getName();
         mAddress = item.getFormattedAddress();
         mWebsite = item.getWebsite();
         mPhone = item.getFormattedPhoneNumber();
-        withID = item.getId();
+        withID = item.getPlaceId();
         mStar = item.getRatingStars();
+        mRestaurantName = item.getName();
         Intent details = new Intent(getActivity(), PlacesDetailActivity.class);
+        details.putExtra("restaurantName", mRestaurantName);
         details.putExtra("name", mName);
         details.putExtra("address", mAddress);
         details.putExtra("star", mStar);
@@ -202,21 +214,4 @@ public class ListViewFragment extends Fragment implements AdapterCallback, Progr
         startActivity(details);
 
     }
-
-    @Override
-    public void onProgressCallback() {
-        if (mRecyclerView != null && mProgressBar != null) {
-            mRecyclerView.setVisibility(View.GONE);
-            mProgressBar.setVisibility(View.VISIBLE);
-        }
-    }
-
-    @Override
-    public void onFinishCallback() {
-        if (mRecyclerView != null && mProgressBar != null) {
-            mRecyclerView.setVisibility(View.VISIBLE);
-            mProgressBar.setVisibility(View.GONE);
-        }
-    }
-
 }

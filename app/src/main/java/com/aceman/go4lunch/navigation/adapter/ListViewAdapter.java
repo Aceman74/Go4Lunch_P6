@@ -157,7 +157,6 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public String mUrl;
         public String mPhotoReference;
-        int mRating;
         @BindView(R.id.item_restaurant_name)
         TextView mName;
         @BindView(R.id.item_restaurant_adress)

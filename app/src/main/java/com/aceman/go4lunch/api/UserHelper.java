@@ -1,5 +1,6 @@
 package com.aceman.go4lunch.api;
 
+import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.models.User;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
@@ -42,7 +43,7 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).update("isPrivate", isMentor);
     }
 
-    public static Task<Void> updateRestaurant(String uid, String restaurant) {
+    public static Task<Void> updateRestaurantID(String uid, String restaurant) {
         return UserHelper.getUsersCollection().document(uid).update("restaurant", restaurant);
     }
 

@@ -2,6 +2,7 @@ package com.aceman.go4lunch.auth;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.text.TextUtils;
@@ -12,9 +13,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
+import com.aceman.go4lunch.api.RestaurantHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.navigation.activities.MainActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
@@ -33,6 +36,7 @@ public class ProfileActivity extends BaseActivity {
     private static final int SIGN_OUT_TASK = 10;
     private static final int DELETE_USER_TASK = 20;
     private static final int UPDATE_USERNAME = 30;
+    private static final int UPDATE_USERNAME_PUBLIC = 40;
 
     //FOR DESIGN
     @BindView(R.id.profile_activity_imageview_profile)
@@ -110,10 +114,13 @@ public class ProfileActivity extends BaseActivity {
         if (this.getCurrentUser() != null) {
             //4 - We also delete user from firestore storage
             UserHelper.deleteUser(this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener());
+            RestaurantHelper.deleteUser(this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener());
             AuthUI.getInstance()
                     .delete(this)
                     .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(DELETE_USER_TASK));
         }
+        Intent start = new Intent(getApplicationContext(),MainActivity.class);
+        startActivity(start);
     }
 
     // --------------------
@@ -128,6 +135,7 @@ public class ProfileActivity extends BaseActivity {
 
         if (this.getCurrentUser() != null) {
             if (!username.isEmpty() && !username.equals(getString(R.string.info_no_username_found))) {
+                RestaurantHelper.updateUsername(username,this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME_PUBLIC));
                 UserHelper.updateUsername(username, this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME));
             }
         }

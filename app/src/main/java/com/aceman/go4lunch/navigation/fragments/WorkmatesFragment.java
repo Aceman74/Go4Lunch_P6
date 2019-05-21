@@ -10,17 +10,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.events.UserListEvent;
 import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.models.UserPublic;
 import com.aceman.go4lunch.navigation.adapter.WorkersAdapter;
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +31,6 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 
 /**
@@ -36,12 +38,9 @@ import timber.log.Timber;
  */
 public class WorkmatesFragment extends Fragment {
     public WorkersAdapter mWorkersAdapter;
-    public List<Result> mResults = new ArrayList<>();
-    public List<User> mUserList = new ArrayList<>();
+    public List<UserPublic> mUserList = new ArrayList<>();
     @BindView(R.id.workmate_fragment_recycler_view)
     RecyclerView mRecyclerView;
-    FirebaseDatabase mFirebaseInstance;
-    DatabaseReference mDatabase;
     Toolbar mToolbar;
 
     public WorkmatesFragment() {
@@ -56,44 +55,38 @@ public class WorkmatesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_workmates, container, false);
         ButterKnife.bind(this, view);
+        getUserList();
         configureRecyclerView();
-        firebaseDatabase();
         return view;
     }
+    @Subscribe(sticky = true)
+    public void onUserListEvent(UserListEvent userlist) {
+        mUserList = userlist.mUserList;
+        configureRecyclerView();
+        mWorkersAdapter.notifyDataSetChanged();
+
+    }
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    private void getUserList() {
 
 
-    private void firebaseDatabase() {
-        mFirebaseInstance = FirebaseDatabase.getInstance();
-        mDatabase = mFirebaseInstance.getReference();
-
-
-        //  mRvData.setLayoutManager(new LinearLayoutManager(this));
-        mDatabase.child("users").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                mUserList.clear();
-                for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
-                    User user = dataSnapshot1.getValue(User.class);
-                    mUserList.add(user);
-                    Timber.tag("TEST").e(mUserList.get(0).getUsername());
-                }
-
-                // recycler and adapter
-
-            }
-
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Timber.tag("FIREBASE_DATABASE").w(databaseError.getMessage());
-
-            }
-        });
     }
 
     public void configureRecyclerView() {
-        if (mResults != null) {
-            mWorkersAdapter = new WorkersAdapter(mResults, Glide.with(this), getContext());
+        if (mUserList != null) {
+            mWorkersAdapter = new WorkersAdapter(mUserList, Glide.with(this), getContext());
             mRecyclerView.setAdapter(mWorkersAdapter);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));

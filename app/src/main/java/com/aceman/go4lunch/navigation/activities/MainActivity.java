@@ -1,13 +1,19 @@
 package com.aceman.go4lunch.navigation.activities;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.widget.Button;
 import android.widget.ImageView;
 
 import com.aceman.go4lunch.R;
+import com.aceman.go4lunch.api.RestaurantHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.firebase.ui.auth.AuthUI;
@@ -22,6 +28,9 @@ import java.util.Arrays;
 import butterknife.BindView;
 import butterknife.OnClick;
 import okhttp3.Cache;
+
+import static com.aceman.go4lunch.navigation.fragments.MapsFragment.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION;
+import static com.aceman.go4lunch.navigation.fragments.MapsFragment.mMaps;
 
 public class MainActivity extends BaseActivity {
     //FOR DATA
@@ -38,8 +47,39 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        askPermission();
         configureCache();
         alreadyLogged();
+    }
+
+    private void askPermission() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+        new AlertDialog.Builder(this)
+                .setTitle("Location Permission")
+                .setMessage("Go4Lunch needs to access your device's location to fully enjoy it and find your co-workers!")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        locationPermission();
+                    }
+                })
+                .show();
+        }
+
+    }
+
+    private void locationPermission() {
+
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMaps.setMyLocationEnabled(true);
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
     }
 
     private void alreadyLogged() {
@@ -174,6 +214,7 @@ public class MainActivity extends BaseActivity {
             String uid = this.getCurrentUser().getUid();
 
             UserHelper.createUser(uid, username, urlPicture).addOnFailureListener(this.onFailureListener());
+            RestaurantHelper.createPublicUser(uid,username, urlPicture).addOnFailureListener(this.onFailureListener());
         }
     }
 }

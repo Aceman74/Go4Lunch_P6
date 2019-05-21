@@ -14,10 +14,12 @@ android {
     }
     buildTypes {
         debug {
-            buildConfigField("String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\"")
+            buildConfigField "String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\""
+            buildConfigField "String", "restaurant_ID", "\"A12iOtxFEWQ1A3r3Lgwd\""
         }
         release {
-            buildConfigField("String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\"")
+            buildConfigField "String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\""
+            buildConfigField "String", "restaurant_ID", "\"A12iOtxFEWQ1A3r3Lgwd\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }

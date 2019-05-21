@@ -29,6 +29,8 @@ import com.aceman.go4lunch.data.nearby_search.Nearby;
 import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.events.RefreshEvent;
 import com.aceman.go4lunch.events.ResultListEvent;
+import com.aceman.go4lunch.events.UserListEvent;
+import com.aceman.go4lunch.models.UserPublic;
 import com.aceman.go4lunch.navigation.activities.CoreActivity;
 import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.google.android.gms.common.ConnectionResult;
@@ -49,6 +51,7 @@ import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.firebase.database.annotations.Nullable;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,11 +95,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     int getinfo = 0;
     GoogleApiClient mGoogleApiClient;
     Boolean initLocation = true;
-    ProgressBarCallback mProgressBarCallback;
     float distance = 0;
     @BindView(R.id.maps_btn)
     FloatingActionButton mRefreshBtn;
     private String API_KEY = BuildConfig.google_maps_key;
+    public List<UserPublic> mUserList = new ArrayList<>();
 
 
     public MapsFragment() {
@@ -113,13 +116,28 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         View view = inflater.inflate(R.layout.location_fragment, container, false);
         ButterKnife.bind(this, view);
         initializeMapsAndPlaces();
-        // currentLocationRequest();
         mResults = new ArrayList<>();
-        mProgressBarCallback = (ProgressBarCallback) getActivity();
         refreshMapBtn();
         return view;
     }
 
+    @Subscribe(sticky = true)
+    public void onUserListEvent(UserListEvent userlist) {
+        mUserList = userlist.mUserList;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
     private void refreshMapBtn() {
         mRefreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,7 +159,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                                 Timber.e("Location permission not granted");
                                 return;
                             }
-
                             Task task = sFusedLocationProviderClient.getLastLocation();
 
                             task.addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
@@ -325,12 +342,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     public void onInfoWindowClick(Marker marker) {
         Toast.makeText(getContext(), "Info window clicked " + marker.getTitle(),
                 Toast.LENGTH_SHORT).show();
-        String markerName = marker.getTitle();
-        for (int i = 0; i < mResults.size(); i++) {
-            if (mResults.get(i).getMarker() == marker) {
 
-            }
-        }
     }
 
     @Override
@@ -427,7 +439,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                 }
             });
         }
-
         EventBus.getDefault().post(new ResultListEvent(mResults));
         EventBus.getDefault().post(new RefreshEvent());
     }
@@ -443,7 +454,8 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         result.setRating(details.getResult().getRating());
         result.setMarker(mMarker);
         setDistanceAndRating(result);
-        Timber.tag("Maps Rating").i("%s %s", result.getName(), result.getRatingStars());
+        EventBus.getDefault().post(new ResultListEvent(mResults));
+        EventBus.getDefault().post(new RefreshEvent());
     }
 
     private void setDistanceAndRating(Result result) {
@@ -481,6 +493,17 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_o))
                     .title(details.getResult().getName())
                     .snippet(details.getResult().getFormattedAddress() + "\n" + details.getResult().getFormattedPhoneNumber()));
+        }if(mUserList != null){
+            for(int i = 0; i < mUserList.size(); i++){
+                if(mUserList.get(i).getRestaurantID() != null && mUserList.get(i).getRestaurantID().equals(details.getResult().getPlaceId())){
+                    mPosMarker.remove();
+                    mPosMarker = mMaps.addMarker(new MarkerOptions()
+                            .position(mLatLng)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_g))
+                            .title(details.getResult().getName())
+                            .snippet(mUserList.get(i).getUsername() + " is eating here !" ));
+                }
+            }
         }
     }
 

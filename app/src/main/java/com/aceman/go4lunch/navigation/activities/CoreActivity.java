@@ -2,6 +2,7 @@ package com.aceman.go4lunch.navigation.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
@@ -17,14 +18,21 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.api.PlacesApi;
+import com.aceman.go4lunch.api.RestaurantHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.auth.ProfileActivity;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.aceman.go4lunch.data.details.PlacesDetails;
+import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.events.RefreshEvent;
+import com.aceman.go4lunch.events.ResultListEvent;
+import com.aceman.go4lunch.events.UserListEvent;
 import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.models.UserPublic;
 import com.aceman.go4lunch.navigation.adapter.PageAdapter;
 import com.aceman.go4lunch.navigation.fragments.ListViewFragment;
 import com.aceman.go4lunch.utils.ProgressBarCallback;
@@ -36,16 +44,27 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.api.model.TypeFilter;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -59,9 +78,11 @@ import static com.aceman.go4lunch.navigation.fragments.MapsFragment.mMaps;
 /**
  * Created by Lionel JOFFRAY - on 03/05/2019.
  */
-public class CoreActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, ProgressBarCallback {
+public class CoreActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener {
     private static final int SIGN_OUT_TASK = 10;
+    private static final int FLAG_ACTIVITY_NEW_TASK = 20;
     public static FusedLocationProviderClient sFusedLocationProviderClient;
+    public List<UserPublic> mUserList = new ArrayList<>();
     public static LatLng mSearchLatLng;
     public static String mSearchName;
     int AUTOCOMPLETE_REQUEST_CODE = 8;
@@ -82,6 +103,8 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     Toolbar mToolbar;
     ImageView mProfileImage;
     Disposable mSearchDisposable;
+    private String mRestaurantName;
+    private Disposable disposable;
 
 
     @Override
@@ -95,8 +118,37 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         pagerListener();
         configureHamburgerBtn();
         onClickProfile();
+        getUserList();
     }
 
+
+
+    private void getUserList() {
+
+        UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                FirebaseFirestore.getInstance().collection("restaurant").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                UserPublic userP = document.toObject(UserPublic.class);     // < ==
+                                mUserList.add(userP);
+                            }
+                            Timber.tag("Task To List").i("Sucess");
+
+                        } else {
+                            Timber.tag("Task Exeption").d(task.getException(), "Error getting documents: ");
+                        }
+                    }
+                });
+            }
+        });
+
+        EventBus.getDefault().postSticky(new UserListEvent(mUserList));
+    }
 
     private void onClickProfile() {
         mProfileImage = mNavigationView.getHeaderView(0).findViewById(R.id.profile_image_nav_header);
@@ -349,19 +401,4 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
             }
         };
     }
-
-    @Override
-    public void onProgressCallback() {
-        ListViewFragment frag = (ListViewFragment)
-                getSupportFragmentManager().findFragmentById(R.id.list_linear_layout);
-
-    }
-
-    @Override
-    public void onFinishCallback() {
-        ListViewFragment frag = (ListViewFragment)
-                getSupportFragmentManager().findFragmentById(R.id.list_linear_layout);
-    }
-
-
 }
