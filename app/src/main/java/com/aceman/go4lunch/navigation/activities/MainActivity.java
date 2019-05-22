@@ -187,7 +187,7 @@ public class MainActivity extends BaseActivity {
     }
 
     private void configureCache() {
-        int cacheSize = 5 * 1024 * 1024; // 5 MB
+        int cacheSize = 20 * 1024 * 1024; // 20 MB
         mCache = new Cache(getCacheDir(), cacheSize);   //  For API requests
     }
 

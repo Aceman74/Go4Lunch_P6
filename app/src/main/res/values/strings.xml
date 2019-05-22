@@ -37,5 +37,7 @@
     <string name="title_activity_places_detail">PlacesDetailActivity</string>
     <string name="mUrl_begin"><![CDATA[https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&key=]]></string>
     <string name="mUrlNext"><![CDATA[&photoreference=]]></string>
+    <string name="no_result_string">Unfortunately there\'s no restaurant around, try a different place !</string>
+    <string name="oops">Oops !</string>
 
 </resources>

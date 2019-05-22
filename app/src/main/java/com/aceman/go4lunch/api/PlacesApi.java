@@ -100,7 +100,7 @@ public class PlacesApi {
     public Observable<PlacesDetails> getRestaurantsDetails(String id) {
         PlacesCall callInfo = mRetrofit.create(PlacesCall.class);
         return callInfo.getRestaurantsDetails(id)
-                .delay(500, TimeUnit.MILLISECONDS)
+                .delaySubscription(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())   //  Run call on another thread
                 .observeOn(AndroidSchedulers.mainThread())  //  Observe on the Main thread
                 .timeout(10, TimeUnit.SECONDS);

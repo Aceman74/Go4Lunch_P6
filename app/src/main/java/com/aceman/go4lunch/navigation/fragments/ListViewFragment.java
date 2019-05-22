@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.Toolbar;
@@ -19,6 +20,8 @@ import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.events.RefreshEvent;
 import com.aceman.go4lunch.events.ResultListEvent;
+import com.aceman.go4lunch.events.UserListEvent;
+import com.aceman.go4lunch.models.UserPublic;
 import com.aceman.go4lunch.navigation.activities.PlacesDetailActivity;
 import com.aceman.go4lunch.navigation.adapter.ListViewAdapter;
 import com.aceman.go4lunch.utils.AdapterCallback;
@@ -42,6 +45,7 @@ import butterknife.ButterKnife;
  */
 public class ListViewFragment extends Fragment implements AdapterCallback {
     public List<Result> mResults = new ArrayList<>();
+    public List<UserPublic> mUserList = new ArrayList<>();
     @BindView(R.id.restaurant_recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.list_view_progressbar)
@@ -61,6 +65,8 @@ public class ListViewFragment extends Fragment implements AdapterCallback {
     private boolean mByNameBoolean = true;
     private ListViewAdapter mListViewAdapter;
     private static String mRestaurantName;
+    @BindView(R.id.no_result_layout)
+    LinearLayout mNoResultLayout;
 
 
     public ListViewFragment() {
@@ -106,14 +112,19 @@ public class ListViewFragment extends Fragment implements AdapterCallback {
         mListViewAdapter.notifyDataSetChanged();
     }
 
+    @Subscribe(sticky = true)
+    public void onUserListEvent(UserListEvent userlist) {
+        mUserList = userlist.mUserList;
+
+    }
     private void loadingView() {
         if(mResults.isEmpty()){
-            mRecyclerView.setVisibility(View.GONE);
-            mProgressBar.setVisibility(View.VISIBLE);
-        }else{
-            mRecyclerView.setVisibility(View.VISIBLE);
+                mNoResultLayout.setVisibility(View.VISIBLE);
             mProgressBar.setVisibility(View.GONE);
-        }
+            }else{
+                mNoResultLayout.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.GONE);
+            }
     }
 
     private void configureBtn() {
@@ -179,7 +190,7 @@ public class ListViewFragment extends Fragment implements AdapterCallback {
 
     public void configureRecyclerView() {
         if (mResults != null) {
-            mListViewAdapter = new ListViewAdapter(mResults, Glide.with(this), getContext(), this);
+            mListViewAdapter = new ListViewAdapter(mResults, mUserList, Glide.with(this), getContext(), this);
             mRecyclerView.setAdapter(mListViewAdapter);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));

@@ -85,7 +85,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     Double mLatitude;
     Double mLongitude;
     float mDistanceTo;
-    int mRadius = 1500;
+    int mRadius = 500;  //  >>> RADIUS <<<<
     String placeID;
     LatLng mLatLng;
     LatLng mLastLatLng;
@@ -172,7 +172,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
                                         mCurrentLocation = location;
                                         mPreviousLocation = new Location("");
                                         mDistanceToLocation = new Location("");
-                                        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mLastLatLng, 14));
+                                        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mLastLatLng, 15));
                                     }
                                 }
                             });
@@ -242,14 +242,13 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
             Timber.tag("GET PREVIOUS LOCATION").i(mPreviousLocation.toString());
             distance = mCurrentLocation.distanceTo(mPreviousLocation);
             Timber.tag("GET DISTANCE ").i(String.valueOf(distance));
+
             /**
-             LatLng latlngtest = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-             mMaps.addMarker(new MarkerOptions().position(latlngtest)
-             .title("Centre"));
-             */
+             * >> DISABLE DURING DEV FOR REQUEST QUOTAS <<
             if (distance > 1500) {
                 getCurrentMapInfo();
             }
+             */
         }
     }
 
@@ -282,7 +281,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         getinfo++;
         mMaps.clear();
         mLatLng = mMaps.getCameraPosition().target;
-        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 14));
+        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
         mLatitude = mLatLng.latitude;
         mLongitude = mLatLng.longitude;
         mLocation = mLatitude + " " + mLongitude;
