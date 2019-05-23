@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.api.RestaurantHelper;
+import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.firebase.ui.auth.AuthUI;
@@ -57,8 +57,8 @@ public class MainActivity extends BaseActivity {
                 android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
         new AlertDialog.Builder(this)
-                .setTitle("Location Permission")
-                .setMessage("Go4Lunch needs to access your device's location to fully enjoy it and find your co-workers!")
+                .setTitle(R.string.location_permission)
+                .setMessage(R.string.location_text)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         locationPermission();
@@ -212,9 +212,10 @@ public class MainActivity extends BaseActivity {
             String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
             String username = this.getCurrentUser().getDisplayName();
             String uid = this.getCurrentUser().getUid();
+            String email = this.getCurrentUser().getEmail();
 
-            UserHelper.createUser(uid, username, urlPicture).addOnFailureListener(this.onFailureListener());
-            RestaurantHelper.createPublicUser(uid,username, urlPicture).addOnFailureListener(this.onFailureListener());
+            UserHelper.createUser(uid, username, urlPicture, email).addOnFailureListener(this.onFailureListener());
+            RestaurantPublicHelper.createPublicUser(uid,username, urlPicture).addOnFailureListener(this.onFailureListener());
         }
     }
 }

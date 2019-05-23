@@ -1,6 +1,9 @@
 package com.aceman.go4lunch.models;
 
 import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
 
 /**
  * Created by Lionel JOFFRAY - on 02/05/2019.
@@ -12,17 +15,20 @@ public class User {
     private Boolean isPrivate;
     private String mRestaurant;
     private String mLike;
+    private String email;
     @Nullable
     private String urlPicture;
+    private Date dateCreated;
 
     public User() {
     }
 
-    public User(String uid, String username, String urlPicture) {
+    public User(String uid, String username, String urlPicture, String email) {
         this.uid = uid;
         this.username = username;
         this.urlPicture = urlPicture;
         this.isPrivate = false;
+        this.email = email;
     }
 
     // --- GETTERS ---
@@ -42,6 +48,14 @@ public class User {
         this.username = username;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getUrlPicture() {
         return urlPicture;
     }
@@ -50,6 +64,10 @@ public class User {
         this.urlPicture = urlPicture;
     }
 
+    @ServerTimestamp
+    public Date getDateCreated() { return dateCreated; }
+
+    public void setDateCreated(Date dateCreated) { this.dateCreated = dateCreated; }
     public Boolean getIsPrivate() {
         return isPrivate;
     }

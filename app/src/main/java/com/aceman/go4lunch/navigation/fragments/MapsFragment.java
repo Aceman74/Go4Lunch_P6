@@ -30,9 +30,8 @@ import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.events.RefreshEvent;
 import com.aceman.go4lunch.events.ResultListEvent;
 import com.aceman.go4lunch.events.UserListEvent;
-import com.aceman.go4lunch.models.UserPublic;
+import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.navigation.activities.CoreActivity;
-import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -99,7 +98,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     @BindView(R.id.maps_btn)
     FloatingActionButton mRefreshBtn;
     private String API_KEY = BuildConfig.google_maps_key;
-    public List<UserPublic> mUserList = new ArrayList<>();
+    public List<RestaurantPublic> mUserList = new ArrayList<>();
 
 
     public MapsFragment() {

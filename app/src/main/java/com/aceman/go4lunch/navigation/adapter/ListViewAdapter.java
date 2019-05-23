@@ -12,7 +12,7 @@ import android.widget.TextView;
 import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.models.UserPublic;
+import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.AdapterCallback;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
@@ -36,7 +36,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     private final RequestManager glide;
     private final Context mContext;
     public List<Result> mResults;
-    public List<UserPublic>mUserList;
+    public List<RestaurantPublic>mUserList;
     @BindString(R.string.mUrl_begin)
     String mUrlBegin;
     @BindString(R.string.mUrlNext)
@@ -49,7 +49,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     private AdapterCallback mAdapterCallback;
 
 
-    public ListViewAdapter(List<Result> listResult, List<UserPublic> userList, RequestManager glide, Context context, AdapterCallback callback) {
+    public ListViewAdapter(List<Result> listResult, List<RestaurantPublic> userList, RequestManager glide, Context context, AdapterCallback callback) {
         mResults = listResult;
         this.glide = glide;
         this.mContext = context;

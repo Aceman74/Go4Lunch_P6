@@ -1,7 +1,6 @@
 package com.aceman.go4lunch.events;
 
-import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.models.UserPublic;
+import com.aceman.go4lunch.models.RestaurantPublic;
 
 import java.util.List;
 
@@ -10,9 +9,9 @@ import java.util.List;
  */
 public class UserListEvent {
 
-    public List<UserPublic> mUserList;
+    public List<RestaurantPublic> mUserList;
 
-    public UserListEvent(List<UserPublic> userlist) {
+    public UserListEvent(List<RestaurantPublic> userlist) {
         mUserList = userlist;
     }
 }

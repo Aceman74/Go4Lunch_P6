@@ -22,8 +22,8 @@ public class UserHelper {
 
     // --- CREATE ---
 
-    public static Task<Void> createUser(String uid, String username, String urlPicture) {
-        User userToCreate = new User(uid, username, urlPicture);
+    public static Task<Void> createUser(String uid, String username, String urlPicture, String email) {
+        User userToCreate = new User(uid, username, urlPicture, email);
         return UserHelper.getUsersCollection().document(uid).set(userToCreate);
     }
 
@@ -56,4 +56,7 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).delete();
     }
 
+    public static Task<Void> updateEmail(String email, String uid) {
+        return UserHelper.getUsersCollection().document(uid).update("email", email);
+    }
 }

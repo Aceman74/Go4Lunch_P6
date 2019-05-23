@@ -10,12 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.models.UserPublic;
+import com.aceman.go4lunch.models.RestaurantPublic;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -29,12 +27,12 @@ import timber.log.Timber;
  */
 public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHolder> {
 
-    private List<UserPublic> mUserList;
+    private List<RestaurantPublic> mUserList;
     private final RequestManager glide;
     private final Context mContext;
 
 
-    public WorkersAdapter(List<UserPublic> userList, RequestManager glide, Context context) {
+    public WorkersAdapter(List<RestaurantPublic> userList, RequestManager glide, Context context) {
         this.mUserList = userList;
         this.glide = glide;
         this.mContext = context;
@@ -61,7 +59,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
      * @param glide  use for get image of article
      * @param holder view holder
      */
-    private void updateWithFreshInfo(final UserPublic user, RequestManager glide, final MyViewHolder holder, int position) {
+    private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
 
         if(user.getRestaurantName() != null)
         holder.mTextView.setText(user.getUsername()+" is eating at " +user.getRestaurantName());

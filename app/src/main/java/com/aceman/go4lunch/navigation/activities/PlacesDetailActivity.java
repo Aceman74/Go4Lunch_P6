@@ -20,13 +20,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.api.RestaurantHelper;
+import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.base.BaseActivity;
-import com.aceman.go4lunch.events.RefreshEvent;
 import com.aceman.go4lunch.events.UserListEvent;
+import com.aceman.go4lunch.models.Restaurant;
 import com.aceman.go4lunch.models.User;
-import com.aceman.go4lunch.models.UserPublic;
+import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.navigation.adapter.WorkersJoiningAdapter;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -39,6 +39,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
@@ -85,7 +86,8 @@ public class PlacesDetailActivity extends BaseActivity {
     FloatingActionButton mFloatingActionButton;
     private String mPhone;
     private String mWebsite;
-    public List<UserPublic> mUserList = new ArrayList<>();
+    public List<RestaurantPublic> mUserList = new ArrayList<>();
+    private Restaurant mRestaurant = new Restaurant();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +139,13 @@ public class PlacesDetailActivity extends BaseActivity {
     }
 
     private void configureInfos() {
+        mRestaurant.setAddress(mAddress);
+        mRestaurant.setName(mRestaurantName);
+        mRestaurant.setPhone(mPhone);
+        mRestaurant.setPlaceID(mID);
+        mRestaurant.setWebsite(mWebsite);
+        mRestaurant.setImageUrl(mUrl);
+        mRestaurant.setRating(mStar);
         showStar(mStar);
         setName.setText(mName);
         setAdress.setText(mAddress);
@@ -190,6 +199,7 @@ public class PlacesDetailActivity extends BaseActivity {
     }
 
     private void selectBtnListener() {
+
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -202,13 +212,11 @@ public class PlacesDetailActivity extends BaseActivity {
 
                         if (currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mID)) {
 
-                            RestaurantHelper.restaurantPublic(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
-                            RestaurantHelper.restaurantName(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
+                            RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), null,null,null,-1).addOnFailureListener(onFailureListener());
                             UserHelper.updateRestaurantID(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
                             mFloatingActionButton.setImageResource(R.drawable.add_icon);
                         } else {
-                            RestaurantHelper.restaurantPublic(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
-                            RestaurantHelper.restaurantName(getCurrentUser().getUid(), mRestaurantName).addOnFailureListener(onFailureListener());
+                            RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), mID, mRestaurantName, mRestaurant, Calendar.DAY_OF_YEAR).addOnFailureListener(onFailureListener());
                             UserHelper.updateRestaurantID(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
                             mFloatingActionButton.setImageResource(R.drawable.done_icon);
                         }
@@ -228,10 +236,10 @@ public class PlacesDetailActivity extends BaseActivity {
                         User currentUser = documentSnapshot.toObject(User.class);
                         if (currentUser.getLike() != null && currentUser.getLike().equals(mID)) {
                             UserHelper.updateLikeRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
-                            RestaurantHelper.updateLikeRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
+                            RestaurantPublicHelper.updateLikeRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
                         } else {
                             UserHelper.updateLikeRestaurant(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
-                            RestaurantHelper.updateLikeRestaurant(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
+                            RestaurantPublicHelper.updateLikeRestaurant(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
                         }
                     }
                 });

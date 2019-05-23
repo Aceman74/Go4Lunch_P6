@@ -3,9 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_screen_blur"
+    android:background="@drawable/waiters"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context="com.aceman.go4lunch.auth.ProfileActivity">
 
     <!-- USER DATA CONTAINER -->
@@ -19,52 +21,39 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_large_margin"
+            android:layout_margin="@dimen/default_margin"
             android:gravity="center"
+            android:layout_gravity="center"
             android:orientation="horizontal">
-
-            <!-- FIREBASE IMAGE -->
-            <ImageView
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:background="@drawable/logo" />
-
-            <!-- PROGRESS BAR -->
-            <ProgressBar
-                android:id="@+id/profile_activity_progress_bar"
-                android:layout_width="30dip"
-                android:layout_height="30dip"
-                android:layout_margin="@dimen/default_large_margin"
-                android:visibility="invisible" />
 
             <!-- PROFILE IMAGE -->
             <ImageView
                 android:id="@+id/profile_activity_imageview_profile"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
                 android:src="@drawable/user_default_white" />
 
         </LinearLayout>
 
-
         <!-- PROFILE USERNAME -->
         <android.support.design.widget.TextInputEditText
             android:id="@+id/profile_activity_edit_text_username"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:backgroundTint="@color/ColorWhite"
-            android:lines="1"
+            android:maxLines="1"
             android:text="@string/text_input_username"
             android:textColor="@color/ColorWhite"
             android:textSize="@dimen/default_middle_size" />
 
         <!-- PROFILE EMAIL CONTAINER -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -75,33 +64,50 @@
                 android:textStyle="bold" />
 
             <!-- PROFILE EMAIL -->
-            <TextView
-                android:id="@+id/profile_activity_text_view_email"
-                android:layout_width="match_parent"
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/profile_activity_edit_text_email"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/ColorWhite"
                 android:paddingLeft="@dimen/default_margin"
+                android:maxLines="1"
                 android:textColor="@color/ColorWhite"
                 android:textSize="@dimen/default_middle_size" />
 
         </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <!-- PROGRESS BAR -->
+            <ProgressBar
+                android:id="@+id/profile_activity_progress_bar"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_margin="@dimen/default_large_margin"
+                android:layout_centerInParent="true"
+                android:visibility="invisible"/>
 
         <!-- CHECKBOX IS USER MENTOR -->
         <CheckBox
             android:id="@+id/profile_activity_check_box_is_private"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
+            android:layout_margin="5dp"
             android:buttonTint="@color/ColorWhite"
             android:text="@string/check_private"
             android:textColor="@color/ColorWhite" />
 
         <TextView
+            android:layout_below="@+id/profile_activity_check_box_is_private"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:text="@string/private_descprition"
             android:textColor="@color/ColorWhite" />
 
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -117,20 +123,20 @@
         <Button
             android:id="@+id/profile_activity_button_update"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
-            android:background="@drawable/button_radius_primary_color"
+            android:background="@drawable/button_radius_green_color"
             android:padding="@dimen/default_margin"
             android:text="@string/button_update_account"
             android:textColor="#fff"
-            android:textSize="@dimen/default_text_size" />
+            android:textSize="@dimen/default_text_size"/>
 
         <!-- BUTTON SIGN OUT -->
         <Button
             android:id="@+id/profile_activity_button_sign_out"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:background="@drawable/button_radius_accent_color"
@@ -143,7 +149,7 @@
         <Button
             android:id="@+id/profile_activity_button_delete"
             style="?android:attr/borderlessButtonStyle"
-            android:layout_width="200dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/default_margin"
             android:background="@drawable/button_radius_error_color"
@@ -153,5 +159,4 @@
             android:textSize="@dimen/default_text_size" />
 
     </LinearLayout>
-
 </LinearLayout>

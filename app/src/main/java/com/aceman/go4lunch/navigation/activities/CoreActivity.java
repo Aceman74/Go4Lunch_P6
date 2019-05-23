@@ -18,24 +18,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.api.PlacesApi;
-import com.aceman.go4lunch.api.RestaurantHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.auth.ProfileActivity;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.aceman.go4lunch.data.details.PlacesDetails;
-import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.events.RefreshEvent;
-import com.aceman.go4lunch.events.ResultListEvent;
 import com.aceman.go4lunch.events.UserListEvent;
 import com.aceman.go4lunch.models.User;
-import com.aceman.go4lunch.models.UserPublic;
+import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.navigation.adapter.PageAdapter;
-import com.aceman.go4lunch.navigation.fragments.ListViewFragment;
-import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
@@ -54,15 +47,12 @@ import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,7 +72,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     private static final int SIGN_OUT_TASK = 10;
     private static final int FLAG_ACTIVITY_NEW_TASK = 20;
     public static FusedLocationProviderClient sFusedLocationProviderClient;
-    public List<UserPublic> mUserList = new ArrayList<>();
+    public List<RestaurantPublic> mUserList = new ArrayList<>();
     public static LatLng mSearchLatLng;
     public static String mSearchName;
     int AUTOCOMPLETE_REQUEST_CODE = 8;
@@ -134,7 +124,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                UserPublic userP = document.toObject(UserPublic.class);     // < ==
+                                RestaurantPublic userP = document.toObject(RestaurantPublic.class);     // < ==
                                 mUserList.add(userP);
                             }
                             Timber.tag("Task To List").i("Sucess");

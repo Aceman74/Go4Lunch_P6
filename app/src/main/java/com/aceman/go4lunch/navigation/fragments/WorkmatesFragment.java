@@ -10,17 +10,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.events.UserListEvent;
-import com.aceman.go4lunch.models.User;
-import com.aceman.go4lunch.models.UserPublic;
+import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.navigation.adapter.WorkersAdapter;
 import com.bumptech.glide.Glide;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,7 +33,7 @@ import butterknife.ButterKnife;
  */
 public class WorkmatesFragment extends Fragment {
     public WorkersAdapter mWorkersAdapter;
-    public List<UserPublic> mUserList = new ArrayList<>();
+    public List<RestaurantPublic> mUserList = new ArrayList<>();
     @BindView(R.id.workmate_fragment_recycler_view)
     RecyclerView mRecyclerView;
     Toolbar mToolbar;

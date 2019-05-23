@@ -10,7 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.models.UserPublic;
+import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.navigation.activities.PlacesDetailActivity;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
@@ -28,12 +28,12 @@ import timber.log.Timber;
  */
 public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAdapter.MyViewHolder> {
 
-    private List<UserPublic> mUserList;
+    private List<RestaurantPublic> mUserList;
     private final RequestManager glide;
     private final Context mContext;
 
 
-    public WorkersJoiningAdapter(List<UserPublic> userList, RequestManager glide, Context context) {
+    public WorkersJoiningAdapter(List<RestaurantPublic> userList, RequestManager glide, Context context) {
         this.mUserList = userList;
         this.glide = glide;
         this.mContext = context;
@@ -64,9 +64,10 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
      * @param glide  use for get image of article
      * @param holder view holder
      */
-    private void updateWithFreshInfo(final UserPublic user, RequestManager glide, final MyViewHolder holder, int position) {
+    private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
 
-        holder.mTextView.setText(user.getUsername()+" is Joining " +user.getRestaurantName() + " !");
+
+        holder.mTextView.setText(user.getUsername()+ R.string.is_joining +user.getRestaurantName() + R.string.exclamation);
 
         try {
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image

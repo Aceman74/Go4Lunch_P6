@@ -1,11 +1,15 @@
 package com.aceman.go4lunch.models;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.firestore.ServerTimestamp;
+
+import java.util.Date;
 
 /**
  * Created by Lionel JOFFRAY - on 21/05/2019.
  */
-public class UserPublic {
+public class RestaurantPublic {
 
     @Nullable
     private String urlPicture;
@@ -14,11 +18,13 @@ public class UserPublic {
     private String restaurantID;
     private String restaurantName;
     private String like;
+    private Date dateCreated;
+    private int day;
 
-    public UserPublic() {
+    public RestaurantPublic() {
     }
 
-    public UserPublic(String username, String urlPicture) {
+    public RestaurantPublic(String username, String urlPicture) {
         this.username = username;
         this.urlPicture = urlPicture;
     }
@@ -39,6 +45,19 @@ public class UserPublic {
         return restaurantName;
     }
 
+    public int getDay() {
+        return day;
+    }
+
+    public void setDay(int day) {
+        this.day = day;
+    }
+
+    @ServerTimestamp
+    public Date getDateCreated() { return dateCreated; }
+
+    public void setDateCreated(Date dateCreated) { this.dateCreated = dateCreated; }
+
     public void setRestaurantName(String restaurantName) {
         this.restaurantName = restaurantName;
     }
@@ -55,4 +74,19 @@ public class UserPublic {
         return like;
     }
 
+    public void setUrlPicture(String urlPicture) {
+        this.urlPicture = urlPicture;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setRestaurantID(String restaurantID) {
+        this.restaurantID = restaurantID;
+    }
+
+    public void setLike(String like) {
+        this.like = like;
+    }
 }

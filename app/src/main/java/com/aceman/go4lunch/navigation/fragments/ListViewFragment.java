@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.aceman.go4lunch.R;
@@ -21,11 +20,10 @@ import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.events.RefreshEvent;
 import com.aceman.go4lunch.events.ResultListEvent;
 import com.aceman.go4lunch.events.UserListEvent;
-import com.aceman.go4lunch.models.UserPublic;
+import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.navigation.activities.PlacesDetailActivity;
 import com.aceman.go4lunch.navigation.adapter.ListViewAdapter;
 import com.aceman.go4lunch.utils.AdapterCallback;
-import com.aceman.go4lunch.utils.ProgressBarCallback;
 import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,7 +43,7 @@ import butterknife.ButterKnife;
  */
 public class ListViewFragment extends Fragment implements AdapterCallback {
     public List<Result> mResults = new ArrayList<>();
-    public List<UserPublic> mUserList = new ArrayList<>();
+    public List<RestaurantPublic> mUserList = new ArrayList<>();
     @BindView(R.id.restaurant_recycler_view)
     RecyclerView mRecyclerView;
     @BindView(R.id.list_view_progressbar)

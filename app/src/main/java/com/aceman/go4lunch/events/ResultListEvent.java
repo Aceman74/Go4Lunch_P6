@@ -1,9 +1,7 @@
 package com.aceman.go4lunch.events;
 
 import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.models.UserPublic;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

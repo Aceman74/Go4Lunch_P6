@@ -9,7 +9,7 @@
     <string name="facebook_application_id">1114894378703250</string>
     <string name="fb_login_protocol_scheme">fb1114894378703250</string>
     <string name="text_input_username">Username</string>
-    <string name="text_view_email">Email</string>
+    <string name="text_view_email">Email:</string>
     <string name="check_private">Private Account</string>
     <string name="button_update_account">Update Account</string>
     <string name="button_sign_out_account">Sign Out</string>
@@ -22,7 +22,7 @@
     <string name="popup_message_confirmation_delete_account">You really want to delete your account ?</string>
     <string name="popup_message_choice_yes">Yes, delete it</string>
     <string name="popup_message_choice_no">No, keep it</string>
-    <string name="private_descprition">A private account hide your account for other users, so they can\'t bother you until you uncheck Private Account.</string>
+    <string name="private_descprition">A private account hide your account for other users, so they can\'t see your lunch activity until you uncheck Private Account.</string>
     <string name="toolbar_title_core_activity">I\'m Hungry !</string>
     <!-- BOTTOM NAVIGATION VIEW -->
     <string name="bottom_navigation_menu_maps">Maps view</string>
@@ -39,5 +39,9 @@
     <string name="mUrlNext"><![CDATA[&photoreference=]]></string>
     <string name="no_result_string">Unfortunately there\'s no restaurant around, try a different place !</string>
     <string name="oops">Oops !</string>
+    <string name="location_text">Go4Lunch needs to access your device\'s location to fully enjoy it and find your co-workers!</string>
+    <string name="location_permission">Location Permission</string>
+    <string name="is_joining">is Joining</string>
+    <string name="exclamation">!</string>
 
 </resources>

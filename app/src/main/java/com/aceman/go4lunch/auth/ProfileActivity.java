@@ -1,6 +1,9 @@
 package com.aceman.go4lunch.auth;
 
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -10,10 +13,9 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.api.RestaurantHelper;
+import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.aceman.go4lunch.models.User;
@@ -23,6 +25,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -37,14 +41,15 @@ public class ProfileActivity extends BaseActivity {
     private static final int DELETE_USER_TASK = 20;
     private static final int UPDATE_USERNAME = 30;
     private static final int UPDATE_USERNAME_PUBLIC = 40;
+    private static final int PENDING_ID = 69;
 
     //FOR DESIGN
     @BindView(R.id.profile_activity_imageview_profile)
     ImageView imageViewProfile;
     @BindView(R.id.profile_activity_edit_text_username)
     TextInputEditText textInputEditTextUsername;
-    @BindView(R.id.profile_activity_text_view_email)
-    TextView textViewEmail;
+    @BindView(R.id.profile_activity_edit_text_email)
+    TextInputEditText textInputEditTextEmail;
     @BindView(R.id.profile_activity_progress_bar)
     ProgressBar progressBar;
     @BindView(R.id.profile_activity_check_box_is_private)
@@ -71,6 +76,7 @@ public class ProfileActivity extends BaseActivity {
     @OnClick(R.id.profile_activity_button_update)
     public void onClickUpdateButton() {
         this.updateUsernameInFirebase();
+        this.updateEmailInFirebase();
     }
 
     @OnClick(R.id.profile_activity_check_box_is_private)
@@ -83,6 +89,7 @@ public class ProfileActivity extends BaseActivity {
     @OnClick(R.id.profile_activity_button_sign_out)
     public void onClickSignOutButton() {
         this.signOutUserFromFirebase();
+        restartApp();
     }
 
     @OnClick(R.id.profile_activity_button_delete)
@@ -97,8 +104,17 @@ public class ProfileActivity extends BaseActivity {
                 })
                 .setNegativeButton(R.string.popup_message_choice_no, null)
                 .show();
+        restartApp();
     }
 
+    private void restartApp() {
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        int mPendingIntentId = PENDING_ID;
+        PendingIntent mPendingIntent = PendingIntent.getActivity(getApplicationContext(), mPendingIntentId, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+        System.exit(0);
+    }
     // --------------------
     // REST REQUESTS
     // --------------------
@@ -114,7 +130,7 @@ public class ProfileActivity extends BaseActivity {
         if (this.getCurrentUser() != null) {
             //4 - We also delete user from firestore storage
             UserHelper.deleteUser(this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener());
-            RestaurantHelper.deleteUser(this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener());
+            RestaurantPublicHelper.deleteUser(this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener());
             AuthUI.getInstance()
                     .delete(this)
                     .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(DELETE_USER_TASK));
@@ -132,15 +148,27 @@ public class ProfileActivity extends BaseActivity {
 
         this.progressBar.setVisibility(View.VISIBLE);
         String username = this.textInputEditTextUsername.getText().toString();
+        String usernameBase = Objects.requireNonNull(getCurrentUser()).getDisplayName();
 
         if (this.getCurrentUser() != null) {
-            if (!username.isEmpty() && !username.equals(getString(R.string.info_no_username_found))) {
-                RestaurantHelper.updateUsername(username,this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME_PUBLIC));
+            if (!username.isEmpty() && !username.equals(getString(R.string.info_no_username_found)) && !username.equals(usernameBase)) {
+                RestaurantPublicHelper.updateUsername(username,this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME_PUBLIC));
                 UserHelper.updateUsername(username, this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME));
             }
         }
     }
+    private void updateEmailInFirebase() {
 
+        this.progressBar.setVisibility(View.VISIBLE);
+        String email = this.textInputEditTextEmail.getText().toString();
+        String emailBase = getCurrentUser().getEmail();
+
+        if (this.getCurrentUser() != null) {
+            if (!email.isEmpty() && !email.equals(getString(R.string.info_no_email_found)) && !email.equals(emailBase)) {
+                UserHelper.updateEmail(email, this.getCurrentUser().getUid()).addOnFailureListener(this.onFailureListener()).addOnSuccessListener(this.updateUIAfterRESTRequestsCompleted(UPDATE_USERNAME));
+            }
+        }
+    }
     // 2 - Update User Private (is or not)
     private void updateUserIsPrivate() {
         if (this.getCurrentUser() != null) {
@@ -160,9 +188,7 @@ public class ProfileActivity extends BaseActivity {
                         .into(imageViewProfile);
             }
 
-            String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ? getString(R.string.info_no_email_found) : this.getCurrentUser().getEmail();
 
-            this.textViewEmail.setText(email);
 
             // 7 - Get additional data from Firestore (isPrivate & Username)
             UserHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -170,6 +196,9 @@ public class ProfileActivity extends BaseActivity {
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     User currentUser = documentSnapshot.toObject(User.class);
                     String username = TextUtils.isEmpty(currentUser.getUsername()) ? getString(R.string.info_no_username_found) : currentUser.getUsername();
+                    String email = TextUtils.isEmpty(currentUser.getEmail()) ? getString(R.string.info_no_email_found) : currentUser.getEmail();
+
+                    textInputEditTextEmail.setText(email);
                     checkBoxIsPrivate.setChecked(currentUser.getIsPrivate());
                     textInputEditTextUsername.setText(username);
                 }
