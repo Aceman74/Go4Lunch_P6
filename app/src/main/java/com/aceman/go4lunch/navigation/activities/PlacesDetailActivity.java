@@ -38,8 +38,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -212,11 +217,14 @@ public class PlacesDetailActivity extends BaseActivity {
 
                         if (currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mID)) {
 
-                            RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), null,null,null,-1).addOnFailureListener(onFailureListener());
+                            RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), null,null,null,null).addOnFailureListener(onFailureListener());
                             UserHelper.updateRestaurantID(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
                             mFloatingActionButton.setImageResource(R.drawable.add_icon);
                         } else {
-                            RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), mID, mRestaurantName, mRestaurant, Calendar.DAY_OF_YEAR).addOnFailureListener(onFailureListener());
+                            Date todayDate = Calendar.getInstance().getTime();
+                            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                            String date = formatter.format(todayDate);
+                            RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), mID, mRestaurantName, mRestaurant, date).addOnFailureListener(onFailureListener());
                             UserHelper.updateRestaurantID(getCurrentUser().getUid(), mID).addOnFailureListener(onFailureListener());
                             mFloatingActionButton.setImageResource(R.drawable.done_icon);
                         }

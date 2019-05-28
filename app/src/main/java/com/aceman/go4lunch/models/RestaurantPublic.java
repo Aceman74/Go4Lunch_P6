@@ -1,9 +1,9 @@
 package com.aceman.go4lunch.models;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.database.annotations.Nullable;
 import com.google.firebase.firestore.ServerTimestamp;
 
+import java.text.DateFormat;
 import java.util.Date;
 
 /**
@@ -14,12 +14,11 @@ public class RestaurantPublic {
     @Nullable
     private String urlPicture;
     private String username;
-    private String uid;
     private String restaurantID;
     private String restaurantName;
     private String like;
     private Date dateCreated;
-    private int day;
+    private String date;
 
     public RestaurantPublic() {
     }
@@ -45,12 +44,12 @@ public class RestaurantPublic {
         return restaurantName;
     }
 
-    public int getDay() {
-        return day;
+    public String getDate() {
+        return date;
     }
 
-    public void setDay(int day) {
-        this.day = day;
+    public void setDate(String date) {
+        this.date = date;
     }
 
     @ServerTimestamp
@@ -60,14 +59,6 @@ public class RestaurantPublic {
 
     public void setRestaurantName(String restaurantName) {
         this.restaurantName = restaurantName;
-    }
-
-    public String getUid() {
-        return uid;
-    }
-
-    public void setUid(String uid) {
-        this.uid = uid;
     }
 
     public String getLike() {

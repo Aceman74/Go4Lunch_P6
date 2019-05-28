@@ -7,6 +7,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.text.DateFormat;
+
 /**
  * Created by Lionel JOFFRAY - on 02/05/2019.
  */
@@ -33,10 +35,9 @@ public class RestaurantPublicHelper {
 
     // --- UPDATE ---
 
-    public static Task<Void> restaurantPublic(String uid, String restaurantID, String restaurantName, Restaurant restaurant, int dayOfYear) {
-        Restaurant lunch = new Restaurant(restaurant);
+    public static Task<Void> restaurantPublic(String uid, String restaurantID, String restaurantName, Restaurant restaurant, String date) {
         return RestaurantPublicHelper.getRestaurantCollection().document(uid)
-                .update("restaurantID", restaurantID, "uid", uid, "restaurantName", restaurantName,lunch, "day", dayOfYear);
+                .update("restaurantID", restaurantID, "restaurantName", restaurantName,restaurant, "date", date);
     }
 
     public static Task<Void> updateUsername(String username, String uid) {

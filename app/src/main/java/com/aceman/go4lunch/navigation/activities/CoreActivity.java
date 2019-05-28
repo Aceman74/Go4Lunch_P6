@@ -26,6 +26,7 @@ import com.aceman.go4lunch.auth.ProfileActivity;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.events.UserListEvent;
+import com.aceman.go4lunch.login.MainActivity;
 import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.navigation.adapter.PageAdapter;
@@ -124,7 +125,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (QueryDocumentSnapshot document : task.getResult()) {
-                                RestaurantPublic userP = document.toObject(RestaurantPublic.class);     // < ==
+                                RestaurantPublic userP = document.toObject(RestaurantPublic.class);     // < == GET LIST FIRESTORE
                                 mUserList.add(userP);
                             }
                             Timber.tag("Task To List").i("Sucess");
@@ -195,11 +196,23 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     User currentUser = documentSnapshot.toObject(User.class);
+                    if(currentUser == null){    //  logout if no username set (account delete by admin )
+                        signOutUserFromFirebase();
+                    }else{
                     String username = TextUtils.isEmpty(currentUser.getUsername()) ? getString(R.string.info_no_username_found) : currentUser.getUsername();
                     textViewUsername.setText(username);
+                    }
                 }
             });
         }
+    }
+
+    private void signOutUserFromFirebase() {
+        AuthUI.getInstance()
+                .signOut(this)
+                .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
+        Intent start = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(start);
     }
 
     private void configureHamburgerBtn() {
@@ -260,9 +273,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
                 this.startActivity(notification);
                 break;
             case R.id.drawer_logout:
-                AuthUI.getInstance()
-                        .signOut(this)
-                        .addOnSuccessListener(this, this.updateUIAfterRESTRequestsCompleted(SIGN_OUT_TASK));
+                signOutUserFromFirebase();
                 break;
             case R.id.bottom_maps:
                 pager.setCurrentItem(0);

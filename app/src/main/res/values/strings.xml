@@ -7,6 +7,7 @@
     <string name="error_no_internet">Error, no internet connexion</string>
     <string name="main_activity_description">Find a nice restaurant and invite your co-worker for lunch !</string>
     <string name="facebook_application_id">1114894378703250</string>
+    <string name="facebook_app_id">1114894378703250</string>
     <string name="fb_login_protocol_scheme">fb1114894378703250</string>
     <string name="text_input_username">Username</string>
     <string name="text_view_email">Email:</string>

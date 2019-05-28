@@ -19,7 +19,7 @@ import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.base.BaseActivity;
 import com.aceman.go4lunch.models.User;
-import com.aceman.go4lunch.navigation.activities.MainActivity;
+import com.aceman.go4lunch.login.MainActivity;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
