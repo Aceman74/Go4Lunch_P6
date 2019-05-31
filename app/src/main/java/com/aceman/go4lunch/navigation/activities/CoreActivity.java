@@ -148,6 +148,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
             public void onClick(View v) {
 
                 Intent profile = new Intent(getApplicationContext(), ProfileActivity.class);
+                profile.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 getApplicationContext().startActivity(profile);
 
             }

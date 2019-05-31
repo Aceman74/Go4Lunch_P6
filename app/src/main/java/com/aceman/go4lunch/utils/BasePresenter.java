@@ -16,8 +16,16 @@
 
 package com.aceman.go4lunch.utils;
 
-public interface BasePresenter {
+public abstract class BasePresenter {
 
-    void start();
+    BaseView mView = null;
+
+    public void attachView(BaseView v) {
+        mView = v;
+    }
+
+    public BaseView getView() {
+        return mView;
+    }
 
 }
