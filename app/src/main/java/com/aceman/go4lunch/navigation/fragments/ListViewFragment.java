@@ -29,6 +29,7 @@ import com.bumptech.glide.Glide;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -41,7 +42,7 @@ import butterknife.ButterKnife;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ListViewFragment extends Fragment implements AdapterCallback {
+public class ListViewFragment extends Fragment {
     public List<Result> mResults = new ArrayList<>();
     public List<RestaurantPublic> mUserList = new ArrayList<>();
     @BindView(R.id.restaurant_recycler_view)
@@ -65,6 +66,7 @@ public class ListViewFragment extends Fragment implements AdapterCallback {
     private static String mRestaurantName;
     @BindView(R.id.no_result_layout)
     LinearLayout mNoResultLayout;
+    private Result mResult;
 
 
     public ListViewFragment() {
@@ -188,7 +190,7 @@ public class ListViewFragment extends Fragment implements AdapterCallback {
 
     public void configureRecyclerView() {
         if (mResults != null) {
-            mListViewAdapter = new ListViewAdapter(mResults, mUserList, Glide.with(this), getContext(), this);
+            mListViewAdapter = new ListViewAdapter(mResults, mUserList, Glide.with(this), getContext());
             mRecyclerView.setAdapter(mListViewAdapter);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
@@ -201,26 +203,4 @@ public class ListViewFragment extends Fragment implements AdapterCallback {
         loadingView();
     }
 
-    @Override
-    public void onMethodCallback(Result item, String url) {
-
-        mName = item.getName();
-        mAddress = item.getFormattedAddress();
-        mWebsite = item.getWebsite();
-        mPhone = item.getFormattedPhoneNumber();
-        withID = item.getPlaceId();
-        mStar = item.getRatingStars();
-        mRestaurantName = item.getName();
-        Intent details = new Intent(getActivity(), PlacesDetailActivity.class);
-        details.putExtra("restaurantName", mRestaurantName);
-        details.putExtra("name", mName);
-        details.putExtra("address", mAddress);
-        details.putExtra("star", mStar);
-        details.putExtra("phone", mPhone);
-        details.putExtra("website", mWebsite);
-        details.putExtra("id", withID);
-        details.putExtra("url", url);
-        startActivity(details);
-
-    }
 }

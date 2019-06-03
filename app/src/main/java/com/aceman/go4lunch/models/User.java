@@ -19,6 +19,7 @@ public class User {
     @Nullable
     private String urlPicture;
     private Date dateCreated;
+    private String restaurantName;
 
     public User() {
     }
@@ -32,6 +33,15 @@ public class User {
     }
 
     // --- GETTERS ---
+
+    public String getRestaurantName() {
+        return restaurantName;
+    }
+
+    public void setRestaurantName(String restaurantName) {
+        this.restaurantName = restaurantName;
+    }
+
     public String getUid() {
         return uid;
     }

@@ -43,8 +43,8 @@ public class UserHelper {
         return UserHelper.getUsersCollection().document(uid).update("isPrivate", isMentor);
     }
 
-    public static Task<Void> updateRestaurantID(String uid, String restaurant) {
-        return UserHelper.getUsersCollection().document(uid).update("restaurant", restaurant);
+    public static Task<Void> updateRestaurantID(String uid, String restaurant, String name) {
+        return UserHelper.getUsersCollection().document(uid).update("restaurant", restaurant,"restaurantName", name);
     }
 
     public static Task<Void> updateLikeRestaurant(String uid, String like) {

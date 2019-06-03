@@ -1,6 +1,7 @@
 package com.aceman.go4lunch.navigation.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,10 +13,14 @@ import android.widget.TextView;
 import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.events.PlacesDetailEvent;
 import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.navigation.activities.PlacesDetailActivity;
 import com.aceman.go4lunch.utils.AdapterCallback;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -36,7 +41,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     private final RequestManager glide;
     private final Context mContext;
     public List<Result> mResults;
-    public List<RestaurantPublic>mUserList;
+    public List<RestaurantPublic> mUserList;
     @BindString(R.string.mUrl_begin)
     String mUrlBegin;
     @BindString(R.string.mUrlNext)
@@ -47,13 +52,13 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     int mGreen;
     String API_KEY = BuildConfig.google_maps_key;
     private AdapterCallback mAdapterCallback;
+    private String mIntent;
 
 
-    public ListViewAdapter(List<Result> listResult, List<RestaurantPublic> userList, RequestManager glide, Context context, AdapterCallback callback) {
+    public ListViewAdapter(List<Result> listResult, List<RestaurantPublic> userList, RequestManager glide, Context context) {
         mResults = listResult;
         this.glide = glide;
         this.mContext = context;
-        this.mAdapterCallback = callback;
         this.mUserList = userList;
     }
 
@@ -80,7 +85,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
      * @param holder view holder
      */
     private void updateWithFreshInfo(final Result item, RequestManager glide, final MyViewHolder holder, int position) {
-
+        int userJoining = 0;
         holder.mName.setText(item.getName());
         holder.mAdress.setText(item.getFormattedAddress());
         holder.mDistance.setText(item.getDistanceToInt() + "m");
@@ -91,6 +96,18 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         } else {
             holder.mOpen.setText("Closed");
             holder.mOpen.setTextColor(mRed);
+        }
+
+        for (int i = 0; i < mUserList.size(); i++) {
+            if (mUserList.get(i).getRestaurantID() != null) {
+                String getID = mUserList.get(i).getRestaurantID();
+                if (getID.equals(item.getPlaceId())) {
+                    userJoining++;
+                }
+            }
+        }
+        if (userJoining > 0) {
+            holder.mIsUser.setText("("+ userJoining + ")");
         }
 
         int mRating = item.getRatingStars();
@@ -118,11 +135,14 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
             @Override
             public void onClick(View v) {
                 Timber.tag(item.getName()).d("is Clicked");
-                mAdapterCallback.onMethodCallback(item, holder.mUrl);
+                EventBus.getDefault().postSticky(new PlacesDetailEvent(item, holder.mUrl));
+                Intent detail = new Intent(mContext, PlacesDetailActivity.class);
+                mIntent = mContext.getString(R.string.adapter);
+                detail.putExtra("detail_intent", mIntent);
+                mContext.startActivity(detail);
 
             }
         });
-
     }
 
     private void ratingMethod(int rating, MyViewHolder holder) {

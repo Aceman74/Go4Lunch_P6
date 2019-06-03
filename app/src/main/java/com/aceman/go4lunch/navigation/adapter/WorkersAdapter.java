@@ -61,8 +61,10 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
      */
     private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
 
-        if(user.getRestaurantName() != null)
-        holder.mTextView.setText(user.getUsername()+" is eating at " +user.getRestaurantName());
+        if(user.getRestaurantName() != null){
+          //  if(user.getUsername() == )
+            holder.mTextView.setText(user.getUsername()+" is eating at " +user.getRestaurantName());
+        }
 else{
     holder.mTextView.setAlpha(0.6f);
                 holder.mTextView.setText(user.getUsername()+" has not made his choice yet .");

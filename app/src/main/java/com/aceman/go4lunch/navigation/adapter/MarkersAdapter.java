@@ -12,9 +12,12 @@ import android.widget.TextView;
 import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.events.PlacesDetailEvent;
 import com.aceman.go4lunch.utils.AdapterCallback;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -123,7 +126,7 @@ public class MarkersAdapter extends RecyclerView.Adapter<MarkersAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 Timber.tag(item.getName()).d("is Clicked");
-                mAdapterCallback.onMethodCallback(item, mUrl);
+                EventBus.getDefault().post(new PlacesDetailEvent(item,mUrl));
 
             }
         });

@@ -76,7 +76,6 @@ public class WorkmatesFragment extends Fragment {
 
     private void getUserList() {
 
-
     }
 
     public void configureRecyclerView() {

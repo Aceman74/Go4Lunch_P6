@@ -55,7 +55,7 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
         mPresenter.attachView(this);
         askPermission();
         updateUIWhenResuming();
-        mPresenter.configureCache(mCache);
+        mCache = mPresenter.configureCache(mCache);
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

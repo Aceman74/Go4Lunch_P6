@@ -5,6 +5,7 @@ import com.google.firebase.firestore.ServerTimestamp;
 
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Lionel JOFFRAY - on 21/05/2019.
@@ -19,6 +20,7 @@ public class RestaurantPublic {
     private String like;
     private Date dateCreated;
     private String date;
+    private Details mDetails;
 
     public RestaurantPublic() {
     }
@@ -28,6 +30,12 @@ public class RestaurantPublic {
         this.urlPicture = urlPicture;
     }
 
+    public Details getDetails() {
+        return mDetails;
+    }
+    public void setDetails(Details details) {
+        mDetails = details;
+    }
     public String getUrlPicture() {
         return urlPicture;
     }

@@ -50,7 +50,7 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        if((mUserList.get(position).getRestaurantName() != null && mUserList.get(position).getRestaurantName().equals(PlacesDetailActivity.mRestaurantName))) {
+        if((mUserList.get(position).getRestaurantName() != null && mUserList.get(position).getRestaurantName().equals(PlacesDetailActivity.mName))) {
             updateWithFreshInfo(this.mUserList.get(position), this.glide, holder, position);
         }else{
             holder.mItemListener.setVisibility(View.GONE);
@@ -67,7 +67,7 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
     private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
 
 
-        holder.mTextView.setText(user.getUsername()+ R.string.is_joining +user.getRestaurantName() + R.string.exclamation);
+        holder.mTextView.setText(user.getUsername()+ " is joining " +user.getRestaurantName() + "!");
 
         try {
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image

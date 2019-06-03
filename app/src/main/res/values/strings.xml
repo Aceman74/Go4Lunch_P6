@@ -44,9 +44,14 @@
     <string name="oops">Oops !</string>
     <string name="permision_text">Go4Lunch needs to use some of your devices functions to fully enjoy it and find your co-workers!</string>
     <string name="application_permission">Application Permission</string>
-    <string name="is_joining">is Joining</string>
+    <string name="is_joining">is joining</string>
     <string name="exclamation">!</string>
     <string name="perm_required">Permission required</string>
     <string name="perm_required_1">Both location and call are needed to launch this application.</string>
+    <string name="no_address">No address found</string>
+    <string name="lunch">lunch</string>
+    <string name="adapter">adapter</string>
+    <string name="select_lunch">You have not selected your lunch today !</string>
+    <string name="back_to_map">Back</string>
 
 </resources>

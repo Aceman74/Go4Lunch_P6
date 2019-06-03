@@ -37,7 +37,7 @@ public class RestaurantPublicHelper {
 
     public static Task<Void> restaurantPublic(String uid, String restaurantID, String restaurantName, Restaurant restaurant, String date) {
         return RestaurantPublicHelper.getRestaurantCollection().document(uid)
-                .update("restaurantID", restaurantID, "restaurantName", restaurantName,restaurant, "date", date);
+                .update("restaurantID", restaurantID, "restaurantName", restaurantName,"details",restaurant, "date", date);
     }
 
     public static Task<Void> updateUsername(String username, String uid) {

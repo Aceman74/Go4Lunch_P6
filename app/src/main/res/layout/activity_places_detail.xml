@@ -8,6 +8,11 @@
     android:orientation="vertical"
     tools:context=".navigation.activities.PlacesDetailActivity">
 
+    <include
+        layout="@layout/no_lunch_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
     <RelativeLayout
         android:id="@+id/detail_fragment_image_layout"

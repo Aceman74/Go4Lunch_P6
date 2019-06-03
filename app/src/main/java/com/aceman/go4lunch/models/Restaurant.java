@@ -16,14 +16,8 @@ public class Restaurant {
     private String placeID;
     private int rating;
     private String imageUrl;
-    private Date dateCreated;
-    private Restaurant restaurant;
 
     public Restaurant() {
-    }
-
-    public Restaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
     }
 
     public Restaurant(String name, String address, String phone, String website, String placeID, int rating, String imageUrl) {
@@ -36,13 +30,6 @@ public class Restaurant {
         this.imageUrl = imageUrl;
     }
 
-    public Restaurant getRestaurant() {
-        return restaurant;
-    }
-
-    public void setRestaurant(Restaurant restaurant) {
-        this.restaurant = restaurant;
-    }
 
     public String getName() {
         return name;
@@ -87,7 +74,6 @@ public class Restaurant {
     public int getRating() {
         return rating;
     }
-
     public void setRating(int rating) {
         this.rating = rating;
     }
@@ -98,13 +84,5 @@ public class Restaurant {
 
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
-    }
-
-    public Date getDateCreated() {
-        return dateCreated;
-    }
-
-    public void setDateCreated(Date dateCreated) {
-        this.dateCreated = dateCreated;
     }
 }

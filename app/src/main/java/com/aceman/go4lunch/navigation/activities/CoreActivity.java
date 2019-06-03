@@ -96,6 +96,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     Disposable mSearchDisposable;
     private String mRestaurantName;
     private Disposable disposable;
+    private String mIntent;
 
 
     @Override
@@ -267,6 +268,8 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         switch (id) {
             case R.id.drawer_your_lunch:
                 Intent lunch = new Intent(this, PlacesDetailActivity.class);
+                mIntent = getString(R.string.lunch);
+                lunch.putExtra("detail_intent", mIntent);
                 this.startActivity(lunch);
                 break;
             case R.id.drawer_settings:
