@@ -19,16 +19,16 @@
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_application_id"/>
 
         <activity
-            android:name=".navigation.activities.PlacesDetailActivity"
+            android:name=".activities.placesDetailActivity.PlacesDetailActivity"
             android:label="@string/title_activity_places_detail"
-            android:parentActivityName=".navigation.activities.CoreActivity"
+            android:parentActivityName=".activities.coreActivity.CoreActivity"
             android:theme="@style/AppTheme.NoActionBar" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".login.MainActivity"
+            android:name=".activities.loginActivity.MainActivity"
             android:theme="@style/AppTheme.NoTitle">
 
             <!-- DISABLE TOOLBAR IN MAIN ACTIVITY -->
@@ -39,14 +39,14 @@
             </intent-filter>
         </activity> <!-- PROFILE ACTIVITY -->
         <activity
-            android:name=".auth.ProfileActivity"
+            android:name=".activities.profileActivity.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"
-            android:parentActivityName=".login.MainActivity" />
+            android:parentActivityName=".activities.loginActivity.MainActivity" />
         <!-- CORE ACTIVITY -->
         <activity
-            android:name=".navigation.activities.CoreActivity"
+            android:name=".activities.coreActivity.CoreActivity"
             android:label="@string/toolbar_title_core_activity"
-            android:parentActivityName=".login.MainActivity"
+            android:parentActivityName=".activities.loginActivity.MainActivity"
             android:theme="@style/AppTheme.Core">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />

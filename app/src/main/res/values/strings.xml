@@ -53,5 +53,6 @@
     <string name="adapter">adapter</string>
     <string name="select_lunch">You have not selected your lunch today !</string>
     <string name="back_to_map">Back</string>
+    <string name="restaurant">restaurant</string>
 
 </resources>
