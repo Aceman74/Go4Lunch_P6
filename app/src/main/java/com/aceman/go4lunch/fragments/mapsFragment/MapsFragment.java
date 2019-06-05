@@ -282,7 +282,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mLongitude = mLatLng.longitude;
         mLocation = mLatitude + " " + mLongitude;
         mType = getString(R.string.restaurant);
-        executeHttpRequestWithRetrofit();
+        mPresenter.executeHttpRequestWithRetrofit(mLocation,mType,mRadius,mResults);
         markerSetPreviousPos();
     }
 
@@ -372,31 +372,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     }
 
     @Override
-    public void executeHttpRequestWithRetrofit() {
-
-        this.disposable = PlacesApi.getInstance().getLocationInfo(mLocation, mType, mRadius).subscribeWith(new DisposableObserver<Nearby>() {
-            @Override
-            public void onNext(Nearby details) {
-                Timber.tag("PLACES_Next").i("On Next");
-                Timber.tag("PLACES_OBSERVABLE").i("from: " + mLocation + " type: " + mType);
-                mMaps.clear();
-                updateData(details);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Timber.tag("PLACES_Error").e("On Error%s", Log.getStackTraceString(e));
-            }
-
-            @Override
-            public void onComplete() {
-                Timber.tag("PLACES_Complete").i("On Complete !!");
-                detailsHttpRequestWithRetrofit();
-            }
-        });
-    }
-
-    @Override
     public void updateData(Nearby details) {
         mResults.clear();
         mResults.addAll(details.getResults());
@@ -410,36 +385,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
             Marker noResult = mMaps.addMarker(new MarkerOptions().title("No results found!").snippet("No restaurants here within 1Km").position(mLatLng));
             noResult.showInfoWindow();
         }
-    }
-
-    @Override
-    public void detailsHttpRequestWithRetrofit() {
-
-        for (final Result result : mResults) {
-
-
-            this.disposable = PlacesApi.getInstance().getRestaurantsDetails(result.getPlaceId()).subscribeWith(new DisposableObserver<PlacesDetails>() {
-                @Override
-                public void onNext(PlacesDetails details) {
-                    Timber.tag("PLACES_Next").i("On Next");
-                    Timber.tag("PLACES_OBSERVABLE").i("from: " + mLocation + " type: " + mType);
-                    updateMap(details);
-                    updateResultList(result, details);
-                }
-
-                @Override
-                public void onError(Throwable e) {
-                    Timber.tag("PLACES_Error").e("On Error%s", Log.getStackTraceString(e));
-                }
-
-                @Override
-                public void onComplete() {
-                    Timber.tag("PLACES_Complete").i("On Complete !!");
-                }
-            });
-        }
-        EventBus.getDefault().post(new ResultListEvent(mResults));
-        EventBus.getDefault().post(new RefreshEvent());
     }
 
     @Override
@@ -540,4 +485,14 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mMapsFragment.onLowMemory();
     }
 
+    @Override
+    public void clearMapMarkers() {
+        mMaps.clear();
+    }
+
+    @Override
+    public void postEventBusAfterRequest() {
+        EventBus.getDefault().post(new ResultListEvent(mResults));
+        EventBus.getDefault().post(new RefreshEvent());
+    }
 }

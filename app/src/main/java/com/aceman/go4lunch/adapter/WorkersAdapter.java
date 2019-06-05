@@ -10,7 +10,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
+import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.utils.DateSetter;
+import com.aceman.go4lunch.utils.events.HourSetter;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -61,14 +64,23 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
      */
     private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
 
-        if(user.getRestaurantName() != null){
-          //  if(user.getUsername() == )
-            holder.mTextView.setText(user.getUsername()+" is eating at " +user.getRestaurantName());
-        }
-else{
-    holder.mTextView.setAlpha(0.6f);
-                holder.mTextView.setText(user.getUsername()+" has not made his choice yet .");
-        }
+            userWithSamePlace(user,holder);
+            loadUserPictureWithGlide(user, holder);
+            onClickListener(user, holder);
+    }
+
+    private void onClickListener(final RestaurantPublic user, MyViewHolder holder) {
+        holder.mItemListener.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Timber.tag(user.getUsername()).d("is Clicked");
+
+            }
+        });
+    }
+
+    private void loadUserPictureWithGlide(RestaurantPublic user, MyViewHolder holder) {
+
         try {
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
             glide.asDrawable()
@@ -78,16 +90,26 @@ else{
         } catch (Exception e) {
             Timber.tag("Image_Shared").e("Loading error");
         }
+    }
 
+    private void userWithSamePlace(RestaurantPublic user, WorkersAdapter.MyViewHolder holder) {
+        String date = DateSetter.setFormattedDate();
 
-        holder.mItemListener.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Timber.tag(user.getUsername()).d("is Clicked");
-
+        for (int i = 0; i < mUserList.size(); i++) {
+            if (user.getDate() != null && user.getDate().equals(date)) {
+                String getID = mUserList.get(i).getRestaurantID();
+                if (getID != null && getID.equals(user.getRestaurantID())) {
+                    if(HourSetter.getHour()<13){
+                        holder.mTextView.setText(user.getUsername()+ " is eating at " +user.getRestaurantName() + "!");
+                    }else{
+                        holder.mTextView.setText(user.getUsername()+ " ate today at " +user.getRestaurantName() + "!");
+                    }
+                }
+            } else{
+                holder.mTextView.setAlpha(0.6f);
+                holder.mTextView.setText(user.getUsername()+" has not made his choice yet .");
             }
-        });
-
+        }
     }
 
     @Override

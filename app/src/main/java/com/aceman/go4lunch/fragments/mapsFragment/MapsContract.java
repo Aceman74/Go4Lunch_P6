@@ -4,7 +4,10 @@ import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;
 import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.utils.BaseView;
-import com.aceman.go4lunch.utils.events.UserListEvent;
+
+import java.util.List;
+
+import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
@@ -12,6 +15,10 @@ import com.aceman.go4lunch.utils.events.UserListEvent;
 public interface MapsContract {
 
     interface MapsPresenterInterface {
+
+        void executeHttpRequestWithRetrofit(final String mLocation, final String mType, int mRadius, List<Result> mResults);
+
+        void detailsHttpRequestWithRetrofit(List<Result> mResults);
 
     }
 
@@ -40,10 +47,6 @@ public interface MapsContract {
 
         void noResultFound();
 
-        void executeHttpRequestWithRetrofit();
-
-        void detailsHttpRequestWithRetrofit();
-
         void updateResultList(Result result, PlacesDetails details);
 
         void setDistanceAndRating(Result result);
@@ -51,6 +54,10 @@ public interface MapsContract {
         void updateMap(final PlacesDetails details);
 
         void disposeWhenDestroy();
+
+        void clearMapMarkers();
+
+        void postEventBusAfterRequest();
 
 
     }

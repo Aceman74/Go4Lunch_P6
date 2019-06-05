@@ -12,10 +12,11 @@ import android.widget.TextView;
 
 import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.utils.events.PlacesDetailEvent;
-import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.activities.placesDetailActivity.PlacesDetailActivity;
+import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.utils.DateSetter;
+import com.aceman.go4lunch.utils.events.PlacesDetailEvent;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -83,51 +84,20 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
      * @param holder view holder
      */
     private void updateWithFreshInfo(final Result item, RequestManager glide, final MyViewHolder holder, int position) {
-        int userJoining = 0;
         holder.mName.setText(item.getName());
         holder.mAdress.setText(item.getFormattedAddress());
         holder.mDistance.setText(item.getDistanceToInt() + "m");
-        if (item.getOpeningHours() != null && item.getOpeningHours().getOpenNow()) {
-
-            holder.mOpen.setText("Open now");
-            holder.mOpen.setTextColor(mGreen);
-        } else {
-            holder.mOpen.setText("Closed");
-            holder.mOpen.setTextColor(mRed);
-        }
-
-        for (int i = 0; i < mUserList.size(); i++) {
-            if (mUserList.get(i).getRestaurantID() != null) {
-                String getID = mUserList.get(i).getRestaurantID();
-                if (getID.equals(item.getPlaceId())) {
-                    userJoining++;
-                }
-            }
-        }
-        if (userJoining > 0) {
-            holder.mIsUser.setText("("+ userJoining + ")");
-        }
-
+        setOpenOrClose(item, holder);
+        userWithSamePlace(item, holder);
         int mRating = item.getRatingStars();
         ratingMethod(mRating, holder);
         Timber.tag("Adapter Rating").i("%s %s %s", item.getName(), item.getRatingStars(), mRating);
+        setPhotoUrl(item, holder);
+        loadPhotoWithGlide(item, holder);
+        onClickItemListener(item, holder);
+    }
 
-        if (item.getPhotos() != null) {
-            holder.mPhotoReference = item.getPhotos().get(0).getPhotoReference();
-            holder.mUrl = mUrlBegin + API_KEY + mUrlNext + holder.mPhotoReference;
-        } else {
-            holder.mUrl = item.getIcon();
-        }
-        try {
-            holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
-            glide.asDrawable()
-                    .load(holder.mUrl) //  Base URL added in Data
-                    .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
-                    .into(holder.mImageView);
-        } catch (Exception e) {
-            Timber.tag("Image_Loading").e("Loading error");
-        }
-
+    private void onClickItemListener(final Result item, final MyViewHolder holder) {
 
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +111,60 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
 
             }
         });
+    }
+
+    private void loadPhotoWithGlide(Result item, MyViewHolder holder) {
+        try {
+            holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
+            glide.asDrawable()
+                    .load(holder.mUrl) //  Base URL added in Data
+                    .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
+                    .into(holder.mImageView);
+        } catch (Exception e) {
+            Timber.tag("Image_Loading").e("Loading error");
+        }
+    }
+
+    private void setPhotoUrl(Result item, MyViewHolder holder) {
+
+        if (item.getPhotos() != null) {
+            holder.mPhotoReference = item.getPhotos().get(0).getPhotoReference();
+            holder.mUrl = mUrlBegin + API_KEY + mUrlNext + holder.mPhotoReference;
+        } else {
+            holder.mUrl = item.getIcon();
+        }
+    }
+
+    private void setOpenOrClose(Result item, MyViewHolder holder) {
+        if (item.getOpeningHours() != null && item.getOpeningHours().getOpenNow()) {
+
+            holder.mOpen.setText("Open now");
+            holder.mOpen.setTextColor(mGreen);
+        } else {
+            holder.mOpen.setText("Closed");
+            holder.mOpen.setTextColor(mRed);
+        }
+    }
+
+    private void userWithSamePlace(Result item, MyViewHolder holder) {
+        int userJoining = 0;
+
+        String date = DateSetter.setFormattedDate();
+        for (int i = 0; i < mUserList.size(); i++) {
+            if (mUserList.get(i).getRestaurantID() != null && mUserList.get(i).getDate().equals(date)) {
+                String getID = mUserList.get(i).getRestaurantID();
+                if (getID.equals(item.getPlaceId())) {
+                    userJoining++;
+                }
+            }
+        }
+        if (userJoining > 0) {
+            holder.mIsUser.setText("(" + userJoining + ")");
+        } else {
+            holder.mIsUser.setVisibility(View.GONE);
+            holder.mWorkerImg.setVisibility(View.GONE);
+
+        }
     }
 
     private void ratingMethod(int rating, MyViewHolder holder) {
@@ -198,6 +222,8 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         TextView mDistance;
         @BindView(R.id.item_worker_is_here)
         TextView mIsUser;
+        @BindView(R.id.item_workers)
+        ImageView mWorkerImg;
 
         MyViewHolder(View view) {
             super(view);

@@ -99,7 +99,6 @@ public class CorePresenter extends BasePresenter implements CoreContract.CorePre
         });
     }
 
-    @Override
     public FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }

@@ -8,15 +8,13 @@ import com.aceman.go4lunch.models.Restaurant;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.utils.BasePresenter;
+import com.aceman.go4lunch.utils.DateSetter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -25,6 +23,7 @@ import java.util.Objects;
 public class PlacesDetailPresenter extends BasePresenter implements PlacesDetailContract.PlacesDetailPresenterInterface {
 
 
+    @Override
     public void lunchIntentSetInfos() {
 
         RestaurantPublicHelper.getUser(Objects.requireNonNull(getCurrentUser()).getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -73,9 +72,7 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnNullStyle();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).toastRemovePlace();
                 } else {
-                    Date todayDate = Calendar.getInstance().getTime();
-                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-                    String date = formatter.format(todayDate);
+                    String date = DateSetter.setFormattedDate();
                     RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName(), mRestaurant, date).addOnFailureListener(onFailureListener());
                     UserHelper.updateRestaurantID(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName()).addOnFailureListener(onFailureListener());
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnAddStyle();
@@ -85,7 +82,7 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
         });
     }
 
-
+    @Override
     public void onClickLike(final String mID) {
 
         UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.activities.placesDetailActivity.PlacesDetailActivity;
+import com.aceman.go4lunch.utils.DateSetter;
+import com.aceman.go4lunch.utils.events.HourSetter;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -50,7 +52,8 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        if((mUserList.get(position).getRestaurantName() != null && mUserList.get(position).getRestaurantName().equals(PlacesDetailActivity.mName))) {
+        String date = DateSetter.setFormattedDate();
+        if((mUserList.get(position).getRestaurantName() != null && mUserList.get(position).getRestaurantName().equals(PlacesDetailActivity.mName))&& mUserList.get(position).getDate().equals(date)) {
             updateWithFreshInfo(this.mUserList.get(position), this.glide, holder, position);
         }else{
             holder.mItemListener.setVisibility(View.GONE);
@@ -66,18 +69,16 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
      */
     private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
 
-
+        if(HourSetter.getHour()<13){
         holder.mTextView.setText(user.getUsername()+ " is joining " +user.getRestaurantName() + "!");
-
-        try {
-            holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
-            glide.asDrawable()
-                    .load(user.getUrlPicture()) //  Base URL added in Data
-                    .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
-                    .into(holder.mImageView);
-        } catch (Exception e) {
-            Timber.tag("Image_Shared").e("Loading error");
+        }else{
+            holder.mTextView.setText(user.getUsername()+ " ate today at " +user.getRestaurantName() + "!");
         }
+        loadUserPictureWithGlide(user, holder);
+        onClickListener(user, holder);
+    }
+
+    private void onClickListener(final RestaurantPublic user, MyViewHolder holder) {
 
 
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +88,18 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
 
             }
         });
+    }
+
+    private void loadUserPictureWithGlide(RestaurantPublic user, MyViewHolder holder) {
+        try {
+            holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
+            glide.asDrawable()
+                    .load(user.getUrlPicture()) //  Base URL added in Data
+                    .apply(RequestOptions.fitCenterTransform()) //  Adapt to placeholder size
+                    .into(holder.mImageView);
+        } catch (Exception e) {
+            Timber.tag("Image_Shared").e("Loading error");
+        }
     }
 
     @Override

@@ -24,6 +24,7 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
      * Check if user Already Logged
      *
      */
+    @Override
     public void alreadyLogged() {
         if (this.isCurrentUserLogged()){
             ((LoginContract.LoginViewInterface)getView()).startCoreActivity();
@@ -38,6 +39,7 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
      * @return
      */
     @Nullable
+    @Override
     public FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
@@ -46,6 +48,7 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
     /**
      * Cache setting
      */
+    @Override
     public Cache configureCache(Cache mCache) {
         int cacheSize = 20 * 1024 * 1024; // 20 MB
       return mCache = new Cache(getCacheDir(), cacheSize);   //  For API requests
@@ -57,7 +60,8 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
      *
      * @return
      */
-    private Boolean isCurrentUserLogged() {
+    @Override
+    public Boolean isCurrentUserLogged() {
         return (this.getCurrentUser() != null);
     }
 
@@ -65,6 +69,7 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
      * Create new user on firestore
      *
      */
+    @Override
     public void createUserInFirestore() {
 
         if (this.getCurrentUser() != null) {
@@ -83,7 +88,8 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
      * Success listener
      * @return
      */
-    private OnSuccessListener onSuccessListener() {
+    @Override
+    public OnSuccessListener onSuccessListener() {
         return new OnSuccessListener() {
             @Override
             public void onSuccess(Object o) {
@@ -96,7 +102,8 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
      *
      * @return
      */
-    private OnFailureListener onFailureListener() {
+    @Override
+    public OnFailureListener onFailureListener() {
         return new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {

@@ -77,7 +77,6 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     LinearLayout websiteLayout;
     @BindView(R.id.no_lunch_layout)
     LinearLayout noLunch;
-    LinearLayout mLinearLayout;
     @BindView(R.id.back_to_map)
     Button mBackToMap;
     private PlacesDetailPresenter mPresenter;
@@ -92,6 +91,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     static private String mPhone;
     static private String mWebsite;
     public List<RestaurantPublic> mUserList = new ArrayList<>();
+    public List<RestaurantPublic> mUserJoinning = new ArrayList<>();
     private Result mResult;
     private Restaurant mRestaurant = new Restaurant();
     private Intent mIntent;
@@ -369,13 +369,24 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     @Override
     public void configureRecyclerView() {
         if (mUserList != null) {
-            mWorkersJoiningAdapter = new WorkersJoiningAdapter(mUserList, Glide.with(this), mContext);
+            mWorkersJoiningAdapter = new WorkersJoiningAdapter(setNewUserListIfJoinin(), Glide.with(this), mContext);
             mRecyclerView.setAdapter(mWorkersJoiningAdapter);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
             mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(this.getApplicationContext()), DividerItemDecoration.VERTICAL));
         } else {
             mRecyclerView.setVisibility(View.GONE);
         }
+    }
+
+    private List<RestaurantPublic>  setNewUserListIfJoinin() {
+        int index = 0;
+        for (int i = 0; i < mUserList.size(); i++) {
+           if(mUserList.get(i).getRestaurantName() != null && mUserList.get(i).getRestaurantName().equals(mName)){
+               mUserJoinning.add(index,mUserList.get(i));
+               index++;
+           }
+        }
+        return mUserJoinning;
     }
 
     @Subscribe(sticky = true)
