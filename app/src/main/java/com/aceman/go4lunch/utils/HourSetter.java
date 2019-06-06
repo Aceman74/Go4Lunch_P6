@@ -1,4 +1,4 @@
-package com.aceman.go4lunch.utils.events;
+package com.aceman.go4lunch.utils;
 
 import java.util.Calendar;
 

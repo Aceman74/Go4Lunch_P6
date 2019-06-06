@@ -13,7 +13,7 @@ public class DateSetter {
     private static SimpleDateFormat formatter;
     private static String date;
 
-   public static String setFormattedDate() {
+   public static String getFormattedDate() {
 
         todayDate = Calendar.getInstance().getTime();
         Calendar.getInstance().getTime();

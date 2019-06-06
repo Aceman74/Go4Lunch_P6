@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
+import com.aceman.go4lunch.activities.settingsActivity.SettingsActivity;
 import com.aceman.go4lunch.activities.profileActivity.ProfileActivity;
 import com.aceman.go4lunch.utils.base.BaseActivity;
 import com.aceman.go4lunch.data.details.PlacesDetails;
@@ -212,8 +213,8 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
                 this.startActivity(lunch);
                 break;
             case R.id.drawer_settings:
-                Intent notification = new Intent(this, ProfileActivity.class);
-                this.startActivity(notification);
+                Intent settings = new Intent(this, SettingsActivity.class);
+                this.startActivity(settings);
                 break;
             case R.id.drawer_logout:
                 signOutUserFromFirebase();

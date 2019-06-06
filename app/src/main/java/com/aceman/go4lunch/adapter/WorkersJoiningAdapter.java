@@ -13,7 +13,7 @@ import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.activities.placesDetailActivity.PlacesDetailActivity;
 import com.aceman.go4lunch.utils.DateSetter;
-import com.aceman.go4lunch.utils.events.HourSetter;
+import com.aceman.go4lunch.utils.HourSetter;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -52,7 +52,7 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        String date = DateSetter.setFormattedDate();
+        String date = DateSetter.getFormattedDate();
         if((mUserList.get(position).getRestaurantName() != null && mUserList.get(position).getRestaurantName().equals(PlacesDetailActivity.mName))&& mUserList.get(position).getDate().equals(date)) {
             updateWithFreshInfo(this.mUserList.get(position), this.glide, holder, position);
         }else{

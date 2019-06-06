@@ -149,7 +149,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     private void userWithSamePlace(Result item, MyViewHolder holder) {
         int userJoining = 0;
 
-        String date = DateSetter.setFormattedDate();
+        String date = DateSetter.getFormattedDate();
         for (int i = 0; i < mUserList.size(); i++) {
             if (mUserList.get(i).getRestaurantID() != null && mUserList.get(i).getDate().equals(date)) {
                 String getID = mUserList.get(i).getRestaurantID();

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.settingsActivity.SettingsActivity"
+    android:orientation="vertical"
+    android:background="@drawable/gradient"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/setting_your_history_txtview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/your_history"
+            android:textStyle="bold"
+            android:textSize="@dimen/default_title_size"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_margin="@dimen/default_large_margin"
+            android:textColor="@color/ColorBlack"/>
+
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_margin="@dimen/default_margin"
+            android:layout_below="@id/setting_your_history_txtview"
+            android:id="@+id/settings_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+        </android.support.v7.widget.RecyclerView>
+    </RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/settings_clear_history_btn"
+            android:layout_margin="@dimen/default_margin"
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@drawable/button_radius_accent_color"
+            android:textColor="@color/ColorWhite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAllCaps="false"
+            android:padding="@dimen/default_margin"
+            android:text="clear history"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textAlignment="center"
+            android:textColor="@color/ColorBlack"
+            android:layout_margin="@dimen/default_margin"
+            android:text="@string/btn_setting_desc"/>
+
+        <Button
+            style="?android:attr/borderlessButtonStyle"
+            android:background="@drawable/button_radius_green_color"
+            android:textColor="@color/ColorWhite"
+            android:id="@+id/setting_enable_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_margin="@dimen/default_margin"
+            android:text="Base"/>
+
+    </LinearLayout>
+
+</LinearLayout>

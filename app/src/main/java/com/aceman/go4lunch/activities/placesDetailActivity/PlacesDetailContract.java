@@ -6,6 +6,8 @@ import com.aceman.go4lunch.utils.BaseView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.List;
+
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
  */
@@ -25,6 +27,12 @@ public interface PlacesDetailContract {
         void setIconTintWithFirebaseInfos(String mID, Restaurant mRestaurant);
 
         void onClickSelectFloatingBtn(String mID, Restaurant mRestaurant);
+
+        List<RestaurantPublic> setNewUserListIfJoinin(List<RestaurantPublic> mUserList, List<RestaurantPublic> mUserJoinning, String mName);
+
+        void resetPlaceChoiceIfNewDay();
+
+        List<RestaurantPublic> getUserList();
 
     }
 
@@ -75,5 +83,9 @@ public interface PlacesDetailContract {
         void floatingBtnNullStyle();
 
         void floatingBtnAddStyle();
+
+        void notifyDataChanged();
+
+        void startGettingUserList();
     }
 }

@@ -33,9 +33,11 @@ public class RestaurantPublic {
     public Details getDetails() {
         return mDetails;
     }
+
     public void setDetails(Details details) {
         mDetails = details;
     }
+
     public String getUrlPicture() {
         return urlPicture;
     }
@@ -88,4 +90,6 @@ public class RestaurantPublic {
     public void setLike(String like) {
         this.like = like;
     }
+
+
 }

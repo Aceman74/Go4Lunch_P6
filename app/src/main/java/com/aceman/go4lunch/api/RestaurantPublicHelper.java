@@ -1,5 +1,6 @@
 package com.aceman.go4lunch.api;
 
+import com.aceman.go4lunch.models.History;
 import com.aceman.go4lunch.models.Restaurant;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.google.android.gms.tasks.Task;
@@ -27,6 +28,7 @@ public class RestaurantPublicHelper {
         RestaurantPublic userToCreate = new RestaurantPublic(username, urlPicture);
         return RestaurantPublicHelper.getRestaurantCollection().document(uid).set(userToCreate);
     }
+
     // --- GET ---
 
     public static Task<DocumentSnapshot> getUser(String ID) {

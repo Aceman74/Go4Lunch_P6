@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.aceman.go4lunch">
+
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -16,13 +17,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_application_id"/>
+        <activity android:name=".activities.settingsActivity.SettingsActivity" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_application_id" />
 
         <activity
             android:name=".activities.placesDetailActivity.PlacesDetailActivity"
             android:label="@string/title_activity_places_detail"
             android:parentActivityName=".activities.coreActivity.CoreActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -37,7 +43,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity> <!-- PROFILE ACTIVITY -->
+        </activity>
+        <!-- PROFILE ACTIVITY -->
         <activity
             android:name=".activities.profileActivity.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"

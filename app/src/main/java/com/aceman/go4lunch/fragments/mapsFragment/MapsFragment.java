@@ -12,7 +12,6 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,14 +23,15 @@ import android.widget.Toast;
 import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.activities.coreActivity.CoreActivity;
-import com.aceman.go4lunch.api.PlacesApi;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;
 import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.utils.DateSetter;
+import com.aceman.go4lunch.utils.HourSetter;
 import com.aceman.go4lunch.utils.events.RefreshEvent;
 import com.aceman.go4lunch.utils.events.ResultListEvent;
 import com.aceman.go4lunch.utils.events.UserListEvent;
-import com.aceman.go4lunch.models.RestaurantPublic;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -59,13 +59,12 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
 
 import static com.aceman.go4lunch.activities.coreActivity.CoreActivity.sFusedLocationProviderClient;
 
 
-public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleMap.OnCameraIdleListener, MapsContract.MapsViewInterface {
+public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleMap.OnCameraIdleListener, MapsContract.MapsViewInterface {
 
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 100;
     public static GoogleMap mMaps;
@@ -261,6 +260,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
             initLocation = false;
         }
     }
+
     @Override
     public void markerSetPreviousPos() {
         if (mMarker == null) {
@@ -282,7 +282,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mLongitude = mLatLng.longitude;
         mLocation = mLatitude + " " + mLongitude;
         mType = getString(R.string.restaurant);
-        mPresenter.executeHttpRequestWithRetrofit(mLocation,mType,mRadius,mResults);
+        mPresenter.executeHttpRequestWithRetrofit(mLocation, mType, mRadius, mResults);
         markerSetPreviousPos();
     }
 
@@ -342,15 +342,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(getContext(), "Current location:\n" + location, Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    public boolean onMyLocationButtonClick() {
-        Toast.makeText(getContext(), "MyLocation button clicked", Toast.LENGTH_SHORT).show();
-        // Return false so that we don't consume the event and the default behavior still occurs
-        // (the camera animates to the user's current position).
-        return false;
+        Toast.makeText(getContext(), "You are here !", Toast.LENGTH_LONG).show();
     }
 
     @Override
@@ -424,6 +416,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
     @Override
     public void updateMap(final PlacesDetails details) {
+        String date = DateSetter.getFormattedDate();
         mLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
 
         if (details.getResult().getName().equals(CoreActivity.mSearchName)) {
@@ -443,15 +436,27 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         }
         if (mUserList != null) {
             for (int i = 0; i < mUserList.size(); i++) {
-                if (mUserList.get(i).getRestaurantID() != null && mUserList.get(i).getRestaurantID().equals(details.getResult().getPlaceId())) {
+                RestaurantPublic user = mUserList.get(i);
+                if (user.getRestaurantID() != null && user.getRestaurantID().equals(details.getResult().getPlaceId())
+                        && user.getDate() != null && user.getDate().equals(date)) {
                     mPosMarker.remove();
                     mPosMarker = mMaps.addMarker(new MarkerOptions()
                             .position(mLatLng)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_g))
                             .title(details.getResult().getName())
-                            .snippet(mUserList.get(i).getUsername() + " is eating here !"));
+                            .snippet(isEatingHereHourCheck(i)));
                 }
             }
+        }
+    }
+
+    private String isEatingHereHourCheck(int i) {
+        String date = DateSetter.getFormattedDate();
+        int hour = HourSetter.getHour();
+        if (mUserList.get(i).getDate().equals(date) && hour < 13) {
+            return mUserList.get(i).getUsername() + " is eating here !";
+        } else {
+            return mUserList.get(i).getUsername() + " ate here today !";
         }
     }
 

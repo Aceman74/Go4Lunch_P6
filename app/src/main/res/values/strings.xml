@@ -54,5 +54,7 @@
     <string name="select_lunch">You have not selected your lunch today !</string>
     <string name="back_to_map">Back</string>
     <string name="restaurant">restaurant</string>
+    <string name="your_history">Your History</string>
+    <string name="btn_setting_desc">Click here to enable or disable daily notifcation at 12pm to see who else is joining your lunch place .</string>
 
 </resources>

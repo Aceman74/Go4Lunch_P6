@@ -102,8 +102,9 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         super.onCreate(savedInstanceState);
         mPresenter = new PlacesDetailPresenter();
         mPresenter.attachView(this);
-        getAnyIntent();
         configureRecyclerView();
+        getAnyIntent();
+        startGettingUserList();
     }
 
     @Override
@@ -175,6 +176,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         super.onResume();
         getAnyIntent();
         configureInfos();
+        notifyDataChanged();
     }
 
     @Override
@@ -222,6 +224,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         showStar(mStar);
         setName.setText(mName);
         setAdress.setText(mAddress);
+        mPresenter.resetPlaceChoiceIfNewDay();
         mPresenter.setIconTintWithFirebaseInfos(mID, mRestaurant);
         loadPlaceImageWithGlide();
         nullCheck();
@@ -353,7 +356,6 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     @Override
     protected FirebaseUser getCurrentUser() {
         return super.getCurrentUser();
-
     }
 
     @Override
@@ -369,24 +371,14 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     @Override
     public void configureRecyclerView() {
         if (mUserList != null) {
-            mWorkersJoiningAdapter = new WorkersJoiningAdapter(setNewUserListIfJoinin(), Glide.with(this), mContext);
+            mWorkersJoiningAdapter = new WorkersJoiningAdapter(mUserJoinning, Glide.with(this), mContext);
             mRecyclerView.setAdapter(mWorkersJoiningAdapter);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
             mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(this.getApplicationContext()), DividerItemDecoration.VERTICAL));
-        } else {
+        }
+        if (mUserList == null || mUserJoinning == null) {
             mRecyclerView.setVisibility(View.GONE);
         }
-    }
-
-    private List<RestaurantPublic>  setNewUserListIfJoinin() {
-        int index = 0;
-        for (int i = 0; i < mUserList.size(); i++) {
-           if(mUserList.get(i).getRestaurantName() != null && mUserList.get(i).getRestaurantName().equals(mName)){
-               mUserJoinning.add(index,mUserList.get(i));
-               index++;
-           }
-        }
-        return mUserJoinning;
     }
 
     @Subscribe(sticky = true)
@@ -397,10 +389,17 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         configureInfos();
     }
 
-    @Subscribe(sticky = true)
-    public void onUserListEvent(UserListEvent userlist) {
-        mUserList = userlist.mUserList;
+    @Override
+    public void startGettingUserList() {
+        mUserList = mPresenter.getUserList();
+        mUserJoinning = mPresenter.setNewUserListIfJoinin(mUserList, mUserJoinning, mName);
         configureRecyclerView();
+        EventBus.getDefault().post(new UserListEvent(mUserList));
+    }
+
+    @Override
+    public void notifyDataChanged() {
+        startGettingUserList();
         mWorkersJoiningAdapter.notifyDataSetChanged();
     }
 }

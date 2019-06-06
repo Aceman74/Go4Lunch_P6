@@ -38,6 +38,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- STYLE FOR CORE ACTIVITY -->
+    <style name="AppTheme.Settings" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:background">@drawable/main_screen</item>
+        <item name="android:alpha">0.5</item>
+    </style>
 
     <!-- TOOLBAR THEME -->
     <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">

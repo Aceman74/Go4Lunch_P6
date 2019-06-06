@@ -10,10 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.DateSetter;
-import com.aceman.go4lunch.utils.events.HourSetter;
+import com.aceman.go4lunch.utils.HourSetter;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 
@@ -93,7 +92,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
     }
 
     private void userWithSamePlace(RestaurantPublic user, WorkersAdapter.MyViewHolder holder) {
-        String date = DateSetter.setFormattedDate();
+        String date = DateSetter.getFormattedDate();
 
         for (int i = 0; i < mUserList.size(); i++) {
             if (user.getDate() != null && user.getDate().equals(date)) {

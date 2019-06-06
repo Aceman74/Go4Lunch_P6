@@ -9,19 +9,23 @@ import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.utils.BasePresenter;
 import com.aceman.go4lunch.utils.DateSetter;
+import com.aceman.go4lunch.utils.FirestoreUserList;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
  */
 public class PlacesDetailPresenter extends BasePresenter implements PlacesDetailContract.PlacesDetailPresenterInterface {
-
+    public static List<RestaurantPublic> mUserList = new ArrayList<>();
+    public static String date = DateSetter.getFormattedDate();
 
     @Override
     public void lunchIntentSetInfos() {
@@ -72,12 +76,15 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnNullStyle();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).toastRemovePlace();
                 } else {
-                    String date = DateSetter.setFormattedDate();
+                    String date = DateSetter.getFormattedDate();
                     RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName(), mRestaurant, date).addOnFailureListener(onFailureListener());
                     UserHelper.updateRestaurantID(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName()).addOnFailureListener(onFailureListener());
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnAddStyle();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).toastAddPlace();
+
                 }
+
+                ((PlacesDetailContract.PlacesDetailViewInterface) getView()).notifyDataChanged();
             }
         });
     }
@@ -102,6 +109,45 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
                 }
             }
         });
+    }
+
+    @Override
+    public List<RestaurantPublic> setNewUserListIfJoinin(List<RestaurantPublic> mUserList, List<RestaurantPublic> mUserJoinning, String mName) {
+        mUserJoinning.clear();
+        int index = 0;
+        for (int i = 0; i < mUserList.size(); i++) {
+            if (mUserList.get(i).getRestaurantName() != null && mUserList.get(i).getRestaurantName().equals(mName)) {
+                mUserJoinning.add(index, mUserList.get(i));
+                index++;
+            }
+        }
+        return mUserJoinning;
+    }
+
+    @Override
+    public void resetPlaceChoiceIfNewDay() {
+        UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+
+                User currentUser = documentSnapshot.toObject(User.class);
+                RestaurantPublic restaurant = documentSnapshot.toObject(RestaurantPublic.class);
+
+                if (currentUser.getRestaurant() != null && restaurant.getDate() != null && !restaurant.getDate().equals(date)) {
+                    RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), null, null, null, null).addOnFailureListener(onFailureListener());
+                    UserHelper.updateRestaurantID(getCurrentUser().getUid(), null, null).addOnFailureListener(onFailureListener());
+                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnNullStyle();
+                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).configureInfos();
+                }
+            }
+        });
+    }
+
+    @Override
+    public List<RestaurantPublic> getUserList() {
+
+        mUserList = FirestoreUserList.getUserList(getCurrentUser());
+        return mUserList;
     }
 
     @Override
