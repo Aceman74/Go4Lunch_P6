@@ -20,6 +20,8 @@ public interface MapsContract {
 
         void detailsHttpRequestWithRetrofit(List<Result> mResults);
 
+        void getSearchRestaurant(String mSearchID);
+
     }
 
     interface MapsViewInterface extends BaseView {
@@ -58,6 +60,10 @@ public interface MapsContract {
         void clearMapMarkers();
 
         void postEventBusAfterRequest();
+
+        void zoomOnMapLocation();
+
+        void addDetail(PlacesDetails details);
 
 
     }

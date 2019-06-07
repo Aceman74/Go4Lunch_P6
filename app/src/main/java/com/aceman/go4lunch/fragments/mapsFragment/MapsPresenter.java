@@ -2,6 +2,7 @@ package com.aceman.go4lunch.fragments.mapsFragment;
 
 import android.util.Log;
 
+import com.aceman.go4lunch.activities.coreActivity.CoreContract;
 import com.aceman.go4lunch.api.PlacesApi;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;
@@ -73,4 +74,30 @@ public class MapsPresenter extends BasePresenter implements MapsContract.MapsPre
         }
         ((MapsContract.MapsViewInterface) getView()).postEventBusAfterRequest();
     }
+
+    @Override
+    public void getSearchRestaurant(String mSearchID) {
+
+
+        Disposable mSearchDisposable = PlacesApi.getInstance().getRestaurantsDetails(mSearchID).subscribeWith(new DisposableObserver<PlacesDetails>() {
+            @Override
+            public void onNext(PlacesDetails details) {
+                Timber.tag("PLACES_Next").i("On Next");
+                ((MapsContract.MapsViewInterface) getView()).addDetail(details);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Timber.tag("PLACES_Error").e("On Error%s", Log.getStackTraceString(e));
+            }
+
+            @Override
+            public void onComplete() {
+                Timber.tag("PLACES_Complete").i("On Complete !!");
+                ((MapsContract.MapsViewInterface) getView()).zoomOnMapLocation();
+            }
+        });
+
+    }
+
 }

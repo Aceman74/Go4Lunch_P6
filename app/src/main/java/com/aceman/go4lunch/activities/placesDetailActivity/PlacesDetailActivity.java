@@ -29,6 +29,7 @@ import com.aceman.go4lunch.models.Restaurant;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.base.BaseActivity;
 import com.aceman.go4lunch.utils.events.PlacesDetailEvent;
+import com.aceman.go4lunch.utils.events.RestaurantPublicEvent;
 import com.aceman.go4lunch.utils.events.UserListEvent;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -93,6 +94,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     public List<RestaurantPublic> mUserList = new ArrayList<>();
     public List<RestaurantPublic> mUserJoinning = new ArrayList<>();
     private Result mResult;
+    private RestaurantPublic mRestaurantPublic;
     private Restaurant mRestaurant = new Restaurant();
     private Intent mIntent;
     static private String mIntentString;
@@ -209,6 +211,17 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
             mWebsite = mResult.getWebsite();
             mStar = mResult.getRatingStars();
             mID = mResult.getPlaceId();
+        }
+        if(mIntentString != null && mIntentString.equals(getString(R.string.workers))){
+
+            mName = mRestaurantPublic.getDetails().getName();
+            mAddress = mRestaurantPublic.getDetails().getAddress();
+            mPhone = mRestaurantPublic.getDetails().getPhone();
+            mWebsite = mRestaurantPublic.getDetails().getWebsite();
+            mStar = mRestaurantPublic.getDetails().getRating();
+            mID = mRestaurantPublic.getDetails().getPlaceID();
+            mUrl = mRestaurantPublic.getDetails().getImageUrl();
+
         }
         if (mIntentString == null || mIntentString.equals(getString(R.string.lunch))) {      //  Intent from My Lunch click
             mPresenter.lunchIntentSetInfos();
@@ -386,6 +399,11 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         mResult = detail.mDetail;
         mUrl = detail.mUrl;
         mID = detail.mDetail.getPlaceId();
+    }
+
+    @Subscribe(sticky = true)
+    public void onRestaurantPublicEvent(RestaurantPublicEvent restaurantPublic) {
+        mRestaurantPublic = restaurantPublic.mRestaurantPublic;
         configureInfos();
     }
 

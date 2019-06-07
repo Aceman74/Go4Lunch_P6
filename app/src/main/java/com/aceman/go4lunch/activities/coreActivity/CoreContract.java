@@ -21,8 +21,6 @@ public interface CoreContract {
 
         void updateUIWhenCreating();
 
-        void getSearchRestaurant(Disposable mSearchDisposable, String mSearchID);
-
         FirebaseUser getCurrentUser();
 
     }
@@ -47,7 +45,6 @@ public interface CoreContract {
 
         void autocompleteIntent();
 
-        void addDetail(PlacesDetails details);
 
         OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin);
 
@@ -62,8 +59,6 @@ public interface CoreContract {
         void loadUserEmail();
 
         void loadUserUsername(User currentUser);
-
-        void zoomOnMapLocation();
 
 
     }

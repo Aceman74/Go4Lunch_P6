@@ -75,29 +75,6 @@ public class CorePresenter extends BasePresenter implements CoreContract.CorePre
         }
     }
 
-    @Override
-    public void getSearchRestaurant( Disposable mSearchDisposable, String mSearchID) {
-
-
-        mSearchDisposable = PlacesApi.getInstance().getRestaurantsDetails(mSearchID).subscribeWith(new DisposableObserver<PlacesDetails>() {
-            @Override
-            public void onNext(PlacesDetails details) {
-                Timber.tag("PLACES_Next").i("On Next");
-                ((CoreContract.CoreViewInterface) getView()).addDetail(details);
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Timber.tag("PLACES_Error").e("On Error%s", Log.getStackTraceString(e));
-            }
-
-            @Override
-            public void onComplete() {
-                Timber.tag("PLACES_Complete").i("On Complete !!");
-                ((CoreContract.CoreViewInterface) getView()).zoomOnMapLocation();
-            }
-        });
-    }
 
     public FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();

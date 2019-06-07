@@ -30,7 +30,8 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation "android.arch.work:work-runtime:1.0.0"
+    implementation "android.arch.work:work-runtime:1.0.1"
+    implementation 'com.android.support:design:28.0.0'
     //TEST//
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
     testImplementation 'junit:junit:4.12'
@@ -39,14 +40,14 @@ dependencies {
     //GooglePlaces//
 
     //FIREBASE//
-    implementation 'com.google.firebase:firebase-core:16.0.8'
-    implementation 'com.google.firebase:firebase-auth:16.2.1'
-    implementation 'com.google.firebase:firebase-database:16.1.0'
-    implementation 'com.google.firebase:firebase-storage:16.1.0'
-    implementation 'com.google.firebase:firebase-inappmessaging-display:17.1.1'
-    implementation 'com.google.firebase:firebase-firestore:18.2.0'
-    implementation 'com.google.firebase:firebase-messaging:17.6.0'
-    implementation 'com.crashlytics.sdk.android:crashlytics:2.9.9'  //  CrashLytics
+    implementation 'com.google.firebase:firebase-core:16.0.9'
+    implementation 'com.google.firebase:firebase-auth:17.0.0'
+    implementation 'com.google.firebase:firebase-database:17.0.0'
+    implementation 'com.google.firebase:firebase-storage:17.0.0'
+    implementation 'com.google.firebase:firebase-inappmessaging-display:17.2.0'
+    implementation 'com.google.firebase:firebase-firestore:19.0.1'
+    implementation 'com.google.firebase:firebase-messaging:18.0.0'
+    implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'  //  CrashLytics
     //FirebaseUI//
     implementation 'com.firebaseui:firebase-ui-database:4.3.2'
     implementation 'com.firebaseui:firebase-ui-firestore:4.3.2'
@@ -61,9 +62,11 @@ dependencies {
     //GLIDE//
     implementation 'com.github.bumptech.glide:glide:4.9.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
-    implementation 'com.android.support:design:28.0.0'
+
     implementation 'com.google.android.libraries.places:places:1.1.0' //    Google Places
     implementation 'jp.wasabeef:blurry:3.0.0'   //  Blurr effect
+    implementation 'org.greenrobot:eventbus:3.1.1'  //  EventBus
+    implementation 'com.karumi:dexter:5.0.0'    //  Dexter
 
     //API-RELATED//
     implementation 'com.google.code.gson:gson:2.8.5'
@@ -74,8 +77,6 @@ dependencies {
     implementation 'io.reactivex.rxjava2:rxjava:2.1.14'
     implementation 'com.android.support:recyclerview-v7:28.0.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
-    implementation 'org.greenrobot:eventbus:3.1.1'
-    implementation 'com.karumi:dexter:5.0.0'
 }
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'   //  CrashLytics

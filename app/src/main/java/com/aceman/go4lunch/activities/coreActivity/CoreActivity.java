@@ -22,6 +22,7 @@ import com.aceman.go4lunch.activities.settingsActivity.SettingsActivity;
 import com.aceman.go4lunch.activities.profileActivity.ProfileActivity;
 import com.aceman.go4lunch.utils.base.BaseActivity;
 import com.aceman.go4lunch.data.details.PlacesDetails;
+import com.aceman.go4lunch.utils.events.SearchRefreshEvent;
 import com.aceman.go4lunch.utils.events.UserListEvent;
 import com.aceman.go4lunch.activities.loginActivity.MainActivity;
 import com.aceman.go4lunch.models.RestaurantPublic;
@@ -67,8 +68,6 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     private static final int SIGN_OUT_TASK = 10;
     public static FusedLocationProviderClient sFusedLocationProviderClient;
     public List<RestaurantPublic> mUserList = new ArrayList<>();
-    public static LatLng mSearchLatLng;
-    public static String mSearchName;
     int AUTOCOMPLETE_REQUEST_CODE = 8;
     String mLastSearch = "";
     String mSearchID;
@@ -86,7 +85,6 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     @BindView(R.id.toolbar)
     Toolbar mToolbar;
     ImageView mProfileImage;
-    Disposable mSearchDisposable;
     private String mIntent;
     private CorePresenter mPresenter;
 
@@ -279,7 +277,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
             if (resultCode == RESULT_OK) {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 mSearchID = place.getId();
-                mPresenter.getSearchRestaurant(mSearchDisposable, mSearchID);
+                EventBus.getDefault().post(new SearchRefreshEvent(mSearchID));
                 mLastSearch = place.getName();
                 Timber.i("Place: " + place.getName() + ", " + place.getId());
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
@@ -292,11 +290,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
-    @Override
-    public void addDetail(PlacesDetails details) {
-        mSearchLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
-        mSearchName = details.getResult().getName();
-    }
+
 
     @Override
     public OnFailureListener onFailureListener() {
@@ -365,8 +359,4 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         textViewUsername.setText(username);
     }
 
-    @Override
-    public void zoomOnMapLocation() {
-        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mSearchLatLng, 14));
-    }
 }

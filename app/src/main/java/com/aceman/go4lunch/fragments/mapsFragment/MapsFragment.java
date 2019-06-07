@@ -31,6 +31,7 @@ import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.HourSetter;
 import com.aceman.go4lunch.utils.events.RefreshEvent;
 import com.aceman.go4lunch.utils.events.ResultListEvent;
+import com.aceman.go4lunch.utils.events.SearchRefreshEvent;
 import com.aceman.go4lunch.utils.events.UserListEvent;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -94,6 +95,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     GoogleApiClient mGoogleApiClient;
     Boolean initLocation = true;
     float distance = 0;
+    public  LatLng mSearchLatLng;
+    public  String mSearchName;
+    public  PlacesDetails mSearchDetails;
     @BindView(R.id.maps_btn)
     FloatingActionButton mRefreshBtn;
     private String API_KEY = BuildConfig.google_maps_key;
@@ -127,11 +131,28 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mUserList = userlist.mUserList;
     }
 
+    @Subscribe
+    public void onSearchRefreshEvent(SearchRefreshEvent event){
+        mPresenter.getSearchRestaurant(event.mSearchID);
+
+    }
+
+    @Override
+    public void addDetail(PlacesDetails details) {
+        mSearchLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
+        mSearchName = details.getResult().getName();
+        mSearchDetails = details;
+    }
+
+    @Override
+    public void zoomOnMapLocation() {
+        mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mSearchLatLng, 14));
+    }
+
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
-
     }
 
     @Override
@@ -419,7 +440,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         String date = DateSetter.getFormattedDate();
         mLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
 
-        if (details.getResult().getName().equals(CoreActivity.mSearchName)) {
+        if (details.getResult().getName().equals(mSearchName)) {
 
             mSearchMarker = mMaps.addMarker(new MarkerOptions()
                     .position(mLatLng)
