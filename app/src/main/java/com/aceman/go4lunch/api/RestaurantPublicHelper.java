@@ -37,9 +37,13 @@ public class RestaurantPublicHelper {
 
     // --- UPDATE ---
 
-    public static Task<Void> restaurantPublic(String uid, String restaurantID, String restaurantName, Restaurant restaurant, String date) {
+    public static Task<Void> restaurantPublic(String uid, String restaurantID, String restaurantName, Restaurant restaurant,History history, String date) {
         return RestaurantPublicHelper.getRestaurantCollection().document(uid)
-                .update("restaurantID", restaurantID, "restaurantName", restaurantName,"details",restaurant, "date", date);
+                .update("restaurantID", restaurantID, "restaurantName", restaurantName,"details",restaurant,"history", history, "date", date);
+    }
+
+    public static Task<Void>resetUserHistory(String uid){
+        return RestaurantPublicHelper.getRestaurantCollection().document(uid).update("history", null);
     }
 
     public static Task<Void> updateUsername(String username, String uid) {
@@ -54,5 +58,4 @@ public class RestaurantPublicHelper {
     public static Task<Void> deleteUser(String uid) {
         return RestaurantPublicHelper.getRestaurantCollection().document(uid).delete();
     }
-
 }

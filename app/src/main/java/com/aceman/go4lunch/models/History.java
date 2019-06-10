@@ -5,23 +5,22 @@ package com.aceman.go4lunch.models;
  */
 public class History {
 
-    private String name;
-    private String date;
+    private HistoryDetails mHistoryDetails;
+    private  String date;
 
     public History(){
     }
 
-    public History(String name, String date){
-        this.name = name;
-        this.date = date;
+    public History(HistoryDetails mDetails){
+        this.mHistoryDetails = mDetails;
     }
 
-    public String getName() {
-        return name;
+    public HistoryDetails getHistory() {
+        return mHistoryDetails;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setHistory(HistoryDetails history) {
+        mHistoryDetails = history;
     }
 
     public String getDate() {

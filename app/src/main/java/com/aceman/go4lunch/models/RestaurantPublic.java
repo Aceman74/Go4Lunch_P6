@@ -21,6 +21,7 @@ public class RestaurantPublic {
     private Date dateCreated;
     private String date;
     private Details mDetails;
+    private History mHistory;
 
     public RestaurantPublic() {
     }
@@ -91,5 +92,11 @@ public class RestaurantPublic {
         this.like = like;
     }
 
+    public History getHistory() {
+        return mHistory;
+    }
 
+    public void setHistory(History history) {
+        mHistory = history;
+    }
 }

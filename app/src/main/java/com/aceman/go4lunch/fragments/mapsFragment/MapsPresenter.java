@@ -2,7 +2,6 @@ package com.aceman.go4lunch.fragments.mapsFragment;
 
 import android.util.Log;
 
-import com.aceman.go4lunch.activities.coreActivity.CoreContract;
 import com.aceman.go4lunch.api.PlacesApi;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;

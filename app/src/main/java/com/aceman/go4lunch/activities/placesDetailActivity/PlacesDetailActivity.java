@@ -106,7 +106,6 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         mPresenter.attachView(this);
         configureRecyclerView();
         getAnyIntent();
-        startGettingUserList();
     }
 
     @Override
@@ -203,6 +202,8 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     @Override
     public void configureInfos() {
 
+        startGettingUserList();
+
         if (mIntentString != null && mIntentString.equals(getString(R.string.adapter))) {    //  Intent from Adapter click
 
             mName = mResult.getName();
@@ -211,8 +212,9 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
             mWebsite = mResult.getWebsite();
             mStar = mResult.getRatingStars();
             mID = mResult.getPlaceId();
+            showInfos();
         }
-        if(mIntentString != null && mIntentString.equals(getString(R.string.workers))){
+        if (mIntentString != null && mIntentString.equals(getString(R.string.workers))) {
 
             mName = mRestaurantPublic.getDetails().getName();
             mAddress = mRestaurantPublic.getDetails().getAddress();
@@ -221,12 +223,16 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
             mStar = mRestaurantPublic.getDetails().getRating();
             mID = mRestaurantPublic.getDetails().getPlaceID();
             mUrl = mRestaurantPublic.getDetails().getImageUrl();
+            showInfos();
 
         }
         if (mIntentString == null || mIntentString.equals(getString(R.string.lunch))) {      //  Intent from My Lunch click
             mPresenter.lunchIntentSetInfos();
         }
+    }
 
+    @Override
+    public void showInfos() {
         mRestaurant.setAddress(mAddress);
         mRestaurant.setName(mName);
         mRestaurant.setPhone(mPhone);
@@ -245,6 +251,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         likeBtnListener();      // << With contract?
         callBtnListener();
         websiteBtnListener();
+        mWorkersJoiningAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -306,6 +313,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
             @Override
             public void onClick(View v) {
                 mPresenter.onClickSelectFloatingBtn(mID, mRestaurant);
+                mWorkersJoiningAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -399,6 +407,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         mResult = detail.mDetail;
         mUrl = detail.mUrl;
         mID = detail.mDetail.getPlaceId();
+        configureInfos();
     }
 
     @Subscribe(sticky = true)
@@ -411,13 +420,11 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     public void startGettingUserList() {
         mUserList = mPresenter.getUserList();
         mUserJoinning = mPresenter.setNewUserListIfJoinin(mUserList, mUserJoinning, mName);
-        configureRecyclerView();
         EventBus.getDefault().post(new UserListEvent(mUserList));
     }
 
     @Override
     public void notifyDataChanged() {
-        startGettingUserList();
         mWorkersJoiningAdapter.notifyDataSetChanged();
     }
 }

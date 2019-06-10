@@ -87,5 +87,7 @@ public interface PlacesDetailContract {
         void notifyDataChanged();
 
         void startGettingUserList();
+
+        void showInfos();
     }
 }

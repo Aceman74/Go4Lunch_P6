@@ -93,7 +93,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         ratingMethod(mRating, holder);
         Timber.tag("Adapter Rating").i("%s %s %s", item.getName(), item.getRatingStars(), mRating);
         setPhotoUrl(item, holder);
-        loadPhotoWithGlide(item, holder);
+        loadPhotoWithGlide(holder);
         onClickItemListener(item, holder);
     }
 
@@ -113,7 +113,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         });
     }
 
-    private void loadPhotoWithGlide(Result item, MyViewHolder holder) {
+    private void loadPhotoWithGlide(MyViewHolder holder) {
         try {
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
             glide.asDrawable()

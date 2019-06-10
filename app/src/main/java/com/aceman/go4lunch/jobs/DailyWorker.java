@@ -1,22 +1,38 @@
 package com.aceman.go4lunch.jobs;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
 
+import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
 
 import com.aceman.go4lunch.R;
+import com.aceman.go4lunch.activities.loginActivity.MainActivity;
+import com.aceman.go4lunch.api.RestaurantPublicHelper;
+import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.utils.FirestoreUserList;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
 
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
@@ -25,9 +41,20 @@ import timber.log.Timber;
 import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
 
 public class DailyWorker extends Worker {
-    private final String mSearchQuery = getInputData().getString("Query");
-    private final String mCategorie = getInputData().getString("Categorie");
     private final Context mContext;
+    private String CHANNEL_ID = "22";
+    private String mCoWorker_1 = "";
+    private String mCoWorker_2 = "";
+    private String mCoWorker_3 = "";
+    private String mRestaurant;
+    private String mAppTitle = "Go4Lunch: it's lunch time !";
+    private String mText1 = "You lunch at ";
+    private String mText2 = " and you're not alone ! ";
+    private String mText3 = " joinnig you !";
+    private String mNoRestaurant = "You haven't selected a restaurant today! ";
+    private NotificationCompat.Builder mNotification;
+    public  List<RestaurantPublic> mUserList = new ArrayList<>();
+    int j = 0;
 
     public DailyWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -44,43 +71,115 @@ public class DailyWorker extends Worker {
     public Result doWork() {
 
         try {
-            clear();
-
+            createNotificationChannel();
+            getDataFromFirebasae();
             return
                     Result.success();
         } catch (Exception e) {
+            Timber.tag("Alarm User Lunch").e(e);
             return
                     Result.failure();
         }
     }
 
+    @Nullable
+    protected FirebaseUser getCurrentUser() {
+        return FirebaseAuth.getInstance().getCurrentUser();
+    }
 
-    private void clear() {
+    private void getDataFromFirebasae() {
+        RestaurantPublicHelper.getUser(Objects.requireNonNull(getCurrentUser()).getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                RestaurantPublic currentUser = documentSnapshot.toObject(RestaurantPublic.class);
+                if (currentUser.getDetails() != null) {
+                    mRestaurant = currentUser.getRestaurantName();
+                    Timber.tag("Alarm User Lunch").e(mRestaurant);
+                    mUserList = FirestoreUserList.getUserList(getCurrentUser());
+                    for (int i = 0; i < mUserList.size(); i++) {
+                        RestaurantPublic user = mUserList.get(i);
+                        if (user.getRestaurantName() != null && user.getRestaurantName().equals(mRestaurant)) {
+                            switch (j) {
+                                case 0:
+                                    mCoWorker_1 = user.getUsername();
+                                case 1:
+                                    mCoWorker_2 = user.getUsername();
+                                case 2:
+                                    mCoWorker_3 = user.getUsername();
+                            }
+                            j++;
+                        }
+                    }
+                }
+                SendNotification();
+            }
+        });
+    }
 
-/**
-                Intent intent = new Intent(mContext, NotificationActivity.class);
-                intent.putExtra("Search", mSearchQuery);
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = mContext.getString(R.string.channel_name);
+            String description = mContext.getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = mContext.getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+            Timber.tag("Notification_Channel").i("Is created");
+        }
+    }
+
+    private void SendNotification() {
+
+                Intent intent = new Intent(mContext, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, FLAG_CANCEL_CURRENT);
 
-                Bitmap largeIcon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.newyorktimes_thumb);
+                Bitmap largeIcon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.logo);
 
-                NotificationCompat.Builder notifTest = new NotificationCompat.Builder(mContext, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.notification)
+                if(mCoWorker_1.equals("") && mCoWorker_2.equals("") && mCoWorker_3.equals("")){
+                    mNotification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+                        .setSmallIcon(R.drawable.logo)
                         .setContentTitle(mAppTitle)
                         .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(mNeg1 + mSearchQuery + mNeg2))
+                                .bigText(mText1 + mRestaurant))
                         .setContentIntent(pendingIntent)
                         .setLargeIcon(largeIcon)
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                         .setAutoCancel(true)
                         .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                }if(mRestaurant == null){
+            mNotification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle(mAppTitle)
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(mNoRestaurant ))
+                    .setContentIntent(pendingIntent)
+                    .setLargeIcon(largeIcon)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        }
+                else{
+                    mNotification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle(mAppTitle)
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(mText1 + mRestaurant + mText2 + mCoWorker_1 +" "+ mCoWorker_2 +" "+ mCoWorker_3 + mText3))
+                    .setContentIntent(pendingIntent)
+                    .setLargeIcon(largeIcon)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        }
 
                 NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
-                notificationManagerCompat.notify(2, notifTest.build());
+                notificationManagerCompat.notify(2, mNotification.build());
 
-
- */
             }
 
 }

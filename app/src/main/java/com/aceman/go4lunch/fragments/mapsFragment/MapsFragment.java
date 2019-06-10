@@ -22,7 +22,6 @@ import android.widget.Toast;
 
 import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.activities.coreActivity.CoreActivity;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;
 import com.aceman.go4lunch.data.nearby_search.Result;

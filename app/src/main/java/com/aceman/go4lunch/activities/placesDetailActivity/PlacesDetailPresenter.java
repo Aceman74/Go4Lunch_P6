@@ -4,6 +4,8 @@ import android.support.annotation.NonNull;
 
 import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
+import com.aceman.go4lunch.models.History;
+import com.aceman.go4lunch.models.HistoryDetails;
 import com.aceman.go4lunch.models.Restaurant;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.models.User;
@@ -17,6 +19,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,14 +37,17 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 RestaurantPublic currentUser = documentSnapshot.toObject(RestaurantPublic.class);
-                if (currentUser.getDetails() != null) {
+                if (currentUser.getDetails() != null && currentUser.getDate().equals(DateSetter.getFormattedDate())) {
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).setInfosWithSnapshot(currentUser);
                 } else {
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).noLunchCase();
 
                 }
+                ((PlacesDetailContract.PlacesDetailViewInterface) getView()).startGettingUserList();
+                ((PlacesDetailContract.PlacesDetailViewInterface) getView()).showInfos();
             }
         });
+
     }
 
     @Override
@@ -63,6 +69,12 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
 
     @Override
     public void onClickSelectFloatingBtn(final String mID, final Restaurant mRestaurant) {
+        final History history = new History();
+        HistoryDetails historyDetails = new HistoryDetails();
+        historyDetails.setDate(date);
+        historyDetails.setName(mRestaurant.getName());
+        history.setDate(date);
+        history.setHistory(historyDetails);
         UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -71,20 +83,20 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
 
                 if (currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mID)) {
 
-                    RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), null, null, null, null).addOnFailureListener(onFailureListener());
+                    RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), null, null, null, null, null).addOnFailureListener(onFailureListener());
                     UserHelper.updateRestaurantID(getCurrentUser().getUid(), null, null).addOnFailureListener(onFailureListener());
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnNullStyle();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).toastRemovePlace();
                 } else {
                     String date = DateSetter.getFormattedDate();
-                    RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName(), mRestaurant, date).addOnFailureListener(onFailureListener());
+                    RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName(), mRestaurant,history, date).addOnFailureListener(onFailureListener());
                     UserHelper.updateRestaurantID(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName()).addOnFailureListener(onFailureListener());
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnAddStyle();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).toastAddPlace();
 
                 }
 
-                ((PlacesDetailContract.PlacesDetailViewInterface) getView()).notifyDataChanged();
+                ((PlacesDetailContract.PlacesDetailViewInterface) getView()).startGettingUserList();
             }
         });
     }
@@ -134,7 +146,7 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
                 RestaurantPublic restaurant = documentSnapshot.toObject(RestaurantPublic.class);
 
                 if (currentUser.getRestaurant() != null && restaurant.getDate() != null && !restaurant.getDate().equals(date)) {
-                    RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), null, null, null, null).addOnFailureListener(onFailureListener());
+                    RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), null, null, null, null, null).addOnFailureListener(onFailureListener());
                     UserHelper.updateRestaurantID(getCurrentUser().getUid(), null, null).addOnFailureListener(onFailureListener());
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnNullStyle();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).configureInfos();

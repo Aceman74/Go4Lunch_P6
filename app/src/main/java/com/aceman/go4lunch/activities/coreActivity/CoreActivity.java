@@ -18,25 +18,22 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.activities.settingsActivity.SettingsActivity;
-import com.aceman.go4lunch.activities.profileActivity.ProfileActivity;
-import com.aceman.go4lunch.utils.base.BaseActivity;
-import com.aceman.go4lunch.data.details.PlacesDetails;
-import com.aceman.go4lunch.utils.events.SearchRefreshEvent;
-import com.aceman.go4lunch.utils.events.UserListEvent;
 import com.aceman.go4lunch.activities.loginActivity.MainActivity;
+import com.aceman.go4lunch.activities.placesDetailActivity.PlacesDetailActivity;
+import com.aceman.go4lunch.activities.profileActivity.ProfileActivity;
+import com.aceman.go4lunch.activities.settingsActivity.SettingsActivity;
+import com.aceman.go4lunch.adapter.PageAdapter;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.models.User;
-import com.aceman.go4lunch.adapter.PageAdapter;
-import com.aceman.go4lunch.activities.placesDetailActivity.PlacesDetailActivity;
+import com.aceman.go4lunch.utils.base.BaseActivity;
+import com.aceman.go4lunch.utils.events.SearchRefreshEvent;
+import com.aceman.go4lunch.utils.events.UserListEvent;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -56,10 +53,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
-import io.reactivex.disposables.Disposable;
 import timber.log.Timber;
-
-import static com.aceman.go4lunch.fragments.mapsFragment.MapsFragment.mMaps;
 
 /**
  * Created by Lionel JOFFRAY - on 03/05/2019.
@@ -291,7 +285,6 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
 
-
     @Override
     public OnFailureListener onFailureListener() {
         return super.onFailureListener();
@@ -330,7 +323,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     }
 
     @Override
-    public void errorGettingUserListFromFirebase(Task<QuerySnapshot> task){
+    public void errorGettingUserListFromFirebase(Task<QuerySnapshot> task) {
         Timber.tag("Task Exeption").d(task.getException(), "Error getting documents: ");
     }
 
@@ -342,9 +335,9 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     @Override
     public void loadUserImgWithGlide() {
         Glide.with(this)
-            .load(this.getCurrentUser().getPhotoUrl())
-            .apply(RequestOptions.circleCropTransform())
-            .into(imageViewProfile);
+                .load(this.getCurrentUser().getPhotoUrl())
+                .apply(RequestOptions.circleCropTransform())
+                .into(imageViewProfile);
     }
 
     @Override

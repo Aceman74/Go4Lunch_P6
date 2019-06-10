@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 import android.widget.Toast;
 
 import com.aceman.go4lunch.activities.coreActivity.CoreContract;
+import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,7 +34,7 @@ public class FirestoreUserList {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                FirebaseFirestore.getInstance().collection("restaurant").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                RestaurantPublicHelper.getRestaurantCollection().get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {

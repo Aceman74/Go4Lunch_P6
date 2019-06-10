@@ -1,14 +1,11 @@
 package com.aceman.go4lunch.activities.coreActivity;
 
-import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.utils.BaseView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import io.reactivex.disposables.Disposable;
 
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.

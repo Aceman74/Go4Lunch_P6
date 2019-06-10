@@ -7,8 +7,6 @@ import com.aceman.go4lunch.utils.BaseView;
 
 import java.util.List;
 
-import io.reactivex.disposables.Disposable;
-
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
  */

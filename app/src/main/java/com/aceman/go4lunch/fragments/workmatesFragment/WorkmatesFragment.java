@@ -16,6 +16,9 @@ import com.aceman.go4lunch.utils.events.UserListEvent;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.adapter.WorkersAdapter;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -26,6 +29,7 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import timber.log.Timber;
 
 
 /**
@@ -54,26 +58,24 @@ public class WorkmatesFragment extends Fragment implements WorkmatesContract.Wor
         mPresenter = new WorkmatesPresenter();
         mPresenter.attachView(this);
         configureRecyclerView();
+        mPresenter.getUserList();
         return view;
-    }
-
-    @Subscribe(sticky = true)
-    public void onUserListEvent(UserListEvent userlist) {
-        mUserList = userlist.mUserList;
-        configureRecyclerView();
-        mWorkersAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mPresenter.getUserList();
     }
 
     @Override
@@ -84,5 +86,26 @@ public class WorkmatesFragment extends Fragment implements WorkmatesContract.Wor
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
         }
+    }
+
+    @Override
+    public void setUserListFromFirebase(Task<QuerySnapshot> task) {
+        mUserList.clear();
+        for (QueryDocumentSnapshot document : task.getResult()) {
+            RestaurantPublic userP = document.toObject(RestaurantPublic.class);     // < == GET LIST FIRESTORE
+            mUserList.add(userP);
+            Timber.tag("Task To List").i("Sucess");
+        }
+        mWorkersAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void errorGettingUserListFromFirebase(Task<QuerySnapshot> task) {
+        Timber.tag("Task Exeption").d(task.getException(), "Error getting documents: ");
+    }
+
+    @Override
+   public void updateRecyclerView(){
+        mWorkersAdapter.notifyDataSetChanged();
     }
 }

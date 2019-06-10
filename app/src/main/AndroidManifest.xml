@@ -17,7 +17,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="AllowBackup,GoogleAppIndexingWarning">
-        <activity android:name=".activities.settingsActivity.SettingsActivity" />
 
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
@@ -48,7 +47,11 @@
         <activity
             android:name=".activities.profileActivity.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"
-            android:parentActivityName=".activities.loginActivity.MainActivity" />
+            android:parentActivityName=".activities.coreActivity.CoreActivity" />
+        <!-- SETTINGS ACTIVITY -->
+        <activity android:name=".activities.settingsActivity.SettingsActivity"
+            android:label="@string/settings_title"
+            android:parentActivityName=".activities.coreActivity.CoreActivity" />
         <!-- CORE ACTIVITY -->
         <activity
             android:name=".activities.coreActivity.CoreActivity"
@@ -63,6 +66,8 @@
                 android:name="android.app.searchable"
                 android:resource="@xml/searchable" />
         </activity>
+        <receiver android:name=".jobs.Alarm" >
+        </receiver>
     </application>
 
 </manifest>
