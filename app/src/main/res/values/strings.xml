@@ -35,7 +35,6 @@
     <string name="settings">SETTINGS</string>
     <string name="settings_title">Settings</string>
     <string name="logout">LOGOUT</string>
-
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_places_detail">PlacesDetailActivity</string>
@@ -60,5 +59,7 @@
     <string name="btn_setting_desc">Click here to enable or disable daily notifcation at 12pm to see who else is joining your lunch place .</string>
     <string name="channel_description">This notification shows you who join your lunch place every 12pm</string>
     <string name="channel_name">12pm Notification</string>
+    <string name="twitter_consumer_key" translatable="false">egmVRINyxMs3W3V7dUrHUIgMA</string>
+    <string name="twitter_consumer_secret" translatable="false">ti4u5FwAcpixNPWfJTTXx5Cltrm2oBQhW2RIJch2fNHkaNaDOr</string>
 
 </resources>

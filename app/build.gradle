@@ -16,10 +16,14 @@ android {
         debug {
             buildConfigField "String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\""
             buildConfigField "String", "restaurant_ID", "\"A12iOtxFEWQ1A3r3Lgwd\""
+            buildConfigField "String", "twitter_consumer_key", "\"egmVRINyxMs3W3V7dUrHUIgMA\""
+            buildConfigField "String", "twitter_consumer_secret", "\"ti4u5FwAcpixNPWfJTTXx5Cltrm2oBQhW2RIJch2fNHkaNaDOr\""
         }
         release {
             buildConfigField "String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\""
             buildConfigField "String", "restaurant_ID", "\"A12iOtxFEWQ1A3r3Lgwd\""
+            buildConfigField "String", "twitter_consumer_key", "\"egmVRINyxMs3W3V7dUrHUIgMA\""
+            buildConfigField "String", "twitter_consumer_secret", "\"ti4u5FwAcpixNPWfJTTXx5Cltrm2oBQhW2RIJch2fNHkaNaDOr\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
@@ -53,8 +57,11 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-firestore:4.3.2'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.2'
     implementation 'com.firebaseui:firebase-ui-storage:4.3.2'
-    // FACEBOOK LOGIN SUPPORT
+    //FACEBOOK LOGIN SUPPORT//
     implementation 'com.facebook.android:facebook-android-sdk:4.42.0'
+    //TWITTER LOGIN SUPPORT//
+    implementation 'com.twitter.sdk.android:twitter-core:3.1.1'
+    implementation 'com.twitter.sdk.android:tweet-ui:3.1.1'
     //ButterKnife/Timber//
     implementation 'com.jakewharton:butterknife:8.0.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.0.0'

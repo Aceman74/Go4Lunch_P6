@@ -93,7 +93,7 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
     @Subscribe
     public void onResultListEvent(ResultListEvent result) {
         mResults = result.mResults;
-        configureRecyclerView();
+        mListViewAdapter.notifyDataSetChanged();
     }
 
     @Subscribe

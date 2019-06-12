@@ -84,7 +84,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     Double mLongitude;
     float mDistanceTo;
     int mRadius = 500;  //  >>> RADIUS <<<<
-    String placeID;
+    String mSearchID;
     LatLng mLatLng;
     LatLng mLastLatLng;
     String mMarkerTitle;
@@ -102,6 +102,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     private String API_KEY = BuildConfig.google_maps_key;
     public List<RestaurantPublic> mUserList = new ArrayList<>();
     MapsPresenter mPresenter;
+    private String mPrevSearchID;
 
 
     public MapsFragment() {
@@ -132,7 +133,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
     @Subscribe
     public void onSearchRefreshEvent(SearchRefreshEvent event){
+        mSearchID = event.mSearchID;
         mPresenter.getSearchRestaurant(event.mSearchID);
+        getCurrentMapInfo();
 
     }
 
@@ -261,6 +264,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
              getCurrentMapInfo();
              }
              */
+        }
+        if(mSearchID != null && !mSearchID.equals(mPrevSearchID)){
+            getCurrentMapInfo();
+            mPrevSearchID = mSearchID;
+            mSearchID = null;
         }
     }
 
