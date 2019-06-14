@@ -1,9 +1,7 @@
 package com.aceman.go4lunch.utils;
 
 import android.support.annotation.NonNull;
-import android.widget.Toast;
 
-import com.aceman.go4lunch.activities.coreActivity.CoreContract;
 import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
 import com.aceman.go4lunch.models.RestaurantPublic;
@@ -12,7 +10,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -49,14 +46,14 @@ public class FirestoreUserList {
         return mUserList;
     }
 
-        public static List<RestaurantPublic> setUserListFromFirebase(Task< QuerySnapshot > task) {
+    public static List<RestaurantPublic> setUserListFromFirebase(Task<QuerySnapshot> task) {
         mUserList.clear();
-            for (QueryDocumentSnapshot document : task.getResult()) {
-                RestaurantPublic userP = document.toObject(RestaurantPublic.class);     // < == GET LIST FIRESTORE
-                mUserList.add(userP);
-                Timber.tag("Task To List").i("Sucess");
-            }
-            return mUserList;
+        for (QueryDocumentSnapshot document : task.getResult()) {
+            RestaurantPublic userP = document.toObject(RestaurantPublic.class);     // < == GET LIST FIRESTORE
+            mUserList.add(userP);
+            Timber.tag("Task To List").i("Sucess");
         }
+        return mUserList;
     }
+}
 

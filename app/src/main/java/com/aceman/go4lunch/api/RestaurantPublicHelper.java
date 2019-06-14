@@ -8,8 +8,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.DateFormat;
-
 /**
  * Created by Lionel JOFFRAY - on 02/05/2019.
  */
@@ -37,12 +35,12 @@ public class RestaurantPublicHelper {
 
     // --- UPDATE ---
 
-    public static Task<Void> restaurantPublic(String uid, String restaurantID, String restaurantName, Restaurant restaurant,History history, String date) {
+    public static Task<Void> restaurantPublic(String uid, String restaurantID, String restaurantName, Restaurant restaurant, History history, String date) {
         return RestaurantPublicHelper.getRestaurantCollection().document(uid)
-                .update("restaurantID", restaurantID, "restaurantName", restaurantName,"details",restaurant,"history", history, "date", date);
+                .update("restaurantID", restaurantID, "restaurantName", restaurantName, "details", restaurant, "history", history, "date", date);
     }
 
-    public static Task<Void>resetUserHistory(String uid){
+    public static Task<Void> resetUserHistory(String uid) {
         return RestaurantPublicHelper.getRestaurantCollection().document(uid).update("history", null);
     }
 

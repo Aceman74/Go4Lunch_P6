@@ -1,10 +1,5 @@
 package com.aceman.go4lunch.models;
 
-import com.google.firebase.database.annotations.Nullable;
-import com.google.firebase.firestore.ServerTimestamp;
-
-import java.util.Date;
-
 /**
  * Created by Lionel JOFFRAY - on 23/05/2019.
  */
@@ -74,6 +69,7 @@ public class Restaurant {
     public int getRating() {
         return rating;
     }
+
     public void setRating(int rating) {
         this.rating = rating;
     }

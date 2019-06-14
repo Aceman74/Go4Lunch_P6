@@ -74,6 +74,7 @@ dependencies {
     implementation 'jp.wasabeef:blurry:3.0.0'   //  Blurr effect
     implementation 'org.greenrobot:eventbus:3.1.1'  //  EventBus
     implementation 'com.karumi:dexter:5.0.0'    //  Dexter
+    implementation 'com.github.aarsy.googlemapsanimations:googlemapsanimations:1.0.5'
 
     //API-RELATED//
     implementation 'com.google.code.gson:gson:2.8.5'

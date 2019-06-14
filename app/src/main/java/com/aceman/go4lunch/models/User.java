@@ -75,9 +75,14 @@ public class User {
     }
 
     @ServerTimestamp
-    public Date getDateCreated() { return dateCreated; }
+    public Date getDateCreated() {
+        return dateCreated;
+    }
 
-    public void setDateCreated(Date dateCreated) { this.dateCreated = dateCreated; }
+    public void setDateCreated(Date dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
     public Boolean getIsPrivate() {
         return isPrivate;
     }

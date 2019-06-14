@@ -10,8 +10,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
+import com.aceman.go4lunch.activities.placesDetail.PlacesDetailActivity;
 import com.aceman.go4lunch.models.RestaurantPublic;
-import com.aceman.go4lunch.activities.placesDetailActivity.PlacesDetailActivity;
+import com.aceman.go4lunch.utils.AnimationClass;
 import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.HourSetter;
 import com.bumptech.glide.RequestManager;
@@ -30,9 +31,9 @@ import timber.log.Timber;
  */
 public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAdapter.MyViewHolder> {
 
-    private List<RestaurantPublic> mUserList;
     private final RequestManager glide;
     private final Context mContext;
+    private List<RestaurantPublic> mUserList;
 
 
     public WorkersJoiningAdapter(List<RestaurantPublic> userList, RequestManager glide, Context context) {
@@ -53,9 +54,9 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         String date = DateSetter.getFormattedDate();
-        if((mUserList.get(position).getRestaurantName() != null && mUserList.get(position).getRestaurantName().equals(PlacesDetailActivity.mName))&& mUserList.get(position).getDate().equals(date)) {
+        if ((mUserList.get(position).getRestaurantName() != null && mUserList.get(position).getRestaurantName().equals(PlacesDetailActivity.mName)) && mUserList.get(position).getDate().equals(date)) {
             updateWithFreshInfo(this.mUserList.get(position), this.glide, holder, position);
-        }else{
+        } else {
             holder.mItemListener.setVisibility(View.GONE);
         }
     }
@@ -69,21 +70,22 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
      */
     private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
 
-        if(HourSetter.getHour()<13){
-        holder.mTextView.setText(user.getUsername()+ " is joining " +user.getRestaurantName() + "!");
-        }else{
-            holder.mTextView.setText(user.getUsername()+ " ate today at " +user.getRestaurantName() + "!");
+        if (HourSetter.getHour() < 13) {
+            holder.mTextView.setText(user.getUsername() + " is joining " + user.getRestaurantName() + "!");
+        } else {
+            holder.mTextView.setText(user.getUsername() + " ate today at " + user.getRestaurantName() + "!");
         }
         loadUserPictureWithGlide(user, holder);
         onClickListener(user, holder);
     }
 
-    private void onClickListener(final RestaurantPublic user, MyViewHolder holder) {
+    private void onClickListener(final RestaurantPublic user, final MyViewHolder holder) {
 
 
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.mItemListener.startAnimation(AnimationClass.animClick(mContext));
                 Timber.tag(user.getUsername()).d("is Clicked");
 
             }

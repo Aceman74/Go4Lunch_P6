@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".activities.placesDetailActivity.PlacesDetailActivity">
+    tools:context=".activities.placesDetail.PlacesDetailActivity">
 
     <include
         layout="@layout/no_lunch_layout"

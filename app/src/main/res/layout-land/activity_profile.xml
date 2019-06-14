@@ -3,12 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/gradient"
+    android:background="@drawable/gradient_primary"
     android:gravity="center_horizontal"
     android:orientation="horizontal"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".activities.profileActivity.ProfileActivity">
+    tools:context=".activities.profile.ProfileActivity">
 
     <ScrollView
         android:layout_width="wrap_content"

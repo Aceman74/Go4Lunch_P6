@@ -5,7 +5,7 @@ package com.aceman.go4lunch.utils.events;
  */
 public class SearchRefreshEvent {
 
-   public String mSearchID;
+    public String mSearchID;
 
 
     public SearchRefreshEvent(String searchID) {

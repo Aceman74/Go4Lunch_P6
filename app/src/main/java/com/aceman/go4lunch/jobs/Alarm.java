@@ -6,25 +6,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.SystemClock;
-import android.support.annotation.Nullable;
-import android.util.Log;
 
-import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
-import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.models.RestaurantPublic;
-import com.aceman.go4lunch.utils.FirestoreUserList;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Objects;
 
 import timber.log.Timber;
 
@@ -35,12 +25,12 @@ import static android.content.Context.ALARM_SERVICE;
  */
 public class Alarm extends BroadcastReceiver {
 
+    public static List<RestaurantPublic> mUserList = new ArrayList<>();
     public AlarmManager alarmMgr;
     PendingIntent alarmKillIntent;
     PendingIntent alarmCreateIntent;
     int ALARM_REQUEST_CODE = 123;
     Intent mIntent;
-    public static List<RestaurantPublic> mUserList = new ArrayList<>();
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -54,15 +44,14 @@ public class Alarm extends BroadcastReceiver {
         WorkManager.getInstance().enqueue(notifRequestDay);
     }
 
-    public boolean checkIfAlarmIsSet(Context context){
+    public boolean checkIfAlarmIsSet(Context context) {
 
         mIntent = new Intent(context, Alarm.class);
         boolean alarmUp = (PendingIntent.getBroadcast(context, ALARM_REQUEST_CODE,
                 mIntent,
                 PendingIntent.FLAG_NO_CREATE) != null);
 
-        if (alarmUp)
-        {
+        if (alarmUp) {
             Timber.d("Alarm is already active");
         }
         return alarmUp;

@@ -1,9 +1,9 @@
 package com.aceman.go4lunch.api;
 
+import com.aceman.go4lunch.activities.login.MainActivity;
 import com.aceman.go4lunch.data.details.PlacesDetails;
 import com.aceman.go4lunch.data.nearby_search.Nearby;
 import com.aceman.go4lunch.data.photo.PlacePhoto;
-import com.aceman.go4lunch.activities.loginActivity.MainActivity;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

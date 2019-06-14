@@ -8,10 +8,10 @@ public class HistoryDetails {
     private String name;
     private String date;
 
-    public HistoryDetails(){
+    public HistoryDetails() {
     }
 
-    public HistoryDetails(String name, String date){
+    public HistoryDetails(String name, String date) {
         this.name = name;
         this.date = date;
     }

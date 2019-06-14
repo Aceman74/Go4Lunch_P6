@@ -6,12 +6,12 @@ package com.aceman.go4lunch.models;
 public class History {
 
     private HistoryDetails mHistoryDetails;
-    private  String date;
+    private String date;
 
-    public History(){
+    public History() {
     }
 
-    public History(HistoryDetails mDetails){
+    public History(HistoryDetails mDetails) {
         this.mHistoryDetails = mDetails;
     }
 

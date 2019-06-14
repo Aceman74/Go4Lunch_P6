@@ -61,5 +61,7 @@
     <string name="channel_name">12pm Notification</string>
     <string name="twitter_consumer_key" translatable="false">egmVRINyxMs3W3V7dUrHUIgMA</string>
     <string name="twitter_consumer_secret" translatable="false">ti4u5FwAcpixNPWfJTTXx5Cltrm2oBQhW2RIJch2fNHkaNaDOr</string>
+    <string name="your_like">Your Favorite Place</string>
+    <string name="no_place_liked">No place liked</string>
 
 </resources>

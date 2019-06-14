@@ -3,7 +3,6 @@ package com.aceman.go4lunch.data.nearby_search;
 import com.google.android.gms.maps.model.Marker;
 import com.google.gson.annotations.SerializedName;
 
-
 import java.util.List;
 
 public class Result {

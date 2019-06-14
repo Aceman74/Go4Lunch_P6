@@ -12,9 +12,10 @@ import android.widget.TextView;
 
 import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.activities.placesDetailActivity.PlacesDetailActivity;
+import com.aceman.go4lunch.activities.placesDetail.PlacesDetailActivity;
 import com.aceman.go4lunch.data.nearby_search.Result;
 import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.utils.AnimationClass;
 import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.events.PlacesDetailEvent;
 import com.bumptech.glide.RequestManager;
@@ -74,6 +75,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         updateWithFreshInfo(mResults.get(position), this.glide, holder, position);
+        AnimationClass.setFadeAnimation(holder.itemView, mContext);
     }
 
     /**
@@ -102,6 +104,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.mItemListener.startAnimation(AnimationClass.animClick(mContext));
                 Timber.tag(item.getName()).d("is Clicked");
                 EventBus.getDefault().postSticky(new PlacesDetailEvent(item, holder.mUrl));
                 Intent detail = new Intent(mContext, PlacesDetailActivity.class);

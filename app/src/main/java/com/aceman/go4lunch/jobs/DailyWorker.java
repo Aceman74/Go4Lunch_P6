@@ -12,15 +12,12 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.util.Log;
 
-import androidx.work.Data;
 import androidx.work.Worker;
 import androidx.work.WorkerParameters;
 
-
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.activities.loginActivity.MainActivity;
+import com.aceman.go4lunch.activities.login.MainActivity;
 import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.FirestoreUserList;
@@ -30,18 +27,17 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
 
-import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.DisposableObserver;
 import timber.log.Timber;
 
 import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
 
 public class DailyWorker extends Worker {
     private final Context mContext;
+    public List<RestaurantPublic> mUserList = new ArrayList<>();
+    int j = 0;
     private String CHANNEL_ID = "22";
     private String mCoWorker_1 = "";
     private String mCoWorker_2 = "";
@@ -53,8 +49,6 @@ public class DailyWorker extends Worker {
     private String mText3 = " joinnig you !";
     private String mNoRestaurant = "You haven't selected a restaurant today! ";
     private NotificationCompat.Builder mNotification;
-    public  List<RestaurantPublic> mUserList = new ArrayList<>();
-    int j = 0;
 
     public DailyWorker(@NonNull Context context, @NonNull WorkerParameters workerParams) {
         super(context, workerParams);
@@ -135,41 +129,41 @@ public class DailyWorker extends Worker {
 
     private void SendNotification() {
 
-                Intent intent = new Intent(mContext, MainActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, FLAG_CANCEL_CURRENT);
+        Intent intent = new Intent(mContext, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(mContext, 0, intent, FLAG_CANCEL_CURRENT);
 
-                Bitmap largeIcon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.logo);
+        Bitmap largeIcon = BitmapFactory.decodeResource(mContext.getResources(), R.drawable.logo);
 
-                if(mCoWorker_1.equals("") && mCoWorker_2.equals("") && mCoWorker_3.equals("")){
-                    mNotification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.logo)
-                        .setContentTitle(mAppTitle)
-                        .setStyle(new NotificationCompat.BigTextStyle()
-                                .bigText(mText1 + mRestaurant))
-                        .setContentIntent(pendingIntent)
-                        .setLargeIcon(largeIcon)
-                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                        .setAutoCancel(true)
-                        .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
-                }if(mRestaurant == null){
+        if (mCoWorker_1.equals("") && mCoWorker_2.equals("") && mCoWorker_3.equals("")) {
             mNotification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                     .setSmallIcon(R.drawable.logo)
                     .setContentTitle(mAppTitle)
                     .setStyle(new NotificationCompat.BigTextStyle()
-                            .bigText(mNoRestaurant ))
+                            .bigText(mText1 + mRestaurant))
                     .setContentIntent(pendingIntent)
                     .setLargeIcon(largeIcon)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                     .setAutoCancel(true)
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         }
-                else{
-                    mNotification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+        if (mRestaurant == null) {
+            mNotification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
                     .setSmallIcon(R.drawable.logo)
                     .setContentTitle(mAppTitle)
                     .setStyle(new NotificationCompat.BigTextStyle()
-                            .bigText(mText1 + mRestaurant + mText2 + mCoWorker_1 +" "+ mCoWorker_2 +" "+ mCoWorker_3 + mText3))
+                            .bigText(mNoRestaurant))
+                    .setContentIntent(pendingIntent)
+                    .setLargeIcon(largeIcon)
+                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setAutoCancel(true)
+                    .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+        } else {
+            mNotification = new NotificationCompat.Builder(mContext, CHANNEL_ID)
+                    .setSmallIcon(R.drawable.logo)
+                    .setContentTitle(mAppTitle)
+                    .setStyle(new NotificationCompat.BigTextStyle()
+                            .bigText(mText1 + mRestaurant + mText2 + mCoWorker_1 + " " + mCoWorker_2 + " " + mCoWorker_3 + mText3))
                     .setContentIntent(pendingIntent)
                     .setLargeIcon(largeIcon)
                     .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -177,9 +171,9 @@ public class DailyWorker extends Worker {
                     .setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
         }
 
-                NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
-                notificationManagerCompat.notify(2, mNotification.build());
+        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(mContext);
+        notificationManagerCompat.notify(2, mNotification.build());
 
-            }
+    }
 
 }

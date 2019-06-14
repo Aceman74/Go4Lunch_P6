@@ -12,8 +12,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.activities.placesDetailActivity.PlacesDetailActivity;
+import com.aceman.go4lunch.activities.placesDetail.PlacesDetailActivity;
 import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.utils.AnimationClass;
 import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.HourSetter;
 import com.aceman.go4lunch.utils.events.RestaurantPublicEvent;
@@ -35,9 +36,9 @@ import timber.log.Timber;
  */
 public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHolder> {
 
-    private List<RestaurantPublic> mUserList;
     private final RequestManager glide;
     private final Context mContext;
+    private List<RestaurantPublic> mUserList;
     private String mIntent;
 
 
@@ -59,6 +60,7 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         updateWithFreshInfo(this.mUserList.get(position), this.glide, holder, position);
+        AnimationClass.setFadeAnimation(holder.itemView, mContext);
     }
 
     /**
@@ -75,20 +77,21 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
         onClickListener(user, holder);
     }
 
-    private void onClickListener(final RestaurantPublic user, MyViewHolder holder) {
+    private void onClickListener(final RestaurantPublic user, final MyViewHolder holder) {
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.mItemListener.startAnimation(AnimationClass.animClick(mContext));
                 if (user.getDate() != null && user.getDate().equals(DateSetter.getFormattedDate())) {
 
                     Timber.tag(user.getUsername()).d("is Clicked");
-                     EventBus.getDefault().postSticky(new RestaurantPublicEvent(user));
+                    EventBus.getDefault().postSticky(new RestaurantPublicEvent(user));
                     Intent workers = new Intent(mContext, PlacesDetailActivity.class);
                     mIntent = mContext.getString(R.string.workers);
                     workers.putExtra("detail_intent", mIntent);
                     mContext.startActivity(workers);
-                }else {
-                    Toast.makeText(mContext,user.getUsername()+" has not choose his lunch.",Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mContext, user.getUsername() + " has not choose his lunch.", Toast.LENGTH_LONG).show();
                 }
 
             }

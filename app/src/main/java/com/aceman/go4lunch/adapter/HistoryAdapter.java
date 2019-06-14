@@ -1,35 +1,20 @@
 package com.aceman.go4lunch.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.activities.placesDetailActivity.PlacesDetailActivity;
-import com.aceman.go4lunch.models.History;
 import com.aceman.go4lunch.models.HistoryDetails;
-import com.aceman.go4lunch.models.RestaurantPublic;
-import com.aceman.go4lunch.utils.DateSetter;
-import com.aceman.go4lunch.utils.events.PlacesDetailEvent;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.RequestOptions;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
 import butterknife.BindColor;
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 
 /**

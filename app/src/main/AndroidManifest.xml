@@ -23,9 +23,9 @@
             android:value="@string/facebook_application_id" />
 
         <activity
-            android:name=".activities.placesDetailActivity.PlacesDetailActivity"
+            android:name=".activities.placesDetail.PlacesDetailActivity"
             android:label="@string/title_activity_places_detail"
-            android:parentActivityName=".activities.coreActivity.CoreActivity"
+            android:parentActivityName=".activities.core.CoreActivity"
             android:theme="@style/AppTheme.NoActionBar" />
 
         <meta-data
@@ -33,7 +33,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".activities.loginActivity.MainActivity"
+            android:name=".activities.login.MainActivity"
             android:theme="@style/AppTheme.NoTitle">
 
             <!-- DISABLE TOOLBAR IN MAIN ACTIVITY -->
@@ -45,18 +45,18 @@
         </activity>
         <!-- PROFILE ACTIVITY -->
         <activity
-            android:name=".activities.profileActivity.ProfileActivity"
+            android:name=".activities.profile.ProfileActivity"
             android:label="@string/toolbar_title_login_activity"
-            android:parentActivityName=".activities.coreActivity.CoreActivity" />
+            android:parentActivityName=".activities.core.CoreActivity" />
         <!-- SETTINGS ACTIVITY -->
-        <activity android:name=".activities.settingsActivity.SettingsActivity"
+        <activity android:name=".activities.settings.SettingsActivity"
             android:label="@string/settings_title"
-            android:parentActivityName=".activities.coreActivity.CoreActivity" />
+            android:parentActivityName=".activities.core.CoreActivity" />
         <!-- CORE ACTIVITY -->
         <activity
-            android:name=".activities.coreActivity.CoreActivity"
+            android:name=".activities.core.CoreActivity"
             android:label="@string/toolbar_title_core_activity"
-            android:parentActivityName=".activities.loginActivity.MainActivity"
+            android:parentActivityName=".activities.login.MainActivity"
             android:theme="@style/AppTheme.Core">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
