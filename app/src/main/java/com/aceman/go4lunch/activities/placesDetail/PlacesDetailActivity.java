@@ -29,7 +29,9 @@ import com.aceman.go4lunch.models.Restaurant;
 import com.aceman.go4lunch.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.base.BaseActivity;
 import com.aceman.go4lunch.utils.events.PlacesDetailEvent;
+import com.aceman.go4lunch.utils.events.RefreshEvent;
 import com.aceman.go4lunch.utils.events.RestaurantPublicEvent;
+import com.aceman.go4lunch.utils.events.UserJoiningRefreshEvent;
 import com.aceman.go4lunch.utils.events.UserListEvent;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
@@ -139,7 +141,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         mStar = currentUser.getDetails().getRating();
         mUrl = currentUser.getDetails().getImageUrl();
         mID = currentUser.getDetails().getPlaceID();
-
+        showInfos();
     }
 
     @Override
@@ -177,7 +179,6 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         super.onResume();
         getAnyIntent();
         configureInfos();
-        notifyDataChanged();
     }
 
     @Override
@@ -201,8 +202,6 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
 
     @Override
     public void configureInfos() {
-
-        startGettingUserList();
 
         if (mIntentString != null && mIntentString.equals(getString(R.string.adapter))) {    //  Intent from Adapter click
 
@@ -251,7 +250,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         likeBtnListener();      // << With contract?
         callBtnListener();
         websiteBtnListener();
-        mWorkersJoiningAdapter.notifyDataSetChanged();
+        startGettingUserList();
     }
 
     @Override
@@ -313,7 +312,6 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
             @Override
             public void onClick(View v) {
                 mPresenter.onClickSelectFloatingBtn(mID, mRestaurant);
-                mWorkersJoiningAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -405,24 +403,34 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         mResult = detail.mDetail;
         mUrl = detail.mUrl;
         mID = detail.mDetail.getPlaceId();
-        configureInfos();
     }
 
     @Subscribe(sticky = true)
     public void onRestaurantPublicEvent(RestaurantPublicEvent restaurantPublic) {
         mRestaurantPublic = restaurantPublic.mRestaurantPublic;
-        configureInfos();
+    }
+
+    @Subscribe
+    public void onRefreshEvent(RestaurantPublicEvent restaurantPublic) {
+        mRestaurantPublic = restaurantPublic.mRestaurantPublic;
+    }
+
+    @Subscribe
+    public void onUserJoiningRefreshEvent(UserJoiningRefreshEvent refreshEvent) {
+        notifyDataChanged();
     }
 
     @Override
     public void startGettingUserList() {
         mUserList = mPresenter.getUserList();
-        mUserJoinning = mPresenter.setNewUserListIfJoinin(mUserList, mUserJoinning, mName);
+        mUserJoinning = mPresenter.getUserJoinningList(mName);
         EventBus.getDefault().post(new UserListEvent(mUserList));
+        notifyDataChanged();
     }
 
     @Override
     public void notifyDataChanged() {
+        configureRecyclerView();
         mWorkersJoiningAdapter.notifyDataSetChanged();
     }
 }

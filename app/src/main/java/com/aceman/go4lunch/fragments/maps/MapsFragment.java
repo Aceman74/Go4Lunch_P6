@@ -509,7 +509,6 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     public void onPause() {
         super.onPause();
         mMapsFragment.onPause();
-        postEventBusAfterRequest();
     }
 
     @Override

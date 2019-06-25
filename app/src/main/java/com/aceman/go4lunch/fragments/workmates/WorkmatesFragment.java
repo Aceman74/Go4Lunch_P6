@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -59,6 +61,7 @@ public class WorkmatesFragment extends Fragment implements WorkmatesContract.Wor
         mPresenter.attachView(this);
         configureRecyclerView();
         mPresenter.getUserList();
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -72,6 +75,13 @@ public class WorkmatesFragment extends Fragment implements WorkmatesContract.Wor
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        MenuItem item = menu.findItem(R.id.action_search);
+        if (item != null)
+            item.setVisible(false);
     }
 
     @Override

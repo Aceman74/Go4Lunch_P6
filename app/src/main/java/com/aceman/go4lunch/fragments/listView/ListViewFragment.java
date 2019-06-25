@@ -96,6 +96,15 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         mListViewAdapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser) {
+            loadingView();
+            configureRecyclerView();
+        }
+    }
+
     @Subscribe(sticky = true)
     public void onUserListEvent(UserListEvent userlist) {
         mUserList = userlist.mUserList;
@@ -103,11 +112,7 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
 
     @Subscribe
     public void onRefreshEvent(RefreshEvent refreshEvent) {
-        if (mResults.size() > 0) {
-            configureRecyclerView();
             loadingView();
-        }
-        mListViewAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -191,7 +196,6 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         mRecyclerView.setAdapter(mListViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
-        mListViewAdapter.notifyDataSetChanged();
     }
 
     @Override

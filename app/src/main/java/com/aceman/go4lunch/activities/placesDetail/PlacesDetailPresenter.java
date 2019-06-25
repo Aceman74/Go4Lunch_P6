@@ -27,6 +27,7 @@ import java.util.Objects;
  */
 public class PlacesDetailPresenter extends BasePresenter implements PlacesDetailContract.PlacesDetailPresenterInterface {
     public static List<RestaurantPublic> mUserList = new ArrayList<>();
+    public static List<RestaurantPublic> mUserJoinning = new ArrayList<>();
     public static String date = DateSetter.getFormattedDate();
 
     @Override
@@ -42,9 +43,6 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).noLunchCase();
 
                 }
-                ((PlacesDetailContract.PlacesDetailViewInterface) getView()).startGettingUserList();
-                ((PlacesDetailContract.PlacesDetailViewInterface) getView()).showInfos();
-                ((PlacesDetailContract.PlacesDetailViewInterface) getView()).notifyDataChanged();
             }
         });
 
@@ -93,12 +91,10 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
                     UserHelper.updateRestaurantID(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName()).addOnFailureListener(onFailureListener());
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnAddStyle();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).toastAddPlace();
-
                 }
-
-                ((PlacesDetailContract.PlacesDetailViewInterface) getView()).startGettingUserList();
             }
         });
+        ((PlacesDetailContract.PlacesDetailViewInterface) getView()).startGettingUserList();
     }
 
     @Override
@@ -121,19 +117,6 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
                 }
             }
         });
-    }
-
-    @Override
-    public List<RestaurantPublic> setNewUserListIfJoinin(List<RestaurantPublic> mUserList, List<RestaurantPublic> mUserJoinning, String mName) {
-        mUserJoinning.clear();
-        int index = 0;
-        for (int i = 0; i < mUserList.size(); i++) {
-            if (mUserList.get(i).getRestaurantName() != null && mUserList.get(i).getRestaurantName().equals(mName)) {
-                mUserJoinning.add(index, mUserList.get(i));
-                index++;
-            }
-        }
-        return mUserJoinning;
     }
 
     @Override
@@ -160,6 +143,13 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
 
         mUserList = FirestoreUserList.getUserList(getCurrentUser());
         return mUserList;
+    }
+
+    @Override
+    public List<RestaurantPublic> getUserJoinningList(String name) {
+
+        mUserJoinning = FirestoreUserList.getUserJoinningList(getCurrentUser(), name);
+        return mUserJoinning;
     }
 
     @Override

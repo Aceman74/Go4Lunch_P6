@@ -28,11 +28,11 @@ public interface PlacesDetailContract {
 
         void onClickSelectFloatingBtn(String mID, Restaurant mRestaurant);
 
-        List<RestaurantPublic> setNewUserListIfJoinin(List<RestaurantPublic> mUserList, List<RestaurantPublic> mUserJoinning, String mName);
-
         void resetPlaceChoiceIfNewDay();
 
         List<RestaurantPublic> getUserList();
+
+        List<RestaurantPublic> getUserJoinningList(String name);
 
     }
 
