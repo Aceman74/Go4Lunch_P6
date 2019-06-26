@@ -1,19 +1,18 @@
 <resources>
     <string name="app_name">Go4Lunch</string>
-    <string name="error_unknown_error">An unknown error occured…</string>
+    <string name="error_unknown_error">An unknown error occurred…</string>
     <string name="new_user_created">Welcome to Go4Lunch !</string>
-    <string name="user_already_logged">Welcome back</string>
+    <string name="user_already_logged">"Welcome back, "</string>
     <string name="login">Login</string>
     <string name="connection_succeed">Connection successful !</string>
     <string name="error_authentication_canceled">Error, connexion cancelled</string>
     <string name="error_no_internet">Error, no internet connexion</string>
     <string name="main_activity_description">Find a nice restaurant and invite your co-worker for lunch !</string>
-    <string name="facebook_application_id">1114894378703250</string>
-    <string name="facebook_app_id">1114894378703250</string>
-    <string name="fb_login_protocol_scheme">fb1114894378703250</string>
-    <string name="text_input_username">Username</string>
+    <string name="facebook_application_id" translatable="false">1114894378703250</string>
+    <string name="facebook_app_id" translatable="false">1114894378703250</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb1114894378703250</string>
+    <string name="text_input_username">Username:</string>
     <string name="text_view_email">Email:</string>
-    <string name="check_private">Private Account</string>
     <string name="button_update_account">Update Account</string>
     <string name="button_sign_out_account">Sign Out</string>
     <string name="button_delete_account">Delete Account</string>
@@ -22,11 +21,10 @@
     <string name="info_no_username_found">Username not found</string>
     <string name="button_login_text_logged">Continue</string>
     <string name="button_login_text_not_logged">Sign In</string>
-    <string name="popup_message_confirmation_delete_account">You really want to delete your account ?</string>
+    <string name="popup_message_confirmation_delete_account">Do you really want to delete your account ?</string>
     <string name="popup_message_choice_yes">Yes, delete it</string>
     <string name="popup_message_choice_no">No, keep it</string>
-    <string name="private_descprition">A private account hide your account for other users, so they can\'t see your lunch activity until you uncheck Private Account.</string>
-    <string name="toolbar_title_core_activity">I\'m Hungry !</string>
+ <string name="toolbar_title_core_activity">I\'m Hungry !</string>
     <!-- BOTTOM NAVIGATION VIEW -->
     <string name="bottom_navigation_menu_maps">Maps view</string>
     <string name="bottom_navigation_menu_list">List View</string>
@@ -35,16 +33,16 @@
     <string name="settings">SETTINGS</string>
     <string name="settings_title">Settings</string>
     <string name="logout">LOGOUT</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
     <string name="title_activity_maps">Map</string>
-    <string name="title_activity_places_detail">PlacesDetailActivity</string>
-    <string name="mUrl_begin"><![CDATA[https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&key=]]></string>
-    <string name="mUrlNext"><![CDATA[&photoreference=]]></string>
+    <string name="title_activity_places_detail" translatable="false">PlacesDetailActivity</string>
+    <string name="mUrl_begin" translatable="false"><![CDATA[https://maps.googleapis.com/maps/api/place/photo?maxwidth=200&maxheight=200&key=]]></string>
+    <string name="mUrlNext" translatable="false"><![CDATA[&photoreference=]]></string>
     <string name="no_result_string">Unfortunately there\'s no restaurant around, try a different place !</string>
     <string name="oops">Oops !</string>
     <string name="permision_text">Go4Lunch needs to use some of your devices functions to fully enjoy it and find your co-workers!</string>
     <string name="application_permission">Application Permission</string>
-    <string name="is_joining">is joining</string>
+    <string name="is_joining">" is joining"</string>
     <string name="exclamation">!</string>
     <string name="perm_required">Permission required</string>
     <string name="perm_required_1">Both location and call are needed to launch this application.</string>
@@ -56,12 +54,48 @@
     <string name="back_to_map">Back</string>
     <string name="restaurant">restaurant</string>
     <string name="your_history">Your History</string>
-    <string name="btn_setting_desc">Click here to enable or disable daily notifcation at 12pm to see who else is joining your lunch place .</string>
+    <string name="btn_setting_desc">Click here to enable or disable daily notification at 12pm to see who else is joining your lunch place.</string>
     <string name="channel_description">This notification shows you who join your lunch place every 12pm</string>
     <string name="channel_name">12pm Notification</string>
     <string name="twitter_consumer_key" translatable="false">egmVRINyxMs3W3V7dUrHUIgMA</string>
     <string name="twitter_consumer_secret" translatable="false">ti4u5FwAcpixNPWfJTTXx5Cltrm2oBQhW2RIJch2fNHkaNaDOr</string>
     <string name="your_like">Your Favorite Place</string>
     <string name="no_place_liked">No place liked</string>
+    <string name="im_hungry">I\'m Hungry !</string>
+    <string name="available_workm">Available Workmates</string>
+    <string name="detail_intent" translatable="false">detail_intent</string>
+    <string name="you_added">"You have added "</string>
+    <string name="for_lunch">" for lunch !"</string>
+    <string name="you_removed">"You have removed "</string>
+    <string name="you_dont_like">"You don\'t like "</string>
+    <string name="anymore">" anymore !"</string>
+    <string name="you_now_like">"You now like "</string>
+    <string name="exclam" translatable="false">" !"</string>
+    <string name="see_you">See you soon !</string>
+    <string name="username_update">Username updated.</string>
+    <string name="username_empty">Username can\'t be empty.</string>
+    <string name="email_update">Email updated.</string>
+    <string name="email_empty">Email can\'t be empty.</string>
+    <string name="history_cleared">History Cleared !</string>
+    <string name="like_cleared">Like Cleared !</string>
+    <string name="has_not_choose">" has not choose his lunch."</string>
+    <string name="is_eating">" is eating at "</string>
+    <string name="ate_today_at">" ate today at "</string>
+    <string name="not_choice_yet">" has not made his choice yet."</string>
+    <string name="you_here">You are here !</string>
+    <string name="no_result_around">No results found!</string>
+    <string name="no_within_m">No restaurants here within 500m</string>
+    <string name="is_eating_here">" is eating here !"</string>
+    <string name="ate_here_today">" ate here today !"</string>
+    <string name="notification_set">Notification set !</string>
+    <string name="notification_canceled">Notification Canceled !</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="clear_history">clear history</string>
+    <string name="reset">reset</string>
+    <string name="sort_by_name">Sort by Name</string>
+    <string name="sort_by_distance">Sort by Distance</string>
+    <string name="open_now">Open now</string>
+    <string name="closed_now">Closed</string>
 
 </resources>

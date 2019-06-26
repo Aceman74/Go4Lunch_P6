@@ -4,120 +4,104 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_primary"
-    android:gravity="center_horizontal"
-    android:orientation="horizontal"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    tools:context=".activities.profile.ProfileActivity">
+    android:gravity="center_horizontal"
+    android:orientation="horizontal"
+    tools:context=".activities.profile.ProfileActivity"
+    android:baselineAligned="false">
 
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1">
-    <!-- USER DATA CONTAINER -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical">
-
+        <!-- USER DATA CONTAINER -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
             android:gravity="center"
-            android:layout_gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <!-- PROFILE IMAGE -->
-            <ImageView
-                android:id="@+id/profile_activity_imageview_profile"
-                android:layout_width="110dp"
-                android:layout_height="110dp"
-                android:src="@drawable/user_default_white" />
-
-        </LinearLayout>
-
-        <!-- PROFILE USERNAME -->
-        <android.support.design.widget.TextInputEditText
-            android:id="@+id/profile_activity_edit_text_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:backgroundTint="@color/ColorWhite"
-            android:maxLines="1"
-            android:text="@string/text_input_username"
-            android:textColor="@color/ColorWhite"
-            android:textSize="@dimen/default_middle_size" />
-
-        <!-- PROFILE EMAIL CONTAINER -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/default_margin"
-            android:orientation="horizontal"
-            android:layout_gravity="center">
-
-            <TextView
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/text_view_email"
-                android:textColor="@color/ColorWhite"
-                android:textSize="@dimen/default_middle_size"
-                android:textStyle="bold" />
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/default_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-            <!-- PROFILE EMAIL -->
+                <!-- PROFILE IMAGE -->
+                <ImageView
+                    android:id="@+id/profile_activity_imageview_profile"
+                    android:layout_width="110dp"
+                    android:layout_height="110dp"
+                    android:src="@drawable/user_default_white" />
+
+            </LinearLayout>
+
+            <!-- PROFILE USERNAME -->
             <android.support.design.widget.TextInputEditText
-                android:id="@+id/profile_activity_edit_text_email"
+                android:id="@+id/profile_activity_edit_text_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_margin="@dimen/default_margin"
                 android:backgroundTint="@color/ColorWhite"
-                android:paddingLeft="@dimen/default_margin"
                 android:maxLines="1"
+                android:text="@string/text_input_username"
                 android:textColor="@color/ColorWhite"
                 android:textSize="@dimen/default_middle_size" />
 
-        </LinearLayout>
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <!-- PROGRESS BAR -->
-            <ProgressBar
-                android:id="@+id/profile_activity_progress_bar"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_margin="@dimen/default_large_margin"
-                android:layout_centerInParent="true"
-                android:visibility="invisible"/>
-
-            <!-- CHECKBOX IS USER MENTOR -->
-            <CheckBox
-                android:id="@+id/profile_activity_check_box_is_private"
-                android:layout_width="match_parent"
+            <!-- PROFILE EMAIL CONTAINER -->
+            <LinearLayout
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:buttonTint="@color/ColorWhite"
-                android:text="@string/check_private"
-                android:textColor="@color/ColorWhite" />
-
-            <TextView
-                android:layout_below="@+id/profile_activity_check_box_is_private"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:layout_margin="@dimen/default_margin"
-                android:text="@string/private_descprition"
-                android:textColor="@color/ColorWhite" />
+                android:orientation="horizontal">
 
-        </RelativeLayout>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/text_view_email"
+                    android:textColor="@color/ColorWhite"
+                    android:textSize="@dimen/default_middle_size"
+                    android:textStyle="bold" />
+
+                <!-- PROFILE EMAIL -->
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/profile_activity_edit_text_email"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/ColorWhite"
+                    android:maxLines="1"
+                    android:paddingLeft="@dimen/default_margin"
+                    android:paddingRight="@dimen/default_margin"
+                    android:textColor="@color/ColorWhite"
+                    android:textSize="@dimen/default_middle_size" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <!-- PROGRESS BAR -->
+                <ProgressBar
+                    android:id="@+id/profile_activity_progress_bar"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_centerInParent="true"
+                    android:layout_margin="@dimen/default_large_margin"
+                    android:visibility="invisible" />
+
+            </RelativeLayout>
+        </LinearLayout>
     </ScrollView>
     <!-- BUTTONS CONTAINER -->
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="0.5"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -132,7 +116,7 @@
             android:padding="@dimen/default_margin"
             android:text="@string/button_update_account"
             android:textColor="#fff"
-            android:textSize="@dimen/default_text_size"/>
+            android:textSize="@dimen/default_text_size" />
 
         <!-- BUTTON SIGN OUT -->
         <Button

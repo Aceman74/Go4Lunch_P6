@@ -1,9 +1,8 @@
 package com.aceman.go4lunch.api;
 
 import com.aceman.go4lunch.activities.login.MainActivity;
-import com.aceman.go4lunch.data.details.PlacesDetails;
-import com.aceman.go4lunch.data.nearby_search.Nearby;
-import com.aceman.go4lunch.data.photo.PlacePhoto;
+import com.aceman.go4lunch.data.places.details.PlacesDetails;
+import com.aceman.go4lunch.data.places.nearby_search.Nearby;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
@@ -22,10 +21,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 
 /**
- * Created by Lionel JOFFRAY - on 13/03/2019.
+ * Created by Lionel JOFFRAY - on 12/05/2019.
  * <p>
- * <b>NewsStream</> Class contain all observables for news Call an set Retrofit  <br>
- * Using <b>RX Java and Retrofit</>
+ * Places API for call to Google API with Retrofit.
+ *
+ * @see Retrofit
  */
 public class PlacesApi {
 
@@ -33,7 +33,7 @@ public class PlacesApi {
     Retrofit mRetrofit;
 
     /**
-     * NewStream private constructor for Retrofit
+     * Private constructor for Retrofit
      */
     private PlacesApi() {
 
@@ -43,20 +43,14 @@ public class PlacesApi {
         final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
             @Override
             public Response intercept(Interceptor.Chain chain) throws IOException {
-                //  Create an Interceptor to  cache all request and avoid Too many request error
                 Response originalResponse = chain.proceed(chain.request());
-                int maxAge = 120; // read from cache for 2 minutes
+                int maxAge = 120;
                 return originalResponse.newBuilder()
                         .header("Cache-Control", "public, max-age=" + maxAge)
                         .build();
-                /**
-                 int maxStale = 60 * 60 * 24 * 28; // tolerate 4-weeks stale
-                 return originalResponse.newBuilder()
-                 .header("Cache-Control", "public, only-if-cached, max-stale=" + maxStale)
-                 .build();
-                 */
             }
         };
+
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -84,9 +78,9 @@ public class PlacesApi {
     }
 
     /**
-     * Observable for Top Stories
+     * Observable for Nearby
      *
-     * @return List of article
+     * @return List of places
      */
     public Observable<Nearby> getLocationInfo(String location, String type, int radius) {
         PlacesCall callInfo = mRetrofit.create(PlacesCall.class);
@@ -97,19 +91,15 @@ public class PlacesApi {
                 .timeout(10, TimeUnit.SECONDS);
     }
 
+    /**
+     * Observable for PlacesDetails
+     *
+     * @return Details of places
+     */
     public Observable<PlacesDetails> getRestaurantsDetails(String id) {
         PlacesCall callInfo = mRetrofit.create(PlacesCall.class);
         return callInfo.getRestaurantsDetails(id)
                 .delaySubscription(500, TimeUnit.MILLISECONDS)
-                .subscribeOn(Schedulers.io())   //  Run call on another thread
-                .observeOn(AndroidSchedulers.mainThread())  //  Observe on the Main thread
-                .timeout(10, TimeUnit.SECONDS);
-    }
-
-    public Observable<PlacePhoto> getRestaurantPhoto(String reference) {
-        PlacesCall callInfo = mRetrofit.create(PlacesCall.class);
-        return callInfo.getRestaurantPhoto(reference)
-                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())   //  Run call on another thread
                 .observeOn(AndroidSchedulers.mainThread())  //  Observe on the Main thread
                 .timeout(10, TimeUnit.SECONDS);

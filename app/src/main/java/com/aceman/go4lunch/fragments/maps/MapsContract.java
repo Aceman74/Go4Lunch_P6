@@ -1,14 +1,16 @@
 package com.aceman.go4lunch.fragments.maps;
 
-import com.aceman.go4lunch.data.details.PlacesDetails;
-import com.aceman.go4lunch.data.nearby_search.Nearby;
-import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.data.places.details.PlacesDetails;
+import com.aceman.go4lunch.data.places.nearby_search.Nearby;
+import com.aceman.go4lunch.data.places.nearby_search.Result;
 import com.aceman.go4lunch.utils.BaseView;
 
 import java.util.List;
 
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
+ * <p>
+ * Maps contracts.
  */
 public interface MapsContract {
 
@@ -40,8 +42,6 @@ public interface MapsContract {
         void onMarkerClickListener();
 
         void customInfoWindows();
-
-        void getLocationPermission();
 
         void updateData(Nearby details);
 

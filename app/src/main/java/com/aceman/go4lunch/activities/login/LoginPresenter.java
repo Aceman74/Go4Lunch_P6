@@ -17,6 +17,8 @@ import static com.facebook.FacebookSdk.getCacheDir;
 
 /**
  * Created by Lionel JOFFRAY - on 28/05/2019.
+ * <p>
+ * The presenter for Login Activity.
  */
 public class LoginPresenter extends BasePresenter implements LoginContract.LoginPresenterInterface {
 
@@ -35,7 +37,7 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
     /**
      * Get Current User on Firebase
      *
-     * @return
+     * @return user
      */
     @Nullable
     @Override
@@ -57,7 +59,7 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
     /**
      * Check if current user logged
      *
-     * @return
+     * @return user
      */
     @Override
     public Boolean isCurrentUserLogged() {
@@ -85,7 +87,7 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
     /**
      * Success listener
      *
-     * @return
+     * @return listener
      */
     @Override
     public OnSuccessListener onSuccessListener() {
@@ -100,7 +102,7 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
     /**
      * Failure listener
      *
-     * @return
+     * @return listener
      */
     @Override
     public OnFailureListener onFailureListener() {

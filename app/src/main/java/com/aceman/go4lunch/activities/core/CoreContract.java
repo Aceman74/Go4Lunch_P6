@@ -1,6 +1,6 @@
 package com.aceman.go4lunch.activities.core;
 
-import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.data.models.User;
 import com.aceman.go4lunch.utils.BaseView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -9,6 +9,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
+ * <p>
+ * The contracts for Core Activity.
  */
 public interface CoreContract {
 

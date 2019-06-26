@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 /**
  * Created by Lionel JOFFRAY - on 05/06/2019.
+ * <p>
+ * Class who set the actual hour, to personalise message on app.
  */
 public class HourSetter {
 

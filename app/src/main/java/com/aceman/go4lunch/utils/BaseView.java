@@ -16,6 +16,11 @@
 
 package com.aceman.go4lunch.utils;
 
+/**
+ * Created by Lionel JOFFRAY - on 12/06/2019.
+ * <p>
+ * Class BaseView for attach it to presenter.
+ */
 public interface BaseView {
 
 }

@@ -1,7 +1,7 @@
 package com.aceman.go4lunch.activities.placesDetail;
 
-import com.aceman.go4lunch.models.Restaurant;
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.Restaurant;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.BaseView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.auth.FirebaseUser;
@@ -10,6 +10,8 @@ import java.util.List;
 
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
+ * <p>
+ * The contracts for Places Detail Activity.
  */
 public interface PlacesDetailContract {
 
@@ -40,7 +42,7 @@ public interface PlacesDetailContract {
 
         void nullCheck();
 
-        void configureInfos();
+        void configureInfo();
 
         void selectBtnListener();
 
@@ -68,26 +70,22 @@ public interface PlacesDetailContract {
 
         void onUpdateFirebaseFailed();
 
-        void likeBtnRemoveColor();
+        void likeBtnNullColor();
 
-        void likeBtnAddColor();
+        void likeBtnAddedColor();
 
         void setInfosWithSnapshot(RestaurantPublic currentUser);
 
         void loadPlaceImageWithGlide();
 
-        void setFloatingBtnTint();
-
-        void setLikeBtnTint();
-
         void floatingBtnNullStyle();
 
-        void floatingBtnAddStyle();
+        void floatingBtnAddedStyle();
 
         void notifyDataChanged();
 
         void startGettingUserList();
 
-        void showInfos();
+        void showInfo();
     }
 }

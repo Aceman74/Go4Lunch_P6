@@ -17,34 +17,37 @@ import timber.log.Timber;
 
 /**
  * Created by Lionel JOFFRAY - on 02/05/2019.
+ * <p>
+ * Base Class for all Activity.
+ *
+ * @see ButterKnife
  */
 public abstract class BaseActivity extends AppCompatActivity {
-    // --------------------
-    // LIFE CYCLE
-    // --------------------
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(this.getFragmentLayout());
-        ButterKnife.bind(this); //Configure Butterknife
-
+        this.setContentView(this.getActivityLayout());
+        ButterKnife.bind(this); //  Configure Butterknife
     }
 
-    public abstract int getFragmentLayout();
-
-    // --------------------
-    // UI
-    // --------------------
+    /**
+     * Get Layout.
+     *
+     * @return layout
+     */
+    public abstract int getActivityLayout();
 
     protected void configureToolbar() {
         ActionBar ab = getSupportActionBar();
+        assert ab != null;
         ab.setDisplayHomeAsUpEnabled(true);
     }
-    // --------------------
-    // ERROR HANDLER
-    // --------------------
 
+    /**
+     * On Failure listener for Firebase REST.
+     *
+     * @return failure
+     */
     protected OnFailureListener onFailureListener() {
         return new OnFailureListener() {
             @Override
@@ -54,15 +57,22 @@ public abstract class BaseActivity extends AppCompatActivity {
             }
         };
     }
-    // --------------------
-    // UTILS
-    // --------------------
 
+    /**
+     * Get current user on Firebase Auth.
+     *
+     * @return current user
+     */
     @Nullable
     protected FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    /**
+     * Check if user is logged.
+     *
+     * @return log state
+     */
     protected Boolean isCurrentUserLogged() {
         return (this.getCurrentUser() != null);
     }

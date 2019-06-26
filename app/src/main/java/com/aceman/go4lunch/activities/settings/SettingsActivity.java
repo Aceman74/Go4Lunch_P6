@@ -15,10 +15,10 @@ import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.adapter.HistoryAdapter;
 import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
+import com.aceman.go4lunch.data.models.HistoryDetails;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.User;
 import com.aceman.go4lunch.jobs.Alarm;
-import com.aceman.go4lunch.models.HistoryDetails;
-import com.aceman.go4lunch.models.RestaurantPublic;
-import com.aceman.go4lunch.models.User;
 import com.aceman.go4lunch.utils.base.BaseActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -35,6 +35,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import timber.log.Timber;
 
+/**
+ * Created by Lionel JOFFRAY - on 12/05/2019.
+ * <p>
+ * Settings Activity is where users can see and clear his history and liked place, enable notification on 12PM.
+ */
 public class SettingsActivity extends BaseActivity implements SettingsContract.SettingsViewInterface {
 
     SettingsPresenter mPresenter;
@@ -54,7 +59,11 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
     String mLikeName;
     List<HistoryDetails> mHistory = new ArrayList<>();
 
-
+    /**
+     * When created, the presenter is initialized, Data are collected and UI is updating.
+     *
+     * @param savedInstanceState savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,8 +76,20 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
 
     }
 
-    public void getHistoryListAndLike() {
+    /**
+     * Get the activity layout.
+     *
+     * @return layout
+     */
+    @Override
+    public int getActivityLayout() {
+        return R.layout.activity_settings;
+    }
 
+    /**
+     * Get the public history on Firestore.
+     */
+    public void getHistoryListAndLike() {
         UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -87,10 +108,15 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
         });
     }
 
+    /**
+     * Only get the user match history on public history. If empty, disable clear btn.
+     *
+     * @param task task
+     */
     public void setHistoryList(Task<QuerySnapshot> task) {
         mHistory.clear();
         for (QueryDocumentSnapshot document : task.getResult()) {
-            RestaurantPublic userP = document.toObject(RestaurantPublic.class);     // < == GET LIST FIRESTORE
+            RestaurantPublic userP = document.toObject(RestaurantPublic.class);
             if (userP.getHistory() != null && userP.getUsername().equals(getCurrentUser().getDisplayName())) {
                 mHistory.add(userP.getHistory().getHistory());
             }
@@ -104,6 +130,9 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
         mHistoryAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Initialize the recyclerview for history.
+     */
     public void configureRecyclerView() {
         if (mHistory != null) {
             mHistoryAdapter = new HistoryAdapter(mHistory, this);
@@ -113,6 +142,9 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
         }
     }
 
+    /**
+     * Set the btn state for the view.
+     */
     public void setBtnState() {
         if (mHistory.size() > 0) {
             mClearHistoryBtn.setAlpha(1);
@@ -131,14 +163,19 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
 
     }
 
+    /**
+     * Check Notification btn state.
+     *
+     * @return boolean state
+     */
     public boolean checkBtnState() {
 
         if (!mAlarm.checkIfAlarmIsSet(this)) {
-            mNotificationBtn.setText("Enable");
+            mNotificationBtn.setText(getString(R.string.enable));
             mNotificationBtn.setBackground(getResources().getDrawable(R.drawable.button_radius_green_color));
             mCheckBtn = true;
         } else {
-            mNotificationBtn.setText("Disable");
+            mNotificationBtn.setText(getString(R.string.disable));
             mNotificationBtn.setBackground(getResources().getDrawable(R.drawable.button_radius_error_color));
             mCheckBtn = false;
         }
@@ -146,6 +183,9 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
         return mCheckBtn;
     }
 
+    /**
+     * On click Enable/disable notification button.
+     */
     @OnClick(R.id.setting_enable_btn)
     void onClickNotificationBtn() {
         if (mCheckBtn) {
@@ -155,9 +195,12 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
         }
     }
 
+    /**
+     * On click clear history btn.
+     */
     @OnClick(R.id.settings_clear_history_btn)
     void onClickClearHistoryBtn() {
-        Toast.makeText(this, "History Cleared !", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.history_cleared), Toast.LENGTH_SHORT).show();
         UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -170,9 +213,12 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
         setBtnState();
     }
 
+    /**
+     * On click reset like btn.
+     */
     @OnClick(R.id.settings_reset_like)
     void onClickResetLike() {
-        Toast.makeText(this, "Like Cleared !", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.like_cleared), Toast.LENGTH_SHORT).show();
         UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -186,22 +232,29 @@ public class SettingsActivity extends BaseActivity implements SettingsContract.S
         setBtnState();
     }
 
+    /**
+     * Method who set the notification with AlarmManager.
+     *
+     * @see Alarm
+     * @see com.aceman.go4lunch.jobs.DailyWorker
+     */
     void setNotificationOn() {
         mAlarm.setAlarm(this);
-        Toast.makeText(this, "Notifications set !", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.notification_set), Toast.LENGTH_SHORT).show();
         checkBtnState();
     }
 
+    /**
+     * Method who cancel the notification with AlarmManager.
+     *
+     * @see Alarm
+     * @see com.aceman.go4lunch.jobs.DailyWorker
+     */
     public void setNotificationOff() {
-
         mAlarm.cancelAlarm(this);
         WorkManager.getInstance().cancelAllWorkByTag("RequestDaliy");
-        Toast.makeText(this, "Notifications Canceled !", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.notification_canceled), Toast.LENGTH_SHORT).show();
         checkBtnState();
     }
 
-    @Override
-    public int getFragmentLayout() {
-        return R.layout.activity_settings;
-    }
 }

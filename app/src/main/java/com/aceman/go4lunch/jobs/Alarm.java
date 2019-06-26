@@ -10,7 +10,7 @@ import android.os.SystemClock;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,6 +22,10 @@ import static android.content.Context.ALARM_SERVICE;
 
 /**
  * Created by Lionel JOFFRAY - on 07/06/2019.
+ * Alarm class is used to enable the notification every day at 12PM.
+ * It trigger a new Work for WorkManager to get the infos on who comes to your place.
+ *
+ * @see DailyWorker
  */
 public class Alarm extends BroadcastReceiver {
 
@@ -32,11 +36,20 @@ public class Alarm extends BroadcastReceiver {
     int ALARM_REQUEST_CODE = 123;
     Intent mIntent;
 
+    /**
+     * On receive at 12PM, start the work.
+     *
+     * @param context context
+     * @param intent  notif intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         createNotification();
     }
 
+    /**
+     * Create the work.
+     */
     private void createNotification() {
         OneTimeWorkRequest notifRequestDay = new OneTimeWorkRequest.Builder(DailyWorker.class)
                 .addTag("RequestDaliy")
@@ -44,6 +57,12 @@ public class Alarm extends BroadcastReceiver {
         WorkManager.getInstance().enqueue(notifRequestDay);
     }
 
+    /**
+     * Check if alarm already set.
+     *
+     * @param context context
+     * @return boolean
+     */
     public boolean checkIfAlarmIsSet(Context context) {
 
         mIntent = new Intent(context, Alarm.class);
@@ -57,6 +76,12 @@ public class Alarm extends BroadcastReceiver {
         return alarmUp;
     }
 
+    /**
+     * Set the alarm on the enable notification click.
+     *
+     * @param context context
+     * @see com.aceman.go4lunch.activities.settings.SettingsActivity
+     */
     public void setAlarm(Context context) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
@@ -77,6 +102,12 @@ public class Alarm extends BroadcastReceiver {
         //         AlarmManager.INTERVAL_DAY, alarmIntent);
     }
 
+    /**
+     * Cancel the alarm (notification) when hit the disable btn.
+     *
+     * @param context context
+     * @see com.aceman.go4lunch.activities.settings.SettingsActivity
+     */
     public void cancelAlarm(Context context) {
         try {
             mIntent = new Intent(context, Alarm.class);

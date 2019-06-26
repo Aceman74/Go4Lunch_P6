@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -37,11 +36,10 @@
             android:layout_gravity="center"
             android:textAllCaps="false"
             android:padding="@dimen/default_margin"
-            android:text="clear history"/>
+            android:text="@string/clear_history"/>
 
         <android.support.v7.widget.RecyclerView
             android:layout_margin="@dimen/default_margin"
-            android:layout_below="@id/setting_your_history_txtview"
             android:id="@+id/settings_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
@@ -89,14 +87,14 @@
         android:background="@drawable/button_radius_error_color"
         android:textColor="@color/ColorWhite"
         android:id="@+id/settings_reset_like"
-        android:layout_width="50dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
             android:textAlignment="center"
         android:gravity="center"
         android:layout_margin="@dimen/default_margin"
             android:textAllCaps="false"
-        android:text="reset "/>
+        android:text="@string/reset"/>
 
         </LinearLayout>
         <TextView
@@ -118,7 +116,7 @@
             android:layout_gravity="center"
             android:gravity="center"
             android:layout_margin="@dimen/default_margin"
-            android:text="Base"/>
+            android:text="@string/app_name"/>
 
     </LinearLayout>
 </LinearLayout>

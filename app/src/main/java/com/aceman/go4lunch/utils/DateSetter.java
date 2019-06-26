@@ -6,6 +6,8 @@ import java.util.Date;
 
 /**
  * Created by Lionel JOFFRAY - on 05/06/2019.
+ * <p>
+ * DateSetter is used to set a date with history.
  */
 public class DateSetter {
 

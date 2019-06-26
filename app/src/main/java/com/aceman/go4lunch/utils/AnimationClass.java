@@ -9,6 +9,8 @@ import com.aceman.go4lunch.R;
 
 /**
  * Created by Lionel JOFFRAY - on 12/06/2019.
+ * <p>
+ * Class with all animations setters.
  */
 public class AnimationClass {
 

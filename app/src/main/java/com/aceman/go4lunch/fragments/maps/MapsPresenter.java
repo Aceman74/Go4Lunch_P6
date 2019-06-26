@@ -3,9 +3,9 @@ package com.aceman.go4lunch.fragments.maps;
 import android.util.Log;
 
 import com.aceman.go4lunch.api.PlacesApi;
-import com.aceman.go4lunch.data.details.PlacesDetails;
-import com.aceman.go4lunch.data.nearby_search.Nearby;
-import com.aceman.go4lunch.data.nearby_search.Result;
+import com.aceman.go4lunch.data.places.details.PlacesDetails;
+import com.aceman.go4lunch.data.places.nearby_search.Nearby;
+import com.aceman.go4lunch.data.places.nearby_search.Result;
 import com.aceman.go4lunch.utils.BasePresenter;
 
 import java.util.List;
@@ -16,10 +16,18 @@ import timber.log.Timber;
 
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
+ * Maps Presenter.
  */
 public class MapsPresenter extends BasePresenter implements MapsContract.MapsPresenterInterface {
 
-
+    /**
+     * First request for nearby search Google Places API.
+     *
+     * @param mLocation actual location
+     * @param mType     restaurant
+     * @param mRadius   500m
+     * @param mResults  result list
+     */
     @Override
     public void executeHttpRequestWithRetrofit(final String mLocation, final String mType, int mRadius, final List<Result> mResults) {
 
@@ -46,6 +54,11 @@ public class MapsPresenter extends BasePresenter implements MapsContract.MapsPre
         });
     }
 
+    /**
+     * Second call who add details of places to the first list.
+     *
+     * @param mResults result list completed
+     */
     @Override
     public void detailsHttpRequestWithRetrofit(List<Result> mResults) {
 
@@ -75,6 +88,11 @@ public class MapsPresenter extends BasePresenter implements MapsContract.MapsPre
 
     }
 
+    /**
+     * This call is for the Autocomplete Search in toolbar.
+     *
+     * @param mSearchID search id
+     */
     @Override
     public void getSearchRestaurant(String mSearchID) {
 

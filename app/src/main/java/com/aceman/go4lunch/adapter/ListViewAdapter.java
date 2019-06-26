@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.activities.placesDetail.PlacesDetailActivity;
-import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
+import com.aceman.go4lunch.data.places.nearby_search.Result;
 import com.aceman.go4lunch.utils.AnimationClass;
 import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.events.PlacesDetailEvent;
@@ -33,9 +33,12 @@ import timber.log.Timber;
 
 
 /**
- * Created by Lionel JOFFRAY - on 14/03/2019.
+ * Created by Lionel JOFFRAY - on 12/05/2019.
+ * <p>
+ * ListView Adapter for the user radius search Places ( result list from maps search ).
  *
- * <b>Shared Adapter</b> for his API Call response
+ * @see com.aceman.go4lunch.fragments.maps.MapsFragment
+ * @see com.aceman.go4lunch.fragments.listView.ListViewFragment
  */
 public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyViewHolder> {
 
@@ -79,11 +82,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
     }
 
     /**
-     * Update RecyclerView with list info, handle click on item position with webview intent
-     *
-     * @param item   Article in the list
-     * @param glide  use for get image of article
-     * @param holder view holder
+     * Update RecyclerView with restaurants details.
      */
     private void updateWithFreshInfo(final Result item, RequestManager glide, final MyViewHolder holder, int position) {
         holder.mName.setText(item.getName());
@@ -99,6 +98,13 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         onClickItemListener(item, holder);
     }
 
+    /**
+     * On click a restaurant, PlacesDetailActivity open with detailled view.
+     *
+     * @param item   the restaurant object
+     * @param holder view holder
+     * @see PlacesDetailActivity
+     */
     private void onClickItemListener(final Result item, final MyViewHolder holder) {
 
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +122,11 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         });
     }
 
+    /**
+     * Load places pictures on recyclerview.
+     *
+     * @param holder view holder
+     */
     private void loadPhotoWithGlide(MyViewHolder holder) {
         try {
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
@@ -128,6 +139,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         }
     }
 
+    /**
+     * Get the photo url and set it to a "readable" URL for Glide.
+     *
+     * @param item   restaurant object
+     * @param holder view holder
+     */
     private void setPhotoUrl(Result item, MyViewHolder holder) {
 
         if (item.getPhotos() != null) {
@@ -138,17 +155,29 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         }
     }
 
+    /**
+     * Set the open state of the place.
+     *
+     * @param item   restaurant object
+     * @param holder view holder
+     */
     private void setOpenOrClose(Result item, MyViewHolder holder) {
         if (item.getOpeningHours() != null && item.getOpeningHours().getOpenNow()) {
 
-            holder.mOpen.setText("Open now");
+            holder.mOpen.setText(mContext.getString(R.string.open_now));
             holder.mOpen.setTextColor(mGreen);
         } else {
-            holder.mOpen.setText("Closed");
+            holder.mOpen.setText(mContext.getString(R.string.closed_now));
             holder.mOpen.setTextColor(mRed);
         }
     }
 
+    /**
+     * Take the public userlist to compare it to the place, to show if a co-workers join.
+     *
+     * @param item   restaurant object
+     * @param holder view holder
+     */
     private void userWithSamePlace(Result item, MyViewHolder holder) {
         int userJoining = 0;
 
@@ -170,6 +199,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
         }
     }
 
+    /**
+     * Set the star number with custom rating.
+     *
+     * @param rating nbr star
+     * @param holder view holder
+     */
     private void ratingMethod(int rating, MyViewHolder holder) {
         if (rating == 1) {
             holder.mStar1.setVisibility(View.VISIBLE);
@@ -200,7 +235,7 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
 
 
     /**
-     * View Hoodler using ButterKnife
+     * View Holder using ButterKnife
      */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         public String mUrl;

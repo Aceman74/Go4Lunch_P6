@@ -4,11 +4,11 @@ import android.support.annotation.NonNull;
 
 import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
-import com.aceman.go4lunch.models.History;
-import com.aceman.go4lunch.models.HistoryDetails;
-import com.aceman.go4lunch.models.Restaurant;
-import com.aceman.go4lunch.models.RestaurantPublic;
-import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.data.models.History;
+import com.aceman.go4lunch.data.models.HistoryDetails;
+import com.aceman.go4lunch.data.models.Restaurant;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.User;
 import com.aceman.go4lunch.utils.BasePresenter;
 import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.FirestoreUserList;
@@ -24,12 +24,17 @@ import java.util.Objects;
 
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
+ * <p>
+ * The presenter for Places Detail Activity.
  */
 public class PlacesDetailPresenter extends BasePresenter implements PlacesDetailContract.PlacesDetailPresenterInterface {
     public static List<RestaurantPublic> mUserList = new ArrayList<>();
     public static List<RestaurantPublic> mUserJoinning = new ArrayList<>();
     public static String date = DateSetter.getFormattedDate();
 
+    /**
+     * Get the User infos when My Lunch is clicked.
+     */
     @Override
     public void lunchIntentSetInfos() {
 
@@ -48,6 +53,12 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
 
     }
 
+    /**
+     * Set the icon tint/state when setting the view.
+     *
+     * @param mID         restaurant ID
+     * @param mRestaurant restaurant object
+     */
     @Override
     public void setIconTintWithFirebaseInfos(final String mID, final Restaurant mRestaurant) {
 
@@ -56,15 +67,21 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User currentUser = documentSnapshot.toObject(User.class);
                 if (currentUser.getRestaurant() != null && currentUser.getRestaurant().equals(mID)) {
-                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).setFloatingBtnTint();
+                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnAddedStyle();
                 }
-                if (currentUser.getLike() != null && currentUser.getLike().equals(mRestaurant.getPlaceID())) {
-                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).setLikeBtnTint();
+                if (currentUser.getLike() != null && currentUser.getLike().equals(mRestaurant.getName())) {
+                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).likeBtnAddedColor();
                 }
             }
         });
     }
 
+    /**
+     * Handle the click on select btn (add or remove place for lunch and update btn state)
+     *
+     * @param mID         restaurant ID
+     * @param mRestaurant restaurant object
+     */
     @Override
     public void onClickSelectFloatingBtn(final String mID, final Restaurant mRestaurant) {
         final History history = new History();
@@ -89,7 +106,7 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
                     String date = DateSetter.getFormattedDate();
                     RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName(), mRestaurant, history, date).addOnFailureListener(onFailureListener());
                     UserHelper.updateRestaurantID(getCurrentUser().getUid(), mRestaurant.getPlaceID(), mRestaurant.getName()).addOnFailureListener(onFailureListener());
-                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnAddStyle();
+                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnAddedStyle();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).toastAddPlace();
                 }
             }
@@ -97,6 +114,11 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
         ((PlacesDetailContract.PlacesDetailViewInterface) getView()).startGettingUserList();
     }
 
+    /**
+     * Handle the click on Like btn (add or remove place for like and update btn state)
+     *
+     * @param name place name
+     */
     @Override
     public void onClickLike(final String name) {
 
@@ -107,37 +129,44 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
                 if (currentUser.getLike() != null && currentUser.getLike().equals(name)) {
                     UserHelper.updateLikeRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
                     RestaurantPublicHelper.updateLikeRestaurant(getCurrentUser().getUid(), null).addOnFailureListener(onFailureListener());
-                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).likeBtnRemoveColor();
+                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).likeBtnNullColor();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).toastRemoveLike();
                 } else {
                     UserHelper.updateLikeRestaurant(getCurrentUser().getUid(), name).addOnFailureListener(onFailureListener());
                     RestaurantPublicHelper.updateLikeRestaurant(getCurrentUser().getUid(), name).addOnFailureListener(onFailureListener());
-                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).likeBtnAddColor();
+                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).likeBtnAddedColor();
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).toastAddLike();
                 }
             }
         });
     }
 
+    /**
+     * Reset the btn state if date is different.
+     */
     @Override
     public void resetPlaceChoiceIfNewDay() {
-        UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        RestaurantPublicHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
 
-                User currentUser = documentSnapshot.toObject(User.class);
                 RestaurantPublic restaurant = documentSnapshot.toObject(RestaurantPublic.class);
 
-                if (currentUser.getRestaurant() != null && restaurant.getDate() != null && !restaurant.getDate().equals(date)) {
+                if (restaurant.getRestaurantName() != null && restaurant.getDate() != null && !restaurant.getDate().equals(date)) {
                     RestaurantPublicHelper.restaurantPublic(getCurrentUser().getUid(), null, null, null, null, null).addOnFailureListener(onFailureListener());
                     UserHelper.updateRestaurantID(getCurrentUser().getUid(), null, null).addOnFailureListener(onFailureListener());
                     ((PlacesDetailContract.PlacesDetailViewInterface) getView()).floatingBtnNullStyle();
-                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).configureInfos();
+                    ((PlacesDetailContract.PlacesDetailViewInterface) getView()).configureInfo();
                 }
             }
         });
     }
 
+    /**
+     * Get user list from Firestore
+     *
+     * @return public userlist
+     */
     @Override
     public List<RestaurantPublic> getUserList() {
 
@@ -145,6 +174,13 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
         return mUserList;
     }
 
+    /**
+     * Get the user joining the place.
+     *
+     * @param name restaurant name
+     * @return list of user same place
+     * @see FirestoreUserList
+     */
     @Override
     public List<RestaurantPublic> getUserJoinningList(String name) {
 
@@ -152,12 +188,22 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
         return mUserJoinning;
     }
 
+    /**
+     * get the current user
+     *
+     * @return current user
+     */
     @Override
     public FirebaseUser getCurrentUser() {
 
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    /**
+     * Failure listener for REST
+     *
+     * @return error msg
+     */
     @Override
     public OnFailureListener onFailureListener() {
         return new OnFailureListener() {

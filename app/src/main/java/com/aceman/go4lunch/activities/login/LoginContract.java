@@ -11,6 +11,8 @@ import okhttp3.Cache;
 
 /**
  * Created by Lionel JOFFRAY - on 28/05/2019.
+ * <p>
+ * The contracts for Main Activity.
  */
 public interface LoginContract {
 

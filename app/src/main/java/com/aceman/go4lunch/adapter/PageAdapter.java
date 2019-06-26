@@ -11,27 +11,32 @@ import com.aceman.go4lunch.fragments.workmates.WorkmatesFragment;
 
 
 /**
- * Created by Lionel JOFFRAY - on 05/03/2019.
- * <b>Page Adapter</b> for TabView
+ * Created by Lionel JOFFRAY - on 02/05/2019.
+ * <p>
+ * Page adapter for fragments.
+ *
+ * @see com.aceman.go4lunch.activities.core.CoreActivity
  */
 public class PageAdapter extends FragmentPagerAdapter {
-
-
     private final Context mContext;
 
-    //Default Constructor
     public PageAdapter(FragmentManager mgr, Context context) {
         super(mgr);
         mContext = context;
     }
 
+    /**
+     * Page numbers.
+     *
+     * @return number of pages
+     */
     @Override
     public int getCount() {
         return (3);
     }
 
     /**
-     * Set what fragment to show
+     * Set the fragment to show.
      *
      * @param position actual view
      * @return the fragment

@@ -6,7 +6,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -15,12 +14,9 @@ import android.view.ViewGroup;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.adapter.WorkersAdapter;
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.events.RefreshEvent;
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -31,52 +27,70 @@ import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import timber.log.Timber;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Lionel JOFFRAY - on 12/06/2019.
+ * <p>
+ * Workmates Fragment, the third fragment, shows the list of workmates and their choices.
  */
 public class WorkmatesFragment extends Fragment implements WorkmatesContract.WorkmatesViewInterface {
     public WorkersAdapter mWorkersAdapter;
     public List<RestaurantPublic> mUserList = new ArrayList<>();
     @BindView(R.id.workmate_fragment_recycler_view)
     RecyclerView mRecyclerView;
-    Toolbar mToolbar;
     WorkmatesPresenter mPresenter;
 
     public WorkmatesFragment() {
-        // Required empty public constructor
     }
 
     public static WorkmatesFragment newInstance() {
         return new WorkmatesFragment();
     }
 
+    /**
+     * When created, the presenter is initialized, recyclerview too.
+     * Toolbar autocomplete search is removed.
+     *
+     * @param inflater           inflate
+     * @param container          container
+     * @param savedInstanceState savedInstanceState
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_workmates, container, false);
         ButterKnife.bind(this, view);
         mPresenter = new WorkmatesPresenter();
         mPresenter.attachView(this);
-        configureRecyclerView();
-        mPresenter.getUserList();
+        mUserList = mPresenter.getUserList();
         setHasOptionsMenu(true);
         return view;
     }
 
+    /**
+     * Register EventBus on start.
+     */
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
     }
 
+    /**
+     * Unregister EventBus on stop.
+     */
     @Override
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * remove Autocomplete search for this page.
+     *
+     * @param menu menu
+     */
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         MenuItem item = menu.findItem(R.id.action_search);
@@ -84,12 +98,18 @@ public class WorkmatesFragment extends Fragment implements WorkmatesContract.Wor
             item.setVisible(false);
     }
 
+    /**
+     * get fresh list on resume.
+     */
     @Override
     public void onResume() {
         super.onResume();
-        mPresenter.getUserList();
+        mUserList = mPresenter.getUserList();
     }
 
+    /**
+     * Configure the recycler view.
+     */
     @Override
     public void configureRecyclerView() {
         if (mUserList != null) {
@@ -100,30 +120,13 @@ public class WorkmatesFragment extends Fragment implements WorkmatesContract.Wor
         }
     }
 
-    @Override
-    public void setUserListFromFirebase(Task<QuerySnapshot> task) {
-        mUserList.clear();
-        for (QueryDocumentSnapshot document : task.getResult()) {
-            RestaurantPublic userP = document.toObject(RestaurantPublic.class);     // < == GET LIST FIRESTORE
-            mUserList.add(userP);
-            Timber.tag("Task To List").i("Sucess");
-        }
-        mWorkersAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void errorGettingUserListFromFirebase(Task<QuerySnapshot> task) {
-        Timber.tag("Task Exeption").d(task.getException(), "Error getting documents: ");
-    }
-
-    @Override
-    public void updateRecyclerView() {
-        mWorkersAdapter.notifyDataSetChanged();
-    }
-
+    /**
+     * Refresh event to get the userlist.
+     *
+     * @param refreshEvent
+     */
     @Subscribe
     public void onRefreshEvent(RefreshEvent refreshEvent) {
-        mPresenter.getUserList();
-        mWorkersAdapter.notifyDataSetChanged();
+        configureRecyclerView();
     }
 }

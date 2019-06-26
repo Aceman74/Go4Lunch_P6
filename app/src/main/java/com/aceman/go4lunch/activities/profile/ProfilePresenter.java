@@ -2,10 +2,9 @@ package com.aceman.go4lunch.activities.profile;
 
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
-import android.widget.CheckBox;
 
 import com.aceman.go4lunch.api.UserHelper;
-import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.data.models.User;
 import com.aceman.go4lunch.utils.BasePresenter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -18,10 +17,14 @@ import java.util.Objects;
 
 /**
  * Created by Lionel JOFFRAY - on 05/06/2019.
+ * <p>
+ * The presenter for Profile Activity.
  */
 public class ProfilePresenter extends BasePresenter implements ProfileContract.ProfilePresenterInterface {
 
-
+    /**
+     * Update UI with Firebase data.
+     */
     @Override
     public void updateUIWhenCreating() {
         if (this.getCurrentUser() != null) {
@@ -36,11 +39,21 @@ public class ProfilePresenter extends BasePresenter implements ProfileContract.P
         }
     }
 
+    /**
+     * Get current user on Firebase.
+     *
+     * @return user
+     */
     @Nullable
     public FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    /**
+     * On failure listener for Firebase.
+     *
+     * @return error msg
+     */
     @Override
     public OnFailureListener onFailureListener() {
         return new OnFailureListener() {
@@ -51,6 +64,11 @@ public class ProfilePresenter extends BasePresenter implements ProfileContract.P
         };
     }
 
+    /**
+     * Update username on Firebase Database.
+     *
+     * @param textInputEditTextUsername new username
+     */
     @Override
     public void updateUsernameInFirebase(TextInputEditText textInputEditTextUsername) {
 
@@ -60,11 +78,15 @@ public class ProfilePresenter extends BasePresenter implements ProfileContract.P
 
         if (this.getCurrentUser() != null) {
             ((ProfileContract.ProfileViewInterface) getView()).updateUserName(username, usernameBase);
-
         }
         ((ProfileContract.ProfileViewInterface) getView()).progressBarStop();
     }
 
+    /**
+     * Update email on Firebase Database.
+     *
+     * @param textInputEditTextEmail new email
+     */
     @Override
     public void updateEmailInFirebase(TextInputEditText textInputEditTextEmail) {
 
@@ -74,16 +96,8 @@ public class ProfilePresenter extends BasePresenter implements ProfileContract.P
 
         if (this.getCurrentUser() != null) {
             ((ProfileContract.ProfileViewInterface) getView()).updateEmail(email, emailBase);
-
         }
         ((ProfileContract.ProfileViewInterface) getView()).progressBarStop();
-    }
-
-    @Override
-    public void updateUserIsPrivate(CheckBox checkBoxIsPrivate) {
-        if (this.getCurrentUser() != null) {
-            UserHelper.updateIsPrivate(this.getCurrentUser().getUid(), checkBoxIsPrivate.isChecked()).addOnFailureListener(this.onFailureListener());
-        }
     }
 
 }

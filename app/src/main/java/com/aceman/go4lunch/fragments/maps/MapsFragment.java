@@ -11,7 +11,6 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,10 +21,10 @@ import android.widget.Toast;
 
 import com.aceman.go4lunch.BuildConfig;
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.data.details.PlacesDetails;
-import com.aceman.go4lunch.data.nearby_search.Nearby;
-import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
+import com.aceman.go4lunch.data.places.details.PlacesDetails;
+import com.aceman.go4lunch.data.places.nearby_search.Nearby;
+import com.aceman.go4lunch.data.places.nearby_search.Result;
 import com.aceman.go4lunch.utils.AnimationClass;
 import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.HourSetter;
@@ -33,8 +32,6 @@ import com.aceman.go4lunch.utils.events.RefreshEvent;
 import com.aceman.go4lunch.utils.events.ResultListEvent;
 import com.aceman.go4lunch.utils.events.SearchRefreshEvent;
 import com.aceman.go4lunch.utils.events.UserListEvent;
-import com.arsy.maps_library.MapRadar;
-import com.arsy.maps_library.MapRipple;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
@@ -66,10 +63,13 @@ import timber.log.Timber;
 
 import static com.aceman.go4lunch.activities.core.CoreActivity.sFusedLocationProviderClient;
 
+/**
+ * Created by Lionel JOFFRAY - on 12/06/2019.
+ * <p>
+ * Maps Fragment, the first fragment, shows a Google Map with your location and all restaurant within 500m around.
+ */
+public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, GoogleMap.OnCameraIdleListener, MapsContract.MapsViewInterface {
 
-public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClickListener, GoogleMap.OnInfoWindowClickListener, OnMapReadyCallback, GoogleMap.OnCameraIdleListener, MapsContract.MapsViewInterface {
-
-    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 100;
     public static GoogleMap mMaps;
     public List<Result> mResults;
     public LatLng mSearchLatLng;
@@ -97,27 +97,32 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     String mMarkerTitle;
     Double mRating;
     int mDistanceRounded;
-    int getinfo = 0;
+    int getInfo = 0;
     GoogleApiClient mGoogleApiClient;
     Boolean initLocation = true;
     float distance = 0;
     @BindView(R.id.maps_btn)
     FloatingActionButton mRefreshBtn;
     MapsPresenter mPresenter;
-    MapRipple mapRipple;
-    MapRadar mapRadar;
     private String API_KEY = BuildConfig.google_maps_key;
     private String mPrevSearchID;
 
 
     public MapsFragment() {
-        // Required empty public constructor
     }
 
     public static MapsFragment newInstance() {
         return new MapsFragment();
     }
 
+    /**
+     * When create, the presenter, google places and maps are initialized.
+     *
+     * @param inflater           inflater
+     * @param container          container
+     * @param savedInstanceState savedInstanceState
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -131,11 +136,21 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         return view;
     }
 
+    /**
+     * Subscribe to userlist. Userlist here is needed to change map icon color if workers are present.
+     *
+     * @param userlist userlist
+     */
     @Subscribe(sticky = true)
     public void onUserListEvent(UserListEvent userlist) {
         mUserList = userlist.mUserList;
     }
 
+    /**
+     * Search autocomplete subscribe.
+     *
+     * @param event event
+     */
     @Subscribe
     public void onSearchRefreshEvent(SearchRefreshEvent event) {
         mSearchID = event.mSearchID;
@@ -144,6 +159,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
 
     }
 
+    /**
+     * Add details for the Autocomplete search request.
+     *
+     * @param details search result
+     */
     @Override
     public void addDetail(PlacesDetails details) {
         mSearchLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
@@ -151,23 +171,35 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mSearchDetails = details;
     }
 
+    /**
+     * A little zoom on location in map.
+     */
     @Override
     public void zoomOnMapLocation() {
         mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mSearchLatLng, 14));
     }
 
+    /**
+     * Register Eventbus.
+     */
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
     }
 
+    /**
+     * Unregister Eventbus.
+     */
     @Override
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * Button to refresh the search.
+     */
     @Override
     public void refreshMapBtn() {
         mRefreshBtn.setOnClickListener(new View.OnClickListener() {
@@ -179,6 +211,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         });
     }
 
+    /**
+     * Get the last know location of the device.
+     */
     @Override
     public void getLastLocation() {
         if (mGoogleApiClient == null) {
@@ -227,6 +262,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mGoogleApiClient.connect();
     }
 
+    /**
+     * Initialize map related stuff.
+     */
     @Override
     public void initializeMapsAndPlaces() {
 
@@ -239,21 +277,26 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         }
     }
 
-
+    /**
+     * When map is ready, set listeners and UI.
+     *
+     * @param googleMap map ready
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMaps = googleMap;
-        getLocationPermission();
         mMaps.getUiSettings().setMapToolbarEnabled(false);
         mMaps.getUiSettings().setMyLocationButtonEnabled(true);
         mMaps.setOnMyLocationClickListener(this);
-        mMaps.setOnInfoWindowClickListener(this);
         mMaps.setOnCameraIdleListener(this);
         onMarkerClickListener();
         customInfoWindows();
         getLastLocation();
     }
 
+    /**
+     * When camera is idle, recalculate distances and location. Auto refresh set to 500m.
+     */
     @Override
     public void onCameraIdle() {
         updateLocation();
@@ -264,12 +307,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
             distance = mCurrentLocation.distanceTo(mPreviousLocation);
             Timber.tag("GET DISTANCE ").i(String.valueOf(distance));
 
-            /**
-             * >> DISABLE DURING DEV FOR REQUEST QUOTAS <<
-             if (distance > 1500) {
-             getCurrentMapInfo();
-             }
-             */
+            if (distance > 500) {
+                getCurrentMapInfo();
+            }
 
         }
         if (mSearchID != null && !mSearchID.equals(mPrevSearchID)) {
@@ -279,7 +319,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         }
     }
 
-
+    /**
+     * Update actual location.
+     */
     @Override
     public void updateLocation() {
         if (mCurrentLocation != null) {
@@ -288,6 +330,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         }
     }
 
+    /**
+     * Initialize the location on start.
+     */
     @Override
     public void initLocationOnLaunch() {
         if (initLocation) {
@@ -297,6 +342,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         }
     }
 
+    /**
+     * Set an invisible marker to previous position to calculate easily the distance.
+     */
     @Override
     public void markerSetPreviousPos() {
         if (mMarker == null) {
@@ -308,9 +356,12 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mPreviousLocation.setLatitude(mMarker.getPosition().latitude);
     }
 
+    /**
+     * This method clear all markers, and make a new call for search nearest restaurant.
+     */
     @Override
     public void getCurrentMapInfo() {
-        getinfo++;
+        getInfo++;
         mMaps.clear();
         mLatLng = mMaps.getCameraPosition().target;
         mMaps.animateCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 15));
@@ -322,12 +373,15 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         markerSetPreviousPos();
     }
 
+    /**
+     * On click marker, show custom info.
+     */
     @Override
     public void onMarkerClickListener() {
         mMaps.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                getinfo = 0;
+                getInfo = 0;
                 mMarkerTitle = marker.getTitle();
                 Timber.tag("TITLE").i(mMarkerTitle);
                 return false;
@@ -335,6 +389,9 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         });
     }
 
+    /**
+     * Custom info windows to show more than 1 line.
+     */
     @Override
     public void customInfoWindows() {
         mMaps.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
@@ -369,52 +426,46 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         });
     }
 
-    @Override
-    public void onInfoWindowClick(Marker marker) {
-        Toast.makeText(getContext(), "Info window clicked " + marker.getTitle(),
-                Toast.LENGTH_SHORT).show();
-
-    }
-
+    /**
+     * Little toast when click on user location.
+     *
+     * @param location location
+     */
     @Override
     public void onMyLocationClick(@NonNull Location location) {
-        Toast.makeText(getContext(), "You are here !", Toast.LENGTH_LONG).show();
+        Toast.makeText(getContext(), getString(R.string.you_here), Toast.LENGTH_LONG).show();
     }
 
-    @Override
-    public void getLocationPermission() {
-        /*
-         * Request location permission, so that we can get the location of the
-         * device. The result of the permission request is handled by a callback,
-         * onRequestPermissionsResult.
-         */
-        if (ContextCompat.checkSelfPermission(this.getContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                == PackageManager.PERMISSION_GRANTED) {
-            mMaps.setMyLocationEnabled(true);
-        } else {
-            ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
-
+    /**
+     * Update Mresult on first call Nearby Search.
+     *
+     * @param details mresults
+     */
     @Override
     public void updateData(Nearby details) {
         mResults.clear();
         mResults.addAll(details.getResults());
     }
 
+    /**
+     * Show a message and marker if no restaurant around.
+     */
     @Override
     public void noResultFound() {
         if (mResults.size() == 0) {
-            Marker noResult = mMaps.addMarker(new MarkerOptions().title("No results found!").snippet("No restaurants here within 1Km").position(mLatLng));
+            Marker noResult = mMaps.addMarker(new MarkerOptions().title(getString(R.string.no_result_around)).snippet(getString(R.string.no_within_m)).position(mLatLng));
             noResult.showInfoWindow();
         } else {
             postEventBusAfterRequest();
         }
     }
 
+    /**
+     * Update mResult list by adding distance (calculated), calculating rating and some info needed for listview details.
+     *
+     * @param result  resultlist
+     * @param details details
+     */
     @Override
     public void updateResultList(Result result, PlacesDetails details) {
         mDistanceToLocation.setLatitude(result.getGeometry().getLocation().getLat());
@@ -429,6 +480,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         setDistanceAndRating(result);
     }
 
+    /**
+     * Method who calculate distance to user and rating.
+     *
+     * @param result result
+     */
     @Override
     public void setDistanceAndRating(Result result) {
         mDistanceRounded = Math.round(result.getDistanceTo());
@@ -448,6 +504,11 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         }
     }
 
+    /**
+     * Update map markers and infos windows after request.
+     *
+     * @param details details
+     */
     @Override
     public void updateMap(final PlacesDetails details) {
         String date = DateSetter.getFormattedDate();
@@ -484,16 +545,25 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         }
     }
 
+    /**
+     * Change text if before/after 12pm workers eating.
+     *
+     * @param i int
+     * @return userlist
+     */
     private String isEatingHereHourCheck(int i) {
         String date = DateSetter.getFormattedDate();
         int hour = HourSetter.getHour();
         if (mUserList.get(i).getDate().equals(date) && hour < 13) {
-            return mUserList.get(i).getUsername() + " is eating here !";
+            return mUserList.get(i).getUsername() + getString(R.string.is_eating_here);
         } else {
-            return mUserList.get(i).getUsername() + " ate here today !";
+            return mUserList.get(i).getUsername() + getString(R.string.ate_here_today);
         }
     }
 
+    /**
+     * destroy disposable.
+     */
     @Override
     public void disposeWhenDestroy() {
         if (this.disposable != null && !this.disposable.isDisposed()) this.disposable.dispose();
@@ -524,11 +594,17 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         mMapsFragment.onLowMemory();
     }
 
+    /**
+     * Clear all maps markers.
+     */
     @Override
     public void clearMapMarkers() {
         mMaps.clear();
     }
 
+    /**
+     * Post eventbus for Mresult and refresh event.
+     */
     @Override
     public void postEventBusAfterRequest() {
         EventBus.getDefault().post(new ResultListEvent(mResults));

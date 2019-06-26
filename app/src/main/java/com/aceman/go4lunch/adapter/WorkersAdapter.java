@@ -13,7 +13,7 @@ import android.widget.Toast;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.activities.placesDetail.PlacesDetailActivity;
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.AnimationClass;
 import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.HourSetter;
@@ -30,9 +30,11 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 /**
- * Created by Lionel JOFFRAY - on 14/03/2019.
+ * Created by Lionel JOFFRAY - on 12/05/2019.
+ * <p>
+ * Workers Adapter for the Workmates Fragments recyclerview (use Userlist).
  *
- * <b>Shared Adapter</b> for his API Call response
+ * @see com.aceman.go4lunch.fragments.workmates.WorkmatesFragment
  */
 public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHolder> {
 
@@ -64,19 +66,25 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
     }
 
     /**
-     * Update RecyclerView with list info, handle click on item position with webview intent
+     * Update recyclerview with all co-worker and show where they eat.
      *
-     * @param user   Article in the list
-     * @param glide  use for get image of article
-     * @param holder view holder
+     * @param user     co worker
+     * @param glide    image pic
+     * @param holder   view holder
+     * @param position pos in recyclerview
      */
     private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
-
-        userWithSamePlace(user, holder);
+        setUserDescription(user, holder);
         loadUserPictureWithGlide(user, holder);
         onClickListener(user, holder);
     }
 
+    /**
+     * On click co-worker, PlacesDetail open with restaurant details.
+     *
+     * @param user   co-worker
+     * @param holder view holder
+     */
     private void onClickListener(final RestaurantPublic user, final MyViewHolder holder) {
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,18 +96,23 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
                     EventBus.getDefault().postSticky(new RestaurantPublicEvent(user));
                     Intent workers = new Intent(mContext, PlacesDetailActivity.class);
                     mIntent = mContext.getString(R.string.workers);
-                    workers.putExtra("detail_intent", mIntent);
+                    workers.putExtra(mContext.getString(R.string.detail_intent), mIntent);
                     mContext.startActivity(workers);
                 } else {
-                    Toast.makeText(mContext, user.getUsername() + " has not choose his lunch.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(mContext, user.getUsername() + mContext.getString(R.string.has_not_choose), Toast.LENGTH_LONG).show();
                 }
 
             }
         });
     }
 
+    /**
+     * Load profile picture with Glide
+     *
+     * @param user   user
+     * @param holder view holder
+     */
     private void loadUserPictureWithGlide(RestaurantPublic user, MyViewHolder holder) {
-
         try {
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
             glide.asDrawable()
@@ -111,7 +124,13 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
         }
     }
 
-    private void userWithSamePlace(RestaurantPublic user, WorkersAdapter.MyViewHolder holder) {
+    /**
+     * This method show the correct text if a user choose, or not a place and if it's before/after 12PM.
+     *
+     * @param user   co-worker
+     * @param holder view holder
+     */
+    private void setUserDescription(RestaurantPublic user, WorkersAdapter.MyViewHolder holder) {
         String date = DateSetter.getFormattedDate();
 
         for (int i = 0; i < mUserList.size(); i++) {
@@ -119,14 +138,17 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
                 String getID = mUserList.get(i).getRestaurantID();
                 if (getID != null && getID.equals(user.getRestaurantID())) {
                     if (HourSetter.getHour() < 13) {
-                        holder.mTextView.setText(user.getUsername() + " is eating at " + user.getRestaurantName() + "!");
+                        String text = user.getUsername() + mContext.getString(R.string.is_eating) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+                        holder.mTextView.setText(text);
                     } else {
-                        holder.mTextView.setText(user.getUsername() + " ate today at " + user.getRestaurantName() + "!");
+                        String text = user.getUsername() + mContext.getString(R.string.ate_today_at) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+                        holder.mTextView.setText(text);
                     }
                 }
             } else {
                 holder.mTextView.setAlpha(0.6f);
-                holder.mTextView.setText(user.getUsername() + " has not made his choice yet .");
+                String text = user.getUsername() + mContext.getString(R.string.not_choice_yet);
+                holder.mTextView.setText(text);
             }
         }
     }

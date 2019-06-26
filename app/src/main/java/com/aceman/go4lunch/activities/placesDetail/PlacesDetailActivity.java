@@ -1,7 +1,6 @@
 package com.aceman.go4lunch.activities.placesDetail;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
@@ -11,7 +10,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -24,12 +22,11 @@ import android.widget.Toast;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.adapter.WorkersJoiningAdapter;
-import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.models.Restaurant;
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.Restaurant;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
+import com.aceman.go4lunch.data.places.nearby_search.Result;
 import com.aceman.go4lunch.utils.base.BaseActivity;
 import com.aceman.go4lunch.utils.events.PlacesDetailEvent;
-import com.aceman.go4lunch.utils.events.RefreshEvent;
 import com.aceman.go4lunch.utils.events.RestaurantPublicEvent;
 import com.aceman.go4lunch.utils.events.UserJoiningRefreshEvent;
 import com.aceman.go4lunch.utils.events.UserListEvent;
@@ -43,12 +40,16 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import timber.log.Timber;
 
-
+/**
+ * Created by Lionel JOFFRAY - on 10/05/2019.
+ * <p>
+ * Place Detail Activity is the detailled view when user click on a restaurant.
+ * This activity is opened from navigation drawer (Your lunch), ListViewFragment and WorkmatesFragment.
+ */
 public class PlacesDetailActivity extends BaseActivity implements PlacesDetailContract.PlacesDetailViewInterface {
 
     private static final int REQUEST_PHONE_CALL = 10;
@@ -65,7 +66,6 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     @BindView(R.id.places_details_recycler_view)
     RecyclerView mRecyclerView;
     WorkersJoiningAdapter mWorkersJoiningAdapter;
-    Context mContext;
     @BindView(R.id.detail_fragment_image_view)
     ImageView mImageView;
     @BindView(R.id.detail_fragment_banner_name)
@@ -100,6 +100,12 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     private Restaurant mRestaurant = new Restaurant();
     private Intent mIntent;
 
+    /**
+     * When created, presenter is initialized, and the recyclerview for Joining User is initialized.
+     * The activity also check for any Intent (My Lunch, Restaurant from list or from a click on a workmate).
+     *
+     * @param savedInstanceState savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,84 +115,88 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         getAnyIntent();
     }
 
+    /**
+     * Check for intent.
+     */
     @Override
     public void getAnyIntent() {
         mIntent = getIntent();
-        mIntentString = mIntent.getStringExtra("detail_intent");
+        mIntentString = mIntent.getStringExtra(getString(R.string.detail_intent));
     }
 
+    /**
+     * Message when updating a restaurant (add or removed) failed.
+     */
     @Override
     public void onUpdateFirebaseFailed() {
-        Toast.makeText(this, "An error occured.", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, (R.string.error_unknown_error), Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Set the like btn "null" color when clicked.
+     */
     @Override
-    public void likeBtnRemoveColor() {
+    public void likeBtnNullColor() {
         mLikeBtn.setColorFilter(getResources().getColor(R.color.colorAccent));
     }
 
+    /**
+     * Set the like btn "add" color when clicked.
+     */
     @Override
-    public void likeBtnAddColor() {
+    public void likeBtnAddedColor() {
         mLikeBtn.setColorFilter(getResources().getColor(R.color.quantum_yellow));
     }
 
-    @Override
-    public void setInfosWithSnapshot(RestaurantPublic currentUser) {
-        noLunch.setVisibility(View.GONE);
-
-        mName = currentUser.getDetails().getName();
-        mAddress = currentUser.getDetails().getAddress();
-        mPhone = currentUser.getDetails().getPhone();
-        mWebsite = currentUser.getDetails().getWebsite();
-        mStar = currentUser.getDetails().getRating();
-        mUrl = currentUser.getDetails().getImageUrl();
-        mID = currentUser.getDetails().getPlaceID();
-        showInfos();
-    }
-
-    @Override
-    public void setFloatingBtnTint() {
-        mFloatingActionButton.setImageResource(R.drawable.done_icon);
-        mFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.quantum_vanillagreen500)));
-    }
-
-    @Override
-    public void setLikeBtnTint() {
-        mLikeBtn.setColorFilter(getResources().getColor(R.color.quantum_yellow));
-    }
-
+    /**
+     * Set the floating btn "null" state.
+     */
     @Override
     public void floatingBtnNullStyle() {
         mFloatingActionButton.setImageResource(R.drawable.add_icon);
         mFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorAccent)));
     }
 
+    /**
+     * Set the floating btn "add" state.
+     */
     @Override
-    public void floatingBtnAddStyle() {
+    public void floatingBtnAddedStyle() {
         mFloatingActionButton.setImageResource(R.drawable.done_icon);
         mFloatingActionButton.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.quantum_vanillagreen500)));
     }
 
-
+    /**
+     * Register Eventbus onStart.
+     */
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
     }
 
+    /**
+     * Update infos on Resuming.
+     */
     @Override
     public void onResume() {
         super.onResume();
         getAnyIntent();
-        configureInfos();
+        configureInfo();
     }
 
+    /**
+     * Unregister Eventbus onStop.
+     */
     @Override
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * Check for null information on restaurant (ex: no website) and Hide the view.
+     */
     @Override
     public void nullCheck() {
         if (mAddress == null)
@@ -200,8 +210,30 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         }
     }
 
+    /**
+     * This method set informations when the intent comes from My Lunch.
+     *
+     * @param currentUser currentUser
+     */
     @Override
-    public void configureInfos() {
+    public void setInfosWithSnapshot(RestaurantPublic currentUser) {
+        noLunch.setVisibility(View.GONE);
+
+        mName = currentUser.getDetails().getName();
+        mAddress = currentUser.getDetails().getAddress();
+        mPhone = currentUser.getDetails().getPhone();
+        mWebsite = currentUser.getDetails().getWebsite();
+        mStar = currentUser.getDetails().getRating();
+        mUrl = currentUser.getDetails().getImageUrl();
+        mID = currentUser.getDetails().getPlaceID();
+        showInfo();
+    }
+
+    /**
+     * Set the info by the corresponding intent (from adapter = from ListViewFragment)
+     */
+    @Override
+    public void configureInfo() {
 
         if (mIntentString != null && mIntentString.equals(getString(R.string.adapter))) {    //  Intent from Adapter click
 
@@ -211,7 +243,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
             mWebsite = mResult.getWebsite();
             mStar = mResult.getRatingStars();
             mID = mResult.getPlaceId();
-            showInfos();
+            showInfo();
         }
         if (mIntentString != null && mIntentString.equals(getString(R.string.workers))) {
 
@@ -222,7 +254,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
             mStar = mRestaurantPublic.getDetails().getRating();
             mID = mRestaurantPublic.getDetails().getPlaceID();
             mUrl = mRestaurantPublic.getDetails().getImageUrl();
-            showInfos();
+            showInfo();
 
         }
         if (mIntentString == null || mIntentString.equals(getString(R.string.lunch))) {      //  Intent from My Lunch click
@@ -230,8 +262,11 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         }
     }
 
+    /**
+     * Updating the view with the information from ConfigureInfo method.
+     */
     @Override
-    public void showInfos() {
+    public void showInfo() {
         mRestaurant.setAddress(mAddress);
         mRestaurant.setName(mName);
         mRestaurant.setPhone(mPhone);
@@ -247,12 +282,17 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         loadPlaceImageWithGlide();
         nullCheck();
         selectBtnListener();
-        likeBtnListener();      // << With contract?
+        likeBtnListener();
         callBtnListener();
         websiteBtnListener();
         startGettingUserList();
     }
 
+    /**
+     * Load the restaurant picture with Glide.
+     *
+     * @see Glide
+     */
     @Override
     public void loadPlaceImageWithGlide() {
 
@@ -266,6 +306,9 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         }
     }
 
+    /**
+     * Add a specific view if no lunch is selected when clicked on nav drawer.
+     */
     @Override
     public void noLunchCase() {
         noLunch.setVisibility(View.VISIBLE);
@@ -277,6 +320,9 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         });
     }
 
+    /**
+     * Call btn listener for calling the place.
+     */
     @Override
     public void callBtnListener() {
         mCallBtn.setOnClickListener(new View.OnClickListener() {
@@ -293,6 +339,9 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         });
     }
 
+    /**
+     * Website btn open in the phone's browser.
+     */
     @Override
     public void websiteBtnListener() {
         mWebsiteBtn.setOnClickListener(new View.OnClickListener() {
@@ -305,6 +354,9 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
 
     }
 
+    /**
+     * Select place btn listener, add or remove the place for lunch and store/Remove it in Firestore.
+     */
     @Override
     public void selectBtnListener() {
 
@@ -316,17 +368,26 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         });
     }
 
+    /**
+     * Toast to inform user adding place.
+     */
     @Override
     public void toastAddPlace() {
-        Toast.makeText(this, "You have added " + mRestaurant.getName() + " for lunch !", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.you_added) + mRestaurant.getName() + getString(R.string.for_lunch), Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Toast to inform user removing place.
+     */
     @Override
     public void toastRemovePlace() {
 
-        Toast.makeText(this, "You have removed " + mRestaurant.getName() + " for lunch !", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.you_removed) + mRestaurant.getName() + getString(R.string.for_lunch), Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * The like btn listener method.
+     */
     @Override
     public void likeBtnListener() {
         mLikeBtn.setOnClickListener(new View.OnClickListener() {
@@ -338,16 +399,27 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         });
     }
 
+    /**
+     * Toast to inform user removing liked place.
+     */
     @Override
     public void toastRemoveLike() {
-        Toast.makeText(this, "You don't like " + mRestaurant.getName() + " anymore !", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.you_dont_like) + mRestaurant.getName() + getString(R.string.anymore), Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Toast to inform user adding liked place.
+     */
     @Override
     public void toastAddLike() {
-        Toast.makeText(this, "You now like " + mRestaurant.getName() + " !", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, getString(R.string.you_now_like) + mRestaurant.getName() + getString(R.string.exclam), Toast.LENGTH_LONG).show();
     }
 
+    /**
+     * Show the rank of the place.
+     *
+     * @param star number of star to show
+     */
     @Override
     public void showStar(int star) {
         switch (star) {
@@ -366,38 +438,69 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         }
     }
 
+    /**
+     * On fail listener.
+     *
+     * @return fail message.
+     * @see BaseActivity
+     */
     @Override
     protected OnFailureListener onFailureListener() {
         return super.onFailureListener();
     }
 
+    /**
+     * Get the current logged user.
+     *
+     * @return current user
+     * @see BaseActivity
+     */
     @Nullable
     @Override
     protected FirebaseUser getCurrentUser() {
         return super.getCurrentUser();
     }
 
+    /**
+     * Check if the current user is logged.
+     *
+     * @return current user logged
+     * @see BaseActivity
+     */
     @Override
     protected Boolean isCurrentUserLogged() {
         return super.isCurrentUserLogged();
     }
 
+    /**
+     * Get Layout.
+     *
+     * @return layout
+     * @see BaseActivity
+     */
     @Override
-    public int getFragmentLayout() {
+    public int getActivityLayout() {
         return R.layout.activity_places_detail;
     }
 
+    /**
+     * Configure the recyclerview for the actual place, with co-worker who have the same are showing.
+     */
     @Override
     public void configureRecyclerView() {
-        mWorkersJoiningAdapter = new WorkersJoiningAdapter(mUserJoinning, Glide.with(this), mContext);
+        mWorkersJoiningAdapter = new WorkersJoiningAdapter(mUserJoinning, Glide.with(this), getApplicationContext());
         mRecyclerView.setAdapter(mWorkersJoiningAdapter);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(this.getApplicationContext()), DividerItemDecoration.VERTICAL));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         if (mUserList == null || mUserJoinning == null) {
             mRecyclerView.setVisibility(View.GONE);
         }
     }
 
+    /**
+     * Eventbus to get ListViewFragment Intent
+     *
+     * @param detail detailed restaurant clicked
+     */
     @Subscribe(sticky = true)
     public void onPlacesDetailEvent(PlacesDetailEvent detail) {
         mResult = detail.mDetail;
@@ -405,21 +508,30 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         mID = detail.mDetail.getPlaceId();
     }
 
+    /**
+     * Eventbus to get WormatesFragment Intent
+     *
+     * @param restaurantPublic detailed restaurant clicked
+     */
     @Subscribe(sticky = true)
     public void onRestaurantPublicEvent(RestaurantPublicEvent restaurantPublic) {
         mRestaurantPublic = restaurantPublic.mRestaurantPublic;
     }
 
-    @Subscribe
-    public void onRefreshEvent(RestaurantPublicEvent restaurantPublic) {
-        mRestaurantPublic = restaurantPublic.mRestaurantPublic;
-    }
-
+    /**
+     * Eventbus used for updating the view when user add or removed a restaurant.
+     * Apply when startGettingUserList() is done.
+     *
+     * @param refreshEvent simple callback
+     */
     @Subscribe
     public void onUserJoiningRefreshEvent(UserJoiningRefreshEvent refreshEvent) {
         notifyDataChanged();
     }
 
+    /**
+     * Get the public userlist on firestore, to compare it and show if user join your lunch.
+     */
     @Override
     public void startGettingUserList() {
         mUserList = mPresenter.getUserList();
@@ -428,6 +540,9 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         notifyDataChanged();
     }
 
+    /**
+     * Updating recyclerview when all data are ready.
+     */
     @Override
     public void notifyDataChanged() {
         configureRecyclerView();

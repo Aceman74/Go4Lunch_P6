@@ -19,7 +19,7 @@ import androidx.work.WorkerParameters;
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.activities.login.MainActivity;
 import com.aceman.go4lunch.api.RestaurantPublicHelper;
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.FirestoreUserList;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +34,13 @@ import timber.log.Timber;
 
 import static android.app.PendingIntent.FLAG_CANCEL_CURRENT;
 
+/**
+ * Created by Lionel JOFFRAY - on 07/06/2019.
+ * DailyWorker class is used to collect the data to set the notification to user at 12PM.
+ * It check if another workmates lunch at the same place and send a notification.
+ *
+ * @see Alarm
+ */
 public class DailyWorker extends Worker {
     private final Context mContext;
     public List<RestaurantPublic> mUserList = new ArrayList<>();
@@ -56,7 +63,7 @@ public class DailyWorker extends Worker {
     }
 
     /**
-     * Worker execution
+     * Worker execution.
      *
      * @return result of job
      */
@@ -76,11 +83,19 @@ public class DailyWorker extends Worker {
         }
     }
 
+    /**
+     * Get current user for Firestore.
+     *
+     * @return user
+     */
     @Nullable
     protected FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    /**
+     * Get the data and adapt the notification message.
+     */
     private void getDataFromFirebasae() {
         RestaurantPublicHelper.getUser(Objects.requireNonNull(getCurrentUser()).getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -110,6 +125,9 @@ public class DailyWorker extends Worker {
         });
     }
 
+    /**
+     * Notification channel creation.
+     */
     private void createNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
@@ -127,6 +145,9 @@ public class DailyWorker extends Worker {
         }
     }
 
+    /**
+     * Notify the user with all information.
+     */
     private void SendNotification() {
 
         Intent intent = new Intent(mContext, MainActivity.class);

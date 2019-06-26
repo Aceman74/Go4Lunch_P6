@@ -8,6 +8,10 @@ import timber.log.Timber;
 
 /**
  * Created by Lionel JOFFRAY - on 02/05/2019.
+ * <p>
+ * Override on create app for Timber implementation.
+ *
+ * @see Timber
  */
 public class OnCreate extends Application {
     @Override

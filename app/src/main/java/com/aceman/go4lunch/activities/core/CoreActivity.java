@@ -24,8 +24,8 @@ import com.aceman.go4lunch.activities.placesDetail.PlacesDetailActivity;
 import com.aceman.go4lunch.activities.profile.ProfileActivity;
 import com.aceman.go4lunch.activities.settings.SettingsActivity;
 import com.aceman.go4lunch.adapter.PageAdapter;
-import com.aceman.go4lunch.models.RestaurantPublic;
-import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.User;
 import com.aceman.go4lunch.utils.AnimationClass;
 import com.aceman.go4lunch.utils.base.BaseActivity;
 import com.aceman.go4lunch.utils.events.SearchRefreshEvent;
@@ -59,6 +59,9 @@ import timber.log.Timber;
 
 /**
  * Created by Lionel JOFFRAY - on 03/05/2019.
+ * <p>
+ * Core Activity is the app base, after login.
+ * This activity handle all 3 Fragments (Maps, ListView and Workmates).
  */
 public class CoreActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, BottomNavigationView.OnNavigationItemSelectedListener, CoreContract.CoreViewInterface {
     private static final int SIGN_OUT_TASK = 10;
@@ -82,12 +85,15 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
     Toolbar mToolbar;
     ImageView mProfileImage;
     Animation mClickAnim;
-    MenuItem mYourLunch;
-    MenuItem mSettings;
-    MenuItem mLogOut;
     private String mIntent;
     private CorePresenter mPresenter;
 
+    /**
+     * When created, presenter is initialized, and a LocationServices (sFusedLocationProviderClient) is set for the Maps use.
+     *
+     * @param savedInstanceState savedInstanceState
+     * @see com.aceman.go4lunch.fragments.maps.MapsFragment
+     */
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,6 +110,9 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         mPresenter.getUserList();
     }
 
+    /**
+     * Method who launch the Profile Activity when the user Profile is clicked, on the navigation drawer header.
+     */
     @Override
     public void onClickProfile() {
         mProfileImage = mNavigationView.getHeaderView(0).findViewById(R.id.profile_image_nav_header);
@@ -135,16 +144,31 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         });
     }
 
+    /**
+     * Setting the toolbar.
+     *
+     * @see BaseActivity
+     */
     @Override
     public void configureToolBar() {
         setSupportActionBar(mToolbar);
     }
 
+    /**
+     * Configure viewpager for the 3 fragments.
+     *
+     * @see com.aceman.go4lunch.fragments.listView.ListViewFragment
+     * @see com.aceman.go4lunch.fragments.maps.MapsFragment
+     * @see com.aceman.go4lunch.fragments.workmates.WorkmatesFragment
+     */
     @Override
     public void configureViewPager() {
         pager.setAdapter(new PageAdapter(getSupportFragmentManager(), getApplicationContext()));
     }
 
+    /**
+     * Listener for settings/updating information in the navigation drawer.
+     */
     @Override
     public void navigationDrawerListener() {
         NavigationView navigationView = findViewById(R.id.core_nav_view);
@@ -155,11 +179,20 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         mPresenter.updateUIWhenCreating();
     }
 
+    /**
+     * Get activity Layout
+     *
+     * @return activity layout
+     * @see BaseActivity
+     */
     @Override
-    public int getFragmentLayout() {
+    public int getActivityLayout() {
         return R.layout.activity_core;
     }
 
+    /**
+     * Sign out user from firebase method.
+     */
     @Override
     public void signOutUserFromFirebase() {
         AuthUI.getInstance()
@@ -169,6 +202,9 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         startActivity(start);
     }
 
+    /**
+     * Set the navigation drawer button on toolbar.
+     */
     @Override
     public void configureHamburgerBtn() {
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, R.string.popup_message_choice_yes, R.string.popup_message_choice_no);
@@ -176,12 +212,18 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         toggle.syncState();
     }
 
+    /**
+     * Configure the navigation drawer view and the bottom navigation view items listener.
+     */
     @Override
     public void configureNavigationView() {
         mNavigationView.setNavigationItemSelectedListener(this);
         mBottomNavigationView.setOnNavigationItemSelectedListener(this);
     }
 
+    /**
+     * Set the page listener and set the title for each.
+     */
     @Override
     public void pagerListener() {
         pager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
@@ -194,15 +236,15 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
                 switch (i) {
                     case 0:
                         mBottomNavigationView.setSelectedItemId(R.id.bottom_maps);
-                        mToolbar.setTitle("I'm Hungry !");
+                        mToolbar.setTitle(R.string.im_hungry);
                         break;
                     case 1:
                         mBottomNavigationView.setSelectedItemId(R.id.bottom_list_view);
-                        mToolbar.setTitle("I'm Hungry !");
+                        mToolbar.setTitle(R.string.im_hungry);
                         break;
                     case 2:
                         mBottomNavigationView.setSelectedItemId(R.id.bottom_workmates);
-                        mToolbar.setTitle("Avaiable Workmates");
+                        mToolbar.setTitle(R.string.available_workm);
                         break;
                 }
             }
@@ -213,6 +255,12 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         });
     }
 
+    /**
+     * Method who handle the click on items.
+     *
+     * @param item item clicked
+     * @return always true
+     */
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         //  Navigation Drawer item settings
@@ -222,15 +270,18 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
             case R.id.drawer_your_lunch:
                 Intent lunch = new Intent(this, PlacesDetailActivity.class);
                 mIntent = getString(R.string.lunch);
-                lunch.putExtra("detail_intent", mIntent);
+                lunch.putExtra(getString(R.string.detail_intent), mIntent);
                 this.startActivity(lunch);
+                Timber.i("Click Your Lunch");
                 break;
             case R.id.drawer_settings:
                 Intent settings = new Intent(this, SettingsActivity.class);
                 this.startActivity(settings);
+                Timber.i("Click Settings");
                 break;
             case R.id.drawer_logout:
                 signOutUserFromFirebase();
+                Timber.i("Sign Out");
                 break;
             case R.id.bottom_maps:
                 pager.setCurrentItem(0);
@@ -250,6 +301,12 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         return true;
     }
 
+    /**
+     * Inflate the Google search menu.
+     *
+     * @param menu the menu
+     * @return always true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -268,14 +325,13 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         return true;
     }
 
+    /**
+     * The Google Autocomplete intent method.
+     */
     @Override
     public void autocompleteIntent() {
-
-        // Set the fields to specify which types of place data to
-// return after the user has made a selection.
         List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
 
-// Start the autocomplete intent.
         Intent intent = new Autocomplete.IntentBuilder(
                 AutocompleteActivityMode.OVERLAY, fields)
                 .setInitialQuery(mLastSearch)
@@ -305,23 +361,46 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         }
     }
 
-
+    /**
+     * On fail listener.
+     *
+     * @return fail message.
+     * @see BaseActivity
+     */
     @Override
     public OnFailureListener onFailureListener() {
         return super.onFailureListener();
     }
 
+    /**
+     * Get the current logged user.
+     *
+     * @return current user
+     * @see BaseActivity
+     */
     @Nullable
     @Override
     public FirebaseUser getCurrentUser() {
         return super.getCurrentUser();
     }
 
+    /**
+     * Check if the current user is logged.
+     *
+     * @return current user logged
+     * @see BaseActivity
+     */
     @Override
     public Boolean isCurrentUserLogged() {
         return super.isCurrentUserLogged();
     }
 
+    /**
+     * On success listener for sign out.
+     *
+     * @param origin the sign out task
+     * @return new onSucces Listener
+     */
     @Override
     public OnSuccessListener<Void> updateUIAfterRESTRequestsCompleted(final int origin) {
         return new OnSuccessListener<Void>() {
@@ -334,25 +413,41 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         };
     }
 
+    /**
+     * Get the userlist From firestore for fragments use.
+     *
+     * @param task task
+     */
     @Override
     public void setUserListFromFirebase(Task<QuerySnapshot> task) {
         for (QueryDocumentSnapshot document : task.getResult()) {
-            RestaurantPublic userP = document.toObject(RestaurantPublic.class);     // < == GET LIST FIRESTORE
+            RestaurantPublic userP = document.toObject(RestaurantPublic.class);
             mUserList.add(userP);
             Timber.tag("Task To List").i("Sucess");
         }
     }
 
+    /**
+     * Error message if list couldn't be downloaded.
+     *
+     * @param task task
+     */
     @Override
     public void errorGettingUserListFromFirebase(Task<QuerySnapshot> task) {
         Timber.tag("Task Exeption").d(task.getException(), "Error getting documents: ");
     }
 
+    /**
+     * Post the UserList via EventBus Sticky event.
+     */
     @Override
     public void postStickyEventBusUserList() {
         EventBus.getDefault().postSticky(new UserListEvent(mUserList));
     }
 
+    /**
+     * Load User Profile picture in navigation drawer.
+     */
     @Override
     public void loadUserImgWithGlide() {
         Glide.with(this)
@@ -361,12 +456,18 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
                 .into(imageViewProfile);
     }
 
+    /**
+     * Load User Mail in navigation drawer.
+     */
     @Override
     public void loadUserEmail() {
         String email = TextUtils.isEmpty(this.getCurrentUser().getEmail()) ? getString(R.string.info_no_email_found) : this.getCurrentUser().getEmail();
         this.textViewEmail.setText(email);
     }
 
+    /**
+     * Load User Name in navigation drawer.
+     */
     @Override
     public void loadUserUsername(User currentUser) {
         String username = TextUtils.isEmpty(currentUser.getUsername()) ? getString(R.string.info_no_username_found) : currentUser.getUsername();

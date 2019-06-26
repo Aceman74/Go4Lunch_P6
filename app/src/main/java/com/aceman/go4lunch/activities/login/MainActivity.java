@@ -32,6 +32,12 @@ import butterknife.BindView;
 import okhttp3.Cache;
 import timber.log.Timber;
 
+/**
+ * Created by Lionel JOFFRAY - on 02/05/2019.
+ * <p>
+ * This is the main activity, used for creating account, logging and permission check.
+ * All users have to be logged to access the application.
+ */
 public class MainActivity extends BaseActivity implements LoginContract.LoginViewInterface {
 
     private static final int RC_SIGN_IN = 111;
@@ -45,6 +51,11 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
     Animation mClickAnim;
     private LoginPresenter mPresenter;
 
+    /**
+     * When created, the presenter is initialized, permissions asked, and listener for button set.
+     *
+     * @param savedInstanceState savedInstanceState
+     */
     @Override
     protected void onCreate(@android.support.annotation.Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,18 +97,39 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
         updateUIWhenResuming();
     }
 
+    /**
+     * Get Activity Layout.
+     *
+     * @return
+     */
+    @Override
+    public int getActivityLayout() {
+        return R.layout.activity_main;
+    }
+
+    /**
+     * Inform user when creation failed.
+     */
     @Override
     public void onUserCreationFailed() {
         Toast.makeText(this, getString(R.string.error_unknown_error), Toast.LENGTH_LONG).show();
         Timber.tag("Firebase UserCreation").e("Error creation user");
     }
 
+    /**
+     * Inform user when creation succeeded.
+     */
     @Override
     public void onUserCreationSucceeded() {
         Toast.makeText(this, getString(R.string.new_user_created), Toast.LENGTH_LONG).show();
         Timber.tag("Firebase UserCreation").e("New User created");
     }
 
+    /**
+     * Ask user for location and call permission.
+     *
+     * @see Dexter
+     */
     @Override
     public void askPermission() {
         if (ContextCompat.checkSelfPermission(getApplicationContext(),
@@ -115,34 +147,50 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
         }
     }
 
+    /**
+     * Intent for starting Core Activity
+     *
+     * @see CoreActivity
+     */
     @Override
     public void startCoreActivity() {
         Intent intent = new Intent(this, CoreActivity.class);
         this.startActivity(intent);
     }
 
+    /**
+     * Update btn text, if already logged or new.
+     */
     @Override
     public void updateUIWhenResuming() {
         mBtnLogin.setText(isCurrentUserLogged() ? getApplicationContext().getString(R.string.button_login_text_logged) : getApplicationContext().getString(R.string.button_login_text_not_logged));
     }
 
+    /**
+     * Show a snackbar when needed.
+     *
+     * @param coordinatorLayout coordinatorLayout
+     * @param message           message
+     */
     @Override
     public void showSnackBar(CoordinatorLayout coordinatorLayout, String message) {
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
+    /**
+     * A little hello from the app.
+     *
+     * @param name username
+     */
     @Override
     public void welcomeBackUser(String name) {
         Toast.makeText(this, getString(R.string.user_already_logged) + " " + name, Toast.LENGTH_LONG).show();
 
     }
 
-
-    @Override
-    public int getFragmentLayout() {    //  Base activity
-        return R.layout.activity_main;
-    }
-
+    /**
+     * On Resume override for updating view.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -151,6 +199,13 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
 
     }
 
+    /**
+     * On activity result for new Account Creation.
+     *
+     * @param requestCode requestCode
+     * @param resultCode  resultCode
+     * @param data        data
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -158,6 +213,9 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
         this.handleResponseAfterSignIn(requestCode, resultCode, data);
     }
 
+    /**
+     * Launch the sign in Activity for result.
+     */
     public void startSignInActivity() {
 
         startActivityForResult(
@@ -175,6 +233,9 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
                 RC_SIGN_IN);   // Sign In
     }
 
+    /**
+     * Dexter library used for permissions.
+     */
     private void dexterInit() {
 
         MultiplePermissionsListener dialogMultiplePermissionsListener =
@@ -197,7 +258,13 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
         askPermission();
     }
 
-
+    /**
+     * Handle the response after Signed in.
+     *
+     * @param requestCode requestCode
+     * @param resultCode  resultCode
+     * @param data        data
+     */
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) {
 
         IdpResponse response = IdpResponse.fromResultIntent(data);

@@ -1,11 +1,12 @@
 package com.aceman.go4lunch.utils.events;
 
-import com.aceman.go4lunch.models.RestaurantPublic;
-
-import java.util.List;
 
 /**
  * Created by Lionel JOFFRAY - on 17/05/2019.
+ * <p>
+ * Event to call for a refresh UI when list is complete.
+ *
+ * @see com.aceman.go4lunch.activities.placesDetail.PlacesDetailActivity
  */
 public class UserJoiningRefreshEvent {
 

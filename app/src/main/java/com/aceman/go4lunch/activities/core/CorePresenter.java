@@ -3,7 +3,7 @@ package com.aceman.go4lunch.activities.core;
 import android.support.annotation.NonNull;
 
 import com.aceman.go4lunch.api.UserHelper;
-import com.aceman.go4lunch.models.User;
+import com.aceman.go4lunch.data.models.User;
 import com.aceman.go4lunch.utils.BasePresenter;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -16,17 +16,20 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Created by Lionel JOFFRAY - on 04/06/2019.
+ * <p>
+ * The presenter for Core Activity.
  */
 public class CorePresenter extends BasePresenter implements CoreContract.CorePresenterInterface {
 
-
+    /**
+     * Get all the user (public) from Firestore.
+     */
     @Override
     public void getUserList() {
 
         UserHelper.getUser(getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-
                 FirebaseFirestore.getInstance().collection("restaurant").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -42,6 +45,9 @@ public class CorePresenter extends BasePresenter implements CoreContract.CorePre
         ((CoreContract.CoreViewInterface) getView()).postStickyEventBusUserList();
     }
 
+    /**
+     * This method get the user information on Firestore and pass them for updating view.
+     */
     @Override
     public void updateUIWhenCreating() {
 
@@ -50,10 +56,7 @@ public class CorePresenter extends BasePresenter implements CoreContract.CorePre
             if (this.getCurrentUser().getPhotoUrl() != null) {
                 ((CoreContract.CoreViewInterface) getView()).loadUserImgWithGlide();
             }
-
             ((CoreContract.CoreViewInterface) getView()).loadUserEmail();
-
-            // 7 - Get additional data from Firestore (isPrivate & Username)
             UserHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -68,7 +71,11 @@ public class CorePresenter extends BasePresenter implements CoreContract.CorePre
         }
     }
 
-
+    /**
+     * Getting current user check.
+     *
+     * @return actual user
+     */
     public FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }

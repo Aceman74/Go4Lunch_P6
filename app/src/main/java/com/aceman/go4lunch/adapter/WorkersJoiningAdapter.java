@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.activities.placesDetail.PlacesDetailActivity;
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
 import com.aceman.go4lunch.utils.AnimationClass;
 import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.HourSetter;
@@ -25,9 +25,11 @@ import butterknife.ButterKnife;
 import timber.log.Timber;
 
 /**
- * Created by Lionel JOFFRAY - on 14/03/2019.
+ * Created by Lionel JOFFRAY - on 12/05/2019.
+ * <p>
+ * Workers Joining Adapter for showing, under restaurant detail on PlacesDetail, the list of worker joining.
  *
- * <b>Shared Adapter</b> for his API Call response
+ * @see PlacesDetailActivity
  */
 public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAdapter.MyViewHolder> {
 
@@ -55,33 +57,39 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
     public void onBindViewHolder(MyViewHolder holder, int position) {
         String date = DateSetter.getFormattedDate();
         if ((mUserList.get(position).getRestaurantName() != null && mUserList.get(position).getRestaurantName().equals(PlacesDetailActivity.mName)) && mUserList.get(position).getDate().equals(date)) {
-            updateWithFreshInfo(this.mUserList.get(position), this.glide, holder, position);
+            updateWithFreshInfo(mUserList.get(position), glide, holder, position);
         } else {
             holder.mItemListener.setVisibility(View.GONE);
         }
     }
 
     /**
-     * Update RecyclerView with list info, handle click on item position with webview intent
+     * Update if a user eat here today, and change text if before/after 12pm.
      *
-     * @param user   Article in the list
-     * @param glide  use for get image of article
-     * @param holder view holder
+     * @param user     co worker
+     * @param glide    profile picture
+     * @param holder   view holder
+     * @param position pos
      */
     private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
-
         if (HourSetter.getHour() < 13) {
-            holder.mTextView.setText(user.getUsername() + " is joining " + user.getRestaurantName() + "!");
+            String text = user.getUsername() + mContext.getString(R.string.is_joining) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+            holder.mTextView.setText(text);
         } else {
-            holder.mTextView.setText(user.getUsername() + " ate today at " + user.getRestaurantName() + "!");
+            String text = user.getUsername() + mContext.getString(R.string.ate_today_at) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+            holder.mTextView.setText(text);
         }
         loadUserPictureWithGlide(user, holder);
         onClickListener(user, holder);
     }
 
+    /**
+     * On click user animation. Only visual.
+     *
+     * @param user   co worker
+     * @param holder view holder
+     */
     private void onClickListener(final RestaurantPublic user, final MyViewHolder holder) {
-
-
         holder.mItemListener.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -92,6 +100,12 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
         });
     }
 
+    /**
+     * Load profile pic with Glide.
+     *
+     * @param user   co-worler
+     * @param holder view holder
+     */
     private void loadUserPictureWithGlide(RestaurantPublic user, MyViewHolder holder) {
         try {
             holder.mImageView.setScaleType(ImageView.ScaleType.CENTER_CROP); // resize large image
@@ -116,8 +130,6 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.workers_list_textview)
         TextView mTextView;
-        String mRestaurant;
-        String mName;
         @BindView(R.id.workmates_profile_picture)
         ImageView mImageView;
         @BindView(R.id.item_id_workmates)

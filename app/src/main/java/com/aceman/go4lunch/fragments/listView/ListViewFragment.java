@@ -12,12 +12,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Toolbar;
 
 import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.adapter.ListViewAdapter;
-import com.aceman.go4lunch.data.nearby_search.Result;
-import com.aceman.go4lunch.models.RestaurantPublic;
+import com.aceman.go4lunch.data.models.RestaurantPublic;
+import com.aceman.go4lunch.data.places.nearby_search.Result;
 import com.aceman.go4lunch.utils.events.RefreshEvent;
 import com.aceman.go4lunch.utils.events.ResultListEvent;
 import com.aceman.go4lunch.utils.events.UserListEvent;
@@ -35,8 +34,11 @@ import java.util.Objects;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Lionel JOFFRAY - on 12/06/2019.
+ * <p>
+ * ListView Fragment, the second fragment, shows in a recyclerview a list of restaurant (mResults) who comes from MapsFragment.
  */
 public class ListViewFragment extends Fragment implements ListViewContract.ListViewViewInterface {
     public List<Result> mResults = new ArrayList<>();
@@ -45,7 +47,6 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
     RecyclerView mRecyclerView;
     @BindView(R.id.list_view_progressbar)
     ProgressBar mProgressBar;
-    Toolbar mToolbar;
     @BindView(R.id.sort_by_name)
     ImageButton mByName;
     @BindView(R.id.sort_by_distance)
@@ -59,13 +60,20 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
 
 
     public ListViewFragment() {
-        // Required empty public constructor
     }
 
     public static ListViewFragment newInstance() {
         return new ListViewFragment();
     }
 
+    /**
+     * When created, the presenter is initialized, buttons and recyclerview too.
+     *
+     * @param inflater           inflate
+     * @param container          container
+     * @param savedInstanceState savedInstanceState
+     * @return view
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -78,24 +86,58 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         return view;
     }
 
+    /**
+     * Register EventBus on start.
+     */
     @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
     }
 
+    /**
+     * Unregister EventBus on stop.
+     */
     @Override
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
     }
 
+    /**
+     * Get the mResult list from MapsFragment.
+     */
     @Subscribe
     public void onResultListEvent(ResultListEvent result) {
         mResults = result.mResults;
         mListViewAdapter.notifyDataSetChanged();
     }
 
+    /**
+     * Get the userList .
+     *
+     * @param userlist userlist
+     */
+    @Subscribe(sticky = true)
+    public void onUserListEvent(UserListEvent userlist) {
+        mUserList = userlist.mUserList;
+    }
+
+    /**
+     * Refresh callback when userJoining is ready, refresh Recycler View.
+     *
+     * @param refreshEvent refreshEvent
+     */
+    @Subscribe
+    public void onRefreshEvent(RefreshEvent refreshEvent) {
+        loadingView();
+    }
+
+    /**
+     * Load UI when is visible.
+     *
+     * @param isVisibleToUser isVisibleToUser
+     */
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
@@ -105,16 +147,9 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         }
     }
 
-    @Subscribe(sticky = true)
-    public void onUserListEvent(UserListEvent userlist) {
-        mUserList = userlist.mUserList;
-    }
-
-    @Subscribe
-    public void onRefreshEvent(RefreshEvent refreshEvent) {
-            loadingView();
-    }
-
+    /**
+     * Show a different layout if mResults is empty or not.
+     */
     @Override
     public void loadingView() {
         if (mResults.isEmpty()) {
@@ -126,6 +161,9 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         }
     }
 
+    /**
+     * Configure sorts buttons.
+     */
     @Override
     public void configureBtn() {
         mByName.setOnClickListener(new View.OnClickListener() {
@@ -156,6 +194,9 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
 
     }
 
+    /**
+     * Sort places by name .
+     */
     @Override
     public void sortByName() {
         Collections.sort(mResults, new Comparator<Result>() {
@@ -168,6 +209,9 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         mByNameBoolean = false;
     }
 
+    /**
+     * Sort places by distance( rounded to 5m).
+     */
     @Override
     public void sortByDistance() {
         Collections.sort(mResults, new Comparator<Result>() {
@@ -190,6 +234,9 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         mByDistanceBoolean = false;
     }
 
+    /**
+     * Configure the recyclerview.
+     */
     @Override
     public void configureRecyclerView() {
         mListViewAdapter = new ListViewAdapter(mResults, mUserList, Glide.with(this), getContext());
@@ -198,6 +245,9 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
     }
 
+    /**
+     * Reload view on Resume.
+     */
     @Override
     public void onResume() {
         super.onResume();

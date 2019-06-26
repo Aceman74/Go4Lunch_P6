@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.aceman.go4lunch.R;
-import com.aceman.go4lunch.models.HistoryDetails;
+import com.aceman.go4lunch.data.models.HistoryDetails;
 
 import java.util.List;
 
@@ -18,9 +18,11 @@ import butterknife.ButterKnife;
 
 
 /**
- * Created by Lionel JOFFRAY - on 14/03/2019.
+ * Created by Lionel JOFFRAY - on 12/05/2019.
+ * <p>
+ * History Adapter for the user History list (show user history)
  *
- * <b>Shared Adapter</b> for his API Call response
+ * @see com.aceman.go4lunch.activities.settings.SettingsActivity
  */
 public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHolder> {
 
@@ -53,10 +55,7 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
     }
 
     /**
-     * Update RecyclerView with list info, handle click on item position with webview intent
-     *
-     * @param item   Article in the list
-     * @param holder view holder
+     * Update RecyclerView with restaurant list and date.
      */
     private void updateWithFreshInfo(final HistoryDetails item, final MyViewHolder holder, int position) {
         holder.mName.setText(item.getName());
@@ -70,7 +69,9 @@ public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.MyViewHo
 
 
     /**
-     * View Hoodler using ButterKnife
+     * View Holder using ButterKnife.
+     *
+     * @see ButterKnife
      */
     public static class MyViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.item_history_name)
