@@ -123,7 +123,7 @@ public class WorkmatesFragment extends Fragment implements WorkmatesContract.Wor
     /**
      * Refresh event to get the userlist.
      *
-     * @param refreshEvent
+     * @param refreshEvent event
      */
     @Subscribe
     public void onRefreshEvent(RefreshEvent refreshEvent) {

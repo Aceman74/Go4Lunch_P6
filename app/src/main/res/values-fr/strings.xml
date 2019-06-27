@@ -25,7 +25,7 @@
     <string name="toolbar_title_core_activity">J\'ai Faim !</string>
     <!-- BOTTOM NAVIGATION VIEW -->
     <string name="bottom_navigation_menu_maps">Carte</string>
-    <string name="bottom_navigation_menu_list">Liste Restaurants</string>
+    <string name="bottom_navigation_menu_list">Liste</string>
     <string name="bottom_navigation_menu_workmates">Collègues</string>
     <string name="your_lunch">VOTRE DEJEUNER</string>
     <string name="settings">PARAMETRES</string>
@@ -36,7 +36,7 @@
     <string name="oops">Oups !</string>
     <string name="permision_text">Go4Lunch a besoin d\'autorisations de votre part pour fonctionner correctement !</string>
     <string name="application_permission">Permissions d\'App</string>
-    <string name="is_joining">" sera là"</string>
+    <string name="is_joining">" sera à "</string>
     <string name="exclamation">" !"</string>
     <string name="perm_required">Permissions Demandées</string>
     <string name="perm_required_1">La localisation et les appels sont nécessaires pour Go4Lunch.</string>

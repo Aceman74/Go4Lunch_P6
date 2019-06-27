@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_primary"
+    android:baselineAligned="false"
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:gravity="center_horizontal"
     android:orientation="horizontal"
-    tools:context=".activities.profile.ProfileActivity"
-    android:baselineAligned="false">
+    tools:context=".activities.profile.ProfileActivity">
 
     <ScrollView
         android:layout_width="wrap_content"

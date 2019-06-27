@@ -64,6 +64,7 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
         askPermission();
         mCache = mPresenter.configureCache(mCache);
         mPresenter.isCurrentUserLogged();
+        updateUIWhenResuming();
 
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +101,7 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
     /**
      * Get Activity Layout.
      *
-     * @return
+     * @return layout
      */
     @Override
     public int getActivityLayout() {

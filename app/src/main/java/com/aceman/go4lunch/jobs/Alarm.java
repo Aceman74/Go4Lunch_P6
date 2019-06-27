@@ -94,7 +94,7 @@ public class Alarm extends BroadcastReceiver {
         alarmMgr = (AlarmManager) context.getSystemService(ALARM_SERVICE);
         alarmMgr.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP,
                 SystemClock.elapsedRealtime(),
-                2 * 60 * 1000,
+                2 * 60 * 1000,  //->->  Set to 2 minutes for demo <-<-//
                 alarmCreateIntent);
         Timber.tag("Alarm Created").e(alarmCreateIntent.toString());
 

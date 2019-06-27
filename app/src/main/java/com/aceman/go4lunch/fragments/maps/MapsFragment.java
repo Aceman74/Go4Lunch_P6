@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +71,7 @@ import static com.aceman.go4lunch.activities.core.CoreActivity.sFusedLocationPro
  */
 public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClickListener, OnMapReadyCallback, GoogleMap.OnCameraIdleListener, MapsContract.MapsViewInterface {
 
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 100;
     public static GoogleMap mMaps;
     public List<Result> mResults;
     public LatLng mSearchLatLng;
@@ -285,6 +287,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMaps = googleMap;
+        getLocationPermission();
         mMaps.getUiSettings().setMapToolbarEnabled(false);
         mMaps.getUiSettings().setMyLocationButtonEnabled(true);
         mMaps.setOnMyLocationClickListener(this);
@@ -292,6 +295,27 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
         onMarkerClickListener();
         customInfoWindows();
         getLastLocation();
+    }
+
+    /**
+     * Get the location btn permission
+     */
+    @Override
+    public void getLocationPermission() {
+        /*
+         * Request location permission, so that we can get the location of the
+         * device. The result of the permission request is handled by a callback,
+         * onRequestPermissionsResult.
+         */
+        if (ContextCompat.checkSelfPermission(this.getContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            mMaps.setMyLocationEnabled(true);
+        } else {
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
     }
 
     /**
@@ -551,7 +575,8 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
      * @param i int
      * @return userlist
      */
-    private String isEatingHereHourCheck(int i) {
+    @Override
+    public String isEatingHereHourCheck(int i) {
         String date = DateSetter.getFormattedDate();
         int hour = HourSetter.getHour();
         if (mUserList.get(i).getDate().equals(date) && hour < 13) {

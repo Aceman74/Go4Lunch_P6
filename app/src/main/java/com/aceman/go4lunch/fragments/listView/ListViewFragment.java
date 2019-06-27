@@ -19,7 +19,6 @@ import com.aceman.go4lunch.data.models.RestaurantPublic;
 import com.aceman.go4lunch.data.places.nearby_search.Result;
 import com.aceman.go4lunch.utils.events.RefreshEvent;
 import com.aceman.go4lunch.utils.events.ResultListEvent;
-import com.aceman.go4lunch.utils.events.UserListEvent;
 import com.bumptech.glide.Glide;
 
 import org.greenrobot.eventbus.EventBus;
@@ -114,23 +113,14 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
     }
 
     /**
-     * Get the userList .
-     *
-     * @param userlist userlist
-     */
-    @Subscribe(sticky = true)
-    public void onUserListEvent(UserListEvent userlist) {
-        mUserList = userlist.mUserList;
-    }
-
-    /**
-     * Refresh callback when userJoining is ready, refresh Recycler View.
+     * Refresh callback when userlist is ready, refresh Recycler View.
      *
      * @param refreshEvent refreshEvent
      */
     @Subscribe
     public void onRefreshEvent(RefreshEvent refreshEvent) {
         loadingView();
+        configureRecyclerView();
     }
 
     /**
@@ -143,7 +133,6 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser) {
             loadingView();
-            configureRecyclerView();
         }
     }
 
@@ -221,13 +210,7 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
                 first = ((first + 4) / 5) * 5;
                 int second = Math.round(o2.getDistanceTo());
                 second = ((second + 4) / 5) * 5;
-                if (first > second) {
-                    return 1;
-                } else if (first < second) {
-                    return -1;
-                } else {
-                    return 0;
-                }
+                return Integer.compare(first, second);
             }
         });
         mListViewAdapter.notifyDataSetChanged();
@@ -251,7 +234,7 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
     @Override
     public void onResume() {
         super.onResume();
-        loadingView();
+        mUserList = mPresenter.getUserList();
     }
 
 }

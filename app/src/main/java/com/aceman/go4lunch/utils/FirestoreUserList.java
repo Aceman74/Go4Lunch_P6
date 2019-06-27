@@ -73,6 +73,7 @@ public class FirestoreUserList {
             Timber.tag("Task To List").i("Sucess");
         }
         EventBus.getDefault().post(new RefreshEvent());
+
         return mUserList;
     }
 

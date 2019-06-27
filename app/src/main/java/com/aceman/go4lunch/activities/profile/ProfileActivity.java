@@ -202,7 +202,7 @@ public class ProfileActivity extends BaseActivity implements ProfileContract.Pro
      */
     @Override
     public void progressBarStop() {
-        progressBar.setVisibility(View.INVISIBLE);
+        progressBar.setVisibility(View.GONE);
     }
 
     /**

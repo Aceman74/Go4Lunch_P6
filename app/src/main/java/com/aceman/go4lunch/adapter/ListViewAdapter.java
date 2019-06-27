@@ -191,10 +191,12 @@ public class ListViewAdapter extends RecyclerView.Adapter<ListViewAdapter.MyView
             }
         }
         if (userJoining > 0) {
+            holder.mIsUser.setVisibility(View.VISIBLE);
+            holder.mWorkerImg.setVisibility(View.VISIBLE);
             holder.mIsUser.setText("(" + userJoining + ")");
         } else {
-            holder.mIsUser.setVisibility(View.GONE);
-            holder.mWorkerImg.setVisibility(View.GONE);
+            holder.mIsUser.setVisibility(View.INVISIBLE);
+            holder.mWorkerImg.setVisibility(View.INVISIBLE);
 
         }
     }

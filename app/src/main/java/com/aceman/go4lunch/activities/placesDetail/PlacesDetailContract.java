@@ -34,7 +34,7 @@ public interface PlacesDetailContract {
 
         List<RestaurantPublic> getUserList();
 
-        List<RestaurantPublic> getUserJoinningList(String name);
+        List<RestaurantPublic> getUserJoiningList(String name);
 
     }
 

@@ -182,7 +182,7 @@ public class PlacesDetailPresenter extends BasePresenter implements PlacesDetail
      * @see FirestoreUserList
      */
     @Override
-    public List<RestaurantPublic> getUserJoinningList(String name) {
+    public List<RestaurantPublic> getUserJoiningList(String name) {
 
         mUserJoinning = FirestoreUserList.getUserJoinningList(getCurrentUser(), name);
         return mUserJoinning;

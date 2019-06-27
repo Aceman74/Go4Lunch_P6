@@ -37,9 +37,6 @@ public class PlacesApi {
      */
     private PlacesApi() {
 
-        /**
-         * Interceptor for caching request for 2 minutes.
-         */
         final Interceptor REWRITE_CACHE_CONTROL_INTERCEPTOR = new Interceptor() {
             @Override
             public Response intercept(Interceptor.Chain chain) throws IOException {

@@ -63,6 +63,8 @@ public interface MapsContract {
 
         void addDetail(PlacesDetails details);
 
+        String isEatingHereHourCheck(int i);
 
+        void getLocationPermission();
     }
 }

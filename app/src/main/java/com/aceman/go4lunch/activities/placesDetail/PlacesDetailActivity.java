@@ -29,7 +29,6 @@ import com.aceman.go4lunch.utils.base.BaseActivity;
 import com.aceman.go4lunch.utils.events.PlacesDetailEvent;
 import com.aceman.go4lunch.utils.events.RestaurantPublicEvent;
 import com.aceman.go4lunch.utils.events.UserJoiningRefreshEvent;
-import com.aceman.go4lunch.utils.events.UserListEvent;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -71,7 +70,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     @BindView(R.id.detail_fragment_banner_name)
     TextView setName;
     @BindView(R.id.detail_fragment_banner_address)
-    TextView setAdress;
+    TextView setAddress;
     @BindView(R.id.detail_fragment_rating_1)
     ImageView mStar1;
     @BindView(R.id.detail_fragment_rating_2)
@@ -276,7 +275,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
         mRestaurant.setRating(mStar);
         showStar(mStar);
         setName.setText(mName);
-        setAdress.setText(mAddress);
+        setAddress.setText(mAddress);
         mPresenter.resetPlaceChoiceIfNewDay();
         mPresenter.setIconTintWithFirebaseInfos(mID, mRestaurant);
         loadPlaceImageWithGlide();
@@ -535,8 +534,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     @Override
     public void startGettingUserList() {
         mUserList = mPresenter.getUserList();
-        mUserJoinning = mPresenter.getUserJoinningList(mName);
-        EventBus.getDefault().post(new UserListEvent(mUserList));
+        mUserJoinning = mPresenter.getUserJoiningList(mName);
         notifyDataChanged();
     }
 
