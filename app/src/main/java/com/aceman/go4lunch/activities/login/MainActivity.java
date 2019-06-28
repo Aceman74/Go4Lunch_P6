@@ -210,7 +210,6 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        // 4 - Handle SignIn Activity response on activity result
         this.handleResponseAfterSignIn(requestCode, resultCode, data);
     }
 
@@ -272,7 +271,6 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
 
         if (requestCode == RC_SIGN_IN) {
             if (resultCode == RESULT_OK) { // SUCCESS
-                // 2 - CREATE USER IN FIRESTORE
                 mPresenter.createUserInFirestore();
                 showSnackBar(coordinatorLayout, getString(R.string.connection_succeed));
             } else { // ERRORS

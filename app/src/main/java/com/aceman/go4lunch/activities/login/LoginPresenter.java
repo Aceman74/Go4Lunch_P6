@@ -4,12 +4,14 @@ import android.support.annotation.NonNull;
 
 import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.api.UserHelper;
+import com.aceman.go4lunch.data.models.User;
 import com.aceman.go4lunch.utils.BasePresenter;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.annotations.Nullable;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import okhttp3.Cache;
 
@@ -67,20 +69,28 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
     }
 
     /**
-     * Create new user on firestore
+     * Create new user on firestore, check if already existing to avoid Erasing data.
      */
     @Override
     public void createUserInFirestore() {
 
         if (this.getCurrentUser() != null) {
 
-            String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
-            String username = this.getCurrentUser().getDisplayName();
-            String uid = this.getCurrentUser().getUid();
-            String email = this.getCurrentUser().getEmail();
+            final String urlPicture = (this.getCurrentUser().getPhotoUrl() != null) ? this.getCurrentUser().getPhotoUrl().toString() : null;
+            final String username = this.getCurrentUser().getDisplayName();
+            final String uid = this.getCurrentUser().getUid();
+            final String email = this.getCurrentUser().getEmail();
 
-            UserHelper.createUser(uid, username, urlPicture, email).addOnFailureListener(onFailureListener()).addOnSuccessListener(onSuccessListener());
-            RestaurantPublicHelper.createPublicUser(uid, username, urlPicture).addOnFailureListener(onFailureListener());
+            UserHelper.getUser(this.getCurrentUser().getUid()).addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    User currentUser = documentSnapshot.toObject(User.class);
+                    if (currentUser == null) {
+                        UserHelper.createUser(uid, username, urlPicture, email).addOnFailureListener(onFailureListener()).addOnSuccessListener(onSuccessListener());
+                        RestaurantPublicHelper.createPublicUser(uid, username, urlPicture).addOnFailureListener(onFailureListener());
+                    }
+                }
+            });
         }
     }
 

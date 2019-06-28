@@ -31,6 +31,7 @@ public interface LoginContract {
         OnSuccessListener onSuccessListener();
 
         OnFailureListener onFailureListener();
+
     }
 
     interface LoginViewInterface extends BaseView {

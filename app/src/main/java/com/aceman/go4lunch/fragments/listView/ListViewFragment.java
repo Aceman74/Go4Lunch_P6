@@ -3,7 +3,6 @@ package com.aceman.go4lunch.fragments.listView;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -28,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -225,7 +223,6 @@ public class ListViewFragment extends Fragment implements ListViewContract.ListV
         mListViewAdapter = new ListViewAdapter(mResults, mUserList, Glide.with(this), getContext());
         mRecyclerView.setAdapter(mListViewAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
     }
 
     /**

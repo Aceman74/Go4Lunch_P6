@@ -14,11 +14,17 @@
         android:layout_height="match_parent"
         android:visibility="gone"/>
 
+<android.support.v7.widget.CardView
+    android:layout_width="wrap_content"
+    android:layout_height="0dp"
+    android:layout_weight="0.5"
+    app:cardBackgroundColor="@color/ColorWhite"
+    app:cardElevation="2dp">
+
     <RelativeLayout
         android:id="@+id/detail_fragment_image_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/detail_fragment_image_view"
@@ -31,32 +37,31 @@
             android:layout_height="50dp"
             android:layout_alignEnd="@+id/detail_fragment_image_view"
             android:layout_alignParentBottom="true"
-            android:layout_margin="20dp"
+            android:layout_margin="10dp"
             android:background="@color/ColorWhite"
             android:src="@drawable/add_icon"
             android:tint="@color/ColorWhite"
             app:fabCustomSize="52dp" />
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/detail_fragment_banner_layout"
+</android.support.v7.widget.CardView>
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_weight="1.35"
-        android:background="@color/colorAccent"
-        android:padding="5dp">
-
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
+        app:cardBackgroundColor="@color/ColorWhite"
+        android:layout_margin="2dp"
+        app:cardElevation="5dp">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/colorPrimary">
 
             <LinearLayout
                 android:id="@+id/detail_fragment_restaurant_and_rating"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="0.5"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -102,7 +107,7 @@
                 android:id="@+id/detail_fragment_linear_layout_adress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_weight="0.5">
 
                 <TextView
                     android:id="@+id/detail_fragment_banner_address"
@@ -113,29 +118,32 @@
                     android:text="ADDRESS"
                     android:textColor="@color/ColorWhite"
                     android:textSize="@dimen/default_text_size" />
+
             </LinearLayout>
         </LinearLayout>
-    </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/detail_fragment_btn_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1.35"
-        android:background="@color/ColorWhite"
-        android:gravity="center">
-
+    </android.support.v7.widget.CardView>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                app:cardBackgroundColor="@color/ColorWhite"
+                android:layout_margin="2dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="10dp">
 
             <LinearLayout
                 android:id="@+id/call_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -158,52 +166,67 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="CALL"
+                    android:text="@string/call"
                     android:textColor="@color/colorAccent" />
 
             </LinearLayout>
 
-            <LinearLayout
-                android:id="@+id/like_layout"
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_toRightOf="@+id/call_layout"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:layout_margin="2dp"
+                android:layout_weight="0.3"
+                app:cardBackgroundColor="@color/ColorWhite"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="2dp">
 
-                <ImageButton
-                    android:id="@+id/detail_fragment_btn_like"
+                <LinearLayout
+                    android:id="@+id/like_layout"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:layout_toRightOf="@id/detail_fragment_btn_call"
-                    android:background="@android:color/transparent"
-                    android:padding="10dp"
-                    android:scaleX="1.2"
-                    android:scaleY="1.2"
-                    android:src="@drawable/star_full"
-                    android:text="Like"
-                    android:tint="@color/colorAccent" />
+                    android:gravity="center"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="LIKE"
-                    android:textColor="@color/colorAccent" />
+                    <ImageButton
+                        android:id="@+id/detail_fragment_btn_like"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:background="@android:color/transparent"
+                        android:padding="10dp"
+                        android:scaleX="1.2"
+                        android:scaleY="1.2"
+                        android:src="@drawable/star_full"
+                        android:text="Like"
+                        android:tint="@color/colorAccent" />
 
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="@string/like"
+                        android:textColor="@color/colorAccent" />
 
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.3"
+                app:cardBackgroundColor="@color/ColorWhite"
+                android:layout_margin="2dp"
+                app:cardElevation="2dp"
+                app:cardCornerRadius="10dp">
             <LinearLayout
                 android:id="@+id/website_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_toRightOf="@+id/like_layout"
-                android:layout_weight="1"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -213,7 +236,6 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:layout_toRightOf="@id/detail_fragment_btn_like"
                     android:background="@android:color/transparent"
                     android:padding="10dp"
                     android:scaleX="1.2"
@@ -226,13 +248,23 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="WEBSITE"
+                    android:text="@string/website"
                     android:textColor="@color/colorAccent" />
 
             </LinearLayout>
+
+            </android.support.v7.widget.CardView>
         </LinearLayout>
 
-    </RelativeLayout>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        app:cardBackgroundColor="@color/ColorWhite"
+        android:layout_margin="2dp"
+        app:cardElevation="2dp"
+        app:cardCornerRadius="20dp">
 
     <RelativeLayout
         android:id="@+id/detail_fragment_recycler_layout"
@@ -248,4 +280,6 @@
 
         </android.support.v7.widget.RecyclerView>
     </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
 </LinearLayout>

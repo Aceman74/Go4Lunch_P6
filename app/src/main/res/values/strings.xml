@@ -97,5 +97,8 @@
     <string name="sort_by_distance">Sort by Distance</string>
     <string name="open_now">Open now</string>
     <string name="closed_now">Closed</string>
+    <string name="call">CALL</string>
+    <string name="like">LIKE</string>
+    <string name="website">WEBSITE</string>
 
 </resources>

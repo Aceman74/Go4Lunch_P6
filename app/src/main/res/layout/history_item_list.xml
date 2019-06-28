@@ -27,7 +27,8 @@
                 android:text="Restaurant Name"
                 android:textColor="@color/ColorBlack"
                 android:textSize="@dimen/default_middle_size"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:background="@color/ColorWhite" />
 
         </LinearLayout>
 
@@ -45,7 +46,8 @@
                 android:layout_gravity="center"
                 android:layout_margin="5dp"
                 android:text="Restaurant Date"
-                android:textColor="@color/ColorBlack" />
+                android:textColor="@color/ColorBlack"
+                android:background="@color/ColorWhite" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

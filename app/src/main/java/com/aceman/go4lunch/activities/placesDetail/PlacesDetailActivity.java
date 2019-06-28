@@ -544,6 +544,5 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     @Override
     public void notifyDataChanged() {
         configureRecyclerView();
-        mWorkersJoiningAdapter.notifyDataSetChanged();
     }
 }

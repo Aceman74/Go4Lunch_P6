@@ -87,5 +87,8 @@
     <string name="sort_by_distance">Tri par distance</string>
     <string name="open_now">Ouvert</string>
     <string name="closed_now">Fermé</string>
+    <string name="call">APPEL</string>
+    <string name="like">LIKE</string>
+    <string name="website">SITE</string>
 
 </resources>
