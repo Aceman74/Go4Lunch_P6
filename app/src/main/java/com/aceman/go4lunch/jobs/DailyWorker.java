@@ -107,14 +107,17 @@ public class DailyWorker extends Worker {
                     mUserList = FirestoreUserList.getUserList(getCurrentUser());
                     for (int i = 0; i < mUserList.size(); i++) {
                         RestaurantPublic user = mUserList.get(i);
-                        if (user.getRestaurantName() != null && user.getRestaurantName().equals(mRestaurant)) {
+                        if (user.getRestaurantName() != null && user.getRestaurantName().equals(mRestaurant) && !user.getUsername().equals(currentUser.getUsername())) {
                             switch (j) {
                                 case 0:
                                     mCoWorker_1 = user.getUsername();
+                                    break;
                                 case 1:
                                     mCoWorker_2 = user.getUsername();
+                                    break;
                                 case 2:
                                     mCoWorker_3 = user.getUsername();
+                                    break;
                             }
                             j++;
                         }

@@ -525,6 +525,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
      */
     @Subscribe
     public void onUserJoiningRefreshEvent(UserJoiningRefreshEvent refreshEvent) {
+        mPresenter.setIconTintWithFirebaseInfos(mID, mRestaurant);
         notifyDataChanged();
     }
 
