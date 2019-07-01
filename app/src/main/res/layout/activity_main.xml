@@ -65,7 +65,7 @@
                 android:padding="@dimen/default_large_margin"
                 android:text="@string/login"
                 android:textColor="#fff"
-                android:textSize="@dimen/default_text_size" />
+                android:textSize="@dimen/default_middle_size" />
 
         </LinearLayout>
 
