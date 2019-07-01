@@ -32,7 +32,7 @@ public class LoginPresenter extends BasePresenter implements LoginContract.Login
         if (this.isCurrentUserLogged()) {
             ((LoginContract.LoginViewInterface) getView()).startCoreActivity();
             String name = getCurrentUser().getDisplayName();
-            ((LoginContract.LoginViewInterface) getView()).welcomeBackUser(name);
+            ((LoginContract.LoginViewInterface) getView()).welcomeUser(name);
         }
     }
 

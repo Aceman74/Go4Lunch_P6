@@ -2,6 +2,14 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('C:\\Users\\Aceman\\key_android\\key_25y.jks')
+            storePassword 'AC3M4Ndu74'
+            keyAlias = 'key_ace'
+            keyPassword 'AC3M4Ndu74'
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.aceman.go4lunch"
@@ -11,6 +19,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        signingConfig signingConfigs.release
     }
     buildTypes {
         debug {
@@ -25,6 +34,7 @@ android {
             buildConfigField "String", "twitter_consumer_key", "\"egmVRINyxMs3W3V7dUrHUIgMA\""
             buildConfigField "String", "twitter_consumer_secret", "\"ti4u5FwAcpixNPWfJTTXx5Cltrm2oBQhW2RIJch2fNHkaNaDOr\""
             minifyEnabled false
+            debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }

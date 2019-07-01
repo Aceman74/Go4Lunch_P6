@@ -36,12 +36,14 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
     private final RequestManager glide;
     private final Context mContext;
     private List<RestaurantPublic> mUserList;
+    private String mUsername;
 
 
-    public WorkersJoiningAdapter(List<RestaurantPublic> userList, RequestManager glide, Context context) {
+    public WorkersJoiningAdapter(List<RestaurantPublic> userList, RequestManager glide, Context context, String username) {
         this.mUserList = userList;
         this.glide = glide;
         this.mContext = context;
+        this.mUsername = username;
     }
 
     @Override
@@ -72,11 +74,20 @@ public class WorkersJoiningAdapter extends RecyclerView.Adapter<WorkersJoiningAd
      * @param position pos
      */
     private void updateWithFreshInfo(final RestaurantPublic user, RequestManager glide, final MyViewHolder holder, int position) {
+        String text;
         if (HourSetter.getHour() < 13) {
-            String text = user.getUsername() + mContext.getString(R.string.is_joining) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+            if (mUsername.equals(user.getUsername())) {
+                text = mContext.getString(R.string.user_is_joining) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+            } else {
+                text = user.getUsername() + mContext.getString(R.string.is_joining) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+            }
             holder.mTextView.setText(text);
         } else {
-            String text = user.getUsername() + mContext.getString(R.string.ate_today_at) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+            if (mUsername.equals(user.getUsername())) {
+                text = mContext.getString(R.string.user_ate_today_at) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+            } else {
+                text = user.getUsername() + mContext.getString(R.string.ate_today_at) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+            }
             holder.mTextView.setText(text);
         }
         loadUserPictureWithGlide(user, holder);

@@ -42,12 +42,14 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
     private final Context mContext;
     private List<RestaurantPublic> mUserList;
     private String mIntent;
+    private String mUsername;
 
 
-    public WorkersAdapter(List<RestaurantPublic> userList, RequestManager glide, Context context) {
+    public WorkersAdapter(List<RestaurantPublic> userList, RequestManager glide, Context context, String username) {
         this.mUserList = userList;
         this.glide = glide;
         this.mContext = context;
+        this.mUsername = username;
     }
 
     @Override
@@ -132,22 +134,36 @@ public class WorkersAdapter extends RecyclerView.Adapter<WorkersAdapter.MyViewHo
      */
     private void setUserDescription(RestaurantPublic user, WorkersAdapter.MyViewHolder holder) {
         String date = DateSetter.getFormattedDate();
+        String text;
 
         for (int i = 0; i < mUserList.size(); i++) {
             if (user.getDate() != null && user.getDate().equals(date)) {
                 String getID = mUserList.get(i).getRestaurantID();
                 if (getID != null && getID.equals(user.getRestaurantID())) {
                     if (HourSetter.getHour() < 13) {
-                        String text = user.getUsername() + mContext.getString(R.string.is_eating) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+                        if (mUsername.equals(user.getUsername())) {
+                            text = mContext.getString(R.string.user_eating) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+                        } else {
+                            text = user.getUsername() + mContext.getString(R.string.is_eating) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+                        }
                         holder.mTextView.setText(text);
                     } else {
-                        String text = user.getUsername() + mContext.getString(R.string.ate_today_at) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+                        if (mUsername.equals(user.getUsername())) {
+                            text = mContext.getString(R.string.user_ate_today_at) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+                        } else {
+                            text = user.getUsername() + mContext.getString(R.string.ate_today_at) + user.getRestaurantName() + mContext.getString(R.string.exclam);
+                        }
+
                         holder.mTextView.setText(text);
                     }
                 }
             } else {
                 holder.mTextView.setAlpha(0.6f);
-                String text = user.getUsername() + mContext.getString(R.string.not_choice_yet);
+                if (mUsername.equals(user.getUsername())) {
+                    text = mContext.getString(R.string.user_not_choice_yet);
+                } else {
+                    text = user.getUsername() + mContext.getString(R.string.not_choice_yet);
+                }
                 holder.mTextView.setText(text);
             }
         }

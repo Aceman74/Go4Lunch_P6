@@ -48,6 +48,6 @@ public interface LoginContract {
 
         void showSnackBar(CoordinatorLayout coordinatorLayout, String message);
 
-        void welcomeBackUser(String name);
+        void welcomeUser(String name);
     }
 }

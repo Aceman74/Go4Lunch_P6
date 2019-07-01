@@ -3,7 +3,7 @@
     <string name="app_name">Go4Lunch</string>
     <string name="error_unknown_error">Une erreur inconnue est survenue…</string>
     <string name="new_user_created">Bienvenue sur Go4Lunch !</string>
-    <string name="user_already_logged">"Bon retour, "</string>
+    <string name="user_already_logged">"Bienvenue, "</string>
     <string name="login">Login</string>
     <string name="connection_succeed">Connexion réussie !</string>
     <string name="error_authentication_canceled">Erreur, connexion annulée</string>
@@ -90,5 +90,9 @@
     <string name="call">APPEL</string>
     <string name="like">LIKE</string>
     <string name="website">SITE</string>
+    <string name="user_ate_today_at">"Vous avez mangé(e) à "</string>
+    <string name="user_eating">"Vous mangez à "</string>
+    <string name="user_not_choice_yet">Vous n\'avez pas encore choisis.</string>
+    <string name="user_is_joining">"Vous rejoignez "</string>
 
 </resources>

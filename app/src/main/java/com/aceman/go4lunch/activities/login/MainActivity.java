@@ -49,6 +49,7 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
     @BindView(R.id.main_background)
     ImageView mBackground;
     Animation mClickAnim;
+    AlertDialog.Builder alertDialog;
     private LoginPresenter mPresenter;
 
     /**
@@ -61,7 +62,7 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
         super.onCreate(savedInstanceState);
         mPresenter = new LoginPresenter();
         mPresenter.attachView(this);
-        askPermission();
+        checkPermission();
         mCache = mPresenter.configureCache(mCache);
         mPresenter.isCurrentUserLogged();
         updateUIWhenResuming();
@@ -69,30 +70,34 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
         mBtnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mClickAnim = AnimationClass.animClickFadeOut(getApplicationContext());
-                mBtnLogin.startAnimation(mClickAnim);
-                mClickAnim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        mBtnLogin.setVisibility(View.INVISIBLE);
-                        if (isCurrentUserLogged()) {
-                            mPresenter.alreadyLogged();
-                        } else {
-                            startSignInActivity();
+                if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                        android.Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    alertDialog = null;
+                    askPermission();
+                } else {
+                    mClickAnim = AnimationClass.animClickFadeOut(getApplicationContext());
+                    mBtnLogin.startAnimation(mClickAnim);
+                    mClickAnim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
                         }
-                    }
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            mBtnLogin.setVisibility(View.INVISIBLE);
+                            if (isCurrentUserLogged()) {
+                                mPresenter.alreadyLogged();
+                            } else {
+                                startSignInActivity();
+                            }
+                        }
 
-                    }
-                });
-
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+                    });
+                }
             }
         });
         updateUIWhenResuming();
@@ -127,24 +132,35 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
     }
 
     /**
+     * Check if user already grant permission/
+     */
+    private void checkPermission() {
+        if (ContextCompat.checkSelfPermission(getApplicationContext(),
+                android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            askPermission();
+        }
+    }
+
+    /**
      * Ask user for location and call permission.
      *
      * @see Dexter
      */
     @Override
     public void askPermission() {
-        if (ContextCompat.checkSelfPermission(getApplicationContext(),
-                android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            new AlertDialog.Builder(this)
-                    .setTitle(R.string.application_permission)
-                    .setMessage(R.string.permision_text)
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            dexterInit();
-                        }
-                    })
-                    .show();
+        if (alertDialog == null) {
+            alertDialog = new AlertDialog.Builder(MainActivity.this);
+            alertDialog.setTitle(R.string.application_permission);
+            alertDialog.setMessage(R.string.permision_text);
+            alertDialog.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                    dexterInit();
+                }
+            });
+            alertDialog.show();
+
         }
     }
 
@@ -184,7 +200,7 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
      * @param name username
      */
     @Override
-    public void welcomeBackUser(String name) {
+    public void welcomeUser(String name) {
         Toast.makeText(this, getString(R.string.user_already_logged) + " " + name, Toast.LENGTH_LONG).show();
 
     }
@@ -196,8 +212,8 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
     protected void onResume() {
         super.onResume();
         updateUIWhenResuming();
+        checkPermission();
         mBtnLogin.setVisibility(View.VISIBLE);
-
     }
 
     /**
@@ -237,7 +253,6 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
      * Dexter library used for permissions.
      */
     private void dexterInit() {
-
         MultiplePermissionsListener dialogMultiplePermissionsListener =
                 DialogOnAnyDeniedMultiplePermissionsListener.Builder
                         .withContext(this)
@@ -255,7 +270,6 @@ public class MainActivity extends BaseActivity implements LoginContract.LoginVie
                         Manifest.permission.CALL_PHONE
                 ).withListener(dialogMultiplePermissionsListener)
                 .check();
-        askPermission();
     }
 
     /**

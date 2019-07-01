@@ -93,6 +93,7 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
     Button mBackToMap;
     @BindView(R.id.detail_fragment_btn)
     FloatingActionButton mFloatingActionButton;
+    String mUsername;
     private PlacesDetailPresenter mPresenter;
     private Result mResult;
     private RestaurantPublic mRestaurantPublic;
@@ -487,7 +488,8 @@ public class PlacesDetailActivity extends BaseActivity implements PlacesDetailCo
      */
     @Override
     public void configureRecyclerView() {
-        mWorkersJoiningAdapter = new WorkersJoiningAdapter(mUserJoinning, Glide.with(this), getApplicationContext());
+        mUsername = mPresenter.getCurrentUser().getDisplayName();
+        mWorkersJoiningAdapter = new WorkersJoiningAdapter(mUserJoinning, Glide.with(this), getApplicationContext(), mUsername);
         mRecyclerView.setAdapter(mWorkersJoiningAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         if (mUserList == null || mUserJoinning == null) {

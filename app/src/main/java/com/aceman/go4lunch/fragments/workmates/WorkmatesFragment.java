@@ -40,6 +40,7 @@ public class WorkmatesFragment extends Fragment implements WorkmatesContract.Wor
     @BindView(R.id.workmate_fragment_recycler_view)
     RecyclerView mRecyclerView;
     WorkmatesPresenter mPresenter;
+    String mUsername;
 
     public WorkmatesFragment() {
     }
@@ -112,8 +113,9 @@ public class WorkmatesFragment extends Fragment implements WorkmatesContract.Wor
      */
     @Override
     public void configureRecyclerView() {
+        mUsername = mPresenter.getCurrentUser().getDisplayName();
         if (mUserList != null) {
-            mWorkersAdapter = new WorkersAdapter(mUserList, Glide.with(this), getContext());
+            mWorkersAdapter = new WorkersAdapter(mUserList, Glide.with(this), getContext(), mUsername);
             mRecyclerView.setAdapter(mWorkersAdapter);
             mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
             mRecyclerView.addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()), DividerItemDecoration.VERTICAL));
