@@ -100,7 +100,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
         mPresenter = new CorePresenter();
         mPresenter.attachView(this);
         sFusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
-        navigationDrawerListener();
+        navigationDrawerSetView();
         configureToolBar();
         configureNavigationView();
         configureViewPager();
@@ -170,7 +170,7 @@ public class CoreActivity extends BaseActivity implements NavigationView.OnNavig
      * Listener for settings/updating information in the navigation drawer.
      */
     @Override
-    public void navigationDrawerListener() {
+    public void navigationDrawerSetView() {
         NavigationView navigationView = findViewById(R.id.core_nav_view);
         View headerView = navigationView.getHeaderView(0);
         textViewUsername = headerView.findViewById(R.id.name_nav_header);

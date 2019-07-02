@@ -32,7 +32,7 @@ public interface CoreContract {
 
         void configureViewPager();
 
-        void navigationDrawerListener();
+        void navigationDrawerSetView();
 
         void signOutUserFromFirebase();
 
