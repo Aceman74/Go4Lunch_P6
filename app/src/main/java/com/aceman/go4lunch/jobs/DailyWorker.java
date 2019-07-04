@@ -109,7 +109,7 @@ public class DailyWorker extends Worker {
                     for (int i = 0; i < mUserList.size(); i++) {
                         RestaurantPublic user = mUserList.get(i);
                         if (user.getRestaurantName() != null && user.getRestaurantName().equals(mRestaurant) && !user.getUsername().equals(currentUser.getUsername())
-                                && user.getDate().equals(DateSetter.getFormattedDate())) {
+                                && user.getDate().equals(DateSetter.getFormattedDate())) { //<< HOTFIX >> date wasn't checked.
                             switch (j) {
                                 case 0:
                                     mCoWorker_1 = user.getUsername();
