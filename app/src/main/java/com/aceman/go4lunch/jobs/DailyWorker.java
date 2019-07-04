@@ -20,6 +20,7 @@ import com.aceman.go4lunch.R;
 import com.aceman.go4lunch.activities.login.MainActivity;
 import com.aceman.go4lunch.api.RestaurantPublicHelper;
 import com.aceman.go4lunch.data.models.RestaurantPublic;
+import com.aceman.go4lunch.utils.DateSetter;
 import com.aceman.go4lunch.utils.FirestoreUserList;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -101,13 +102,14 @@ public class DailyWorker extends Worker {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 RestaurantPublic currentUser = documentSnapshot.toObject(RestaurantPublic.class);
-                if (currentUser.getDetails() != null) {
+                if (currentUser.getDetails() != null && currentUser.getDate().equals(DateSetter.getFormattedDate())) {
                     mRestaurant = currentUser.getRestaurantName();
                     Timber.tag("Alarm User Lunch").e(mRestaurant);
                     mUserList = FirestoreUserList.getUserList(getCurrentUser());
                     for (int i = 0; i < mUserList.size(); i++) {
                         RestaurantPublic user = mUserList.get(i);
-                        if (user.getRestaurantName() != null && user.getRestaurantName().equals(mRestaurant) && !user.getUsername().equals(currentUser.getUsername())) {
+                        if (user.getRestaurantName() != null && user.getRestaurantName().equals(mRestaurant) && !user.getUsername().equals(currentUser.getUsername())
+                                && user.getDate().equals(DateSetter.getFormattedDate())) {
                             switch (j) {
                                 case 0:
                                     mCoWorker_1 = user.getUsername();
@@ -122,6 +124,8 @@ public class DailyWorker extends Worker {
                             j++;
                         }
                     }
+                }else{
+                    mRestaurant = null;
                 }
                 SendNotification();
             }
