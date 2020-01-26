@@ -536,6 +536,7 @@ public class MapsFragment extends Fragment implements GoogleMap.OnMyLocationClic
     @Override
     public void updateMap(final PlacesDetails details) {
         String date = DateSetter.getFormattedDate();
+        if(details.getResult().getGeometry() != null)
         mLatLng = new LatLng(details.getResult().getGeometry().getLocation().getLat(), details.getResult().getGeometry().getLocation().getLng());
 
         if (details.getResult().getName().equals(mSearchName)) {

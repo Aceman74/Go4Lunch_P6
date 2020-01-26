@@ -3,12 +3,6 @@ apply plugin: 'com.google.gms.google-services'
 
 android {
     signingConfigs {
-        release {
-            storeFile file('C:\\Users\\Aceman\\key_android\\key_25y.jks')
-            storePassword 'AC3M4Ndu74'
-            keyAlias = 'key_ace'
-            keyPassword 'AC3M4Ndu74'
-        }
     }
     compileSdkVersion 28
     defaultConfig {
@@ -19,20 +13,19 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.release
     }
     buildTypes {
         debug {
-            buildConfigField "String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\""
+            buildConfigField "String", "google_maps_key", "\"$System.env.GO4LUNCH_GOOGLE_API\""
             buildConfigField "String", "restaurant_ID", "\"A12iOtxFEWQ1A3r3Lgwd\""
-            buildConfigField "String", "twitter_consumer_key", "\"egmVRINyxMs3W3V7dUrHUIgMA\""
-            buildConfigField "String", "twitter_consumer_secret", "\"ti4u5FwAcpixNPWfJTTXx5Cltrm2oBQhW2RIJch2fNHkaNaDOr\""
+            buildConfigField "String", "twitter_consumer_key", "\"$System.env.GO4LUNCH_TWITTER_CONS_KEY\""
+            buildConfigField "String", "twitter_consumer_secret", "\"$System.env.GO4LUNCH_TWITTER_SECRET\""
         }
         release {
-            buildConfigField "String", "google_maps_key", "\"AIzaSyAxcd0TvyWslFZv76SS8FnH3kFhqjmAYJg\""
+            buildConfigField "String", "google_maps_key", "\"$System.env.GO4LUNCH_GOOGLE_API\""
             buildConfigField "String", "restaurant_ID", "\"A12iOtxFEWQ1A3r3Lgwd\""
-            buildConfigField "String", "twitter_consumer_key", "\"egmVRINyxMs3W3V7dUrHUIgMA\""
-            buildConfigField "String", "twitter_consumer_secret", "\"ti4u5FwAcpixNPWfJTTXx5Cltrm2oBQhW2RIJch2fNHkaNaDOr\""
+            buildConfigField "String", "twitter_consumer_key", "\"$System.env.GO4LUNCH_TWITTER_CONS_KEY\""
+            buildConfigField "String", "twitter_consumer_secret", "\"$System.env.GO4LUNCH_TWITTER_SECRET\""
             minifyEnabled false
             debuggable false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

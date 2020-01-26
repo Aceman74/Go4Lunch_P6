@@ -1,8 +1,5 @@
 package com.aceman.go4lunch.fragments.listView;
 
-import com.aceman.go4lunch.api.PlacesApi;
-import com.aceman.go4lunch.data.places.nearby_search.Result;
-
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +8,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Lionel JOFFRAY - on 27/06/2019.
